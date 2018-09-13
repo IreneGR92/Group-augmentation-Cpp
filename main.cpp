@@ -287,7 +287,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
         int RandN = PoissonFloat (generator);
         //vector<int>vRanks(RandN);
         //vector<int>vIndex(RandN);
-        vector<Individual> *Candidates(RandN); ///pointer vector. Problem with the pointer
+        vector<Individual*> Candidates(RandN); ///pointer vector. Problem with the pointer
         vector<double>position; //vector of ranks to chose with higher likelihood the ind with higher rank
         while (i < RandN)
         {
