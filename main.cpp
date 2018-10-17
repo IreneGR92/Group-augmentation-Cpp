@@ -39,11 +39,11 @@ const double m         = 0.8;       // predation pressure
 //const double Pd        = 0.5;       // propensity to disperse
 
 // Modifiers (I might need to make them evolve too)
-//const double X0r    = 1; // inflexion point in the level of help formula for the influence of age
+//const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
 const double K0     = 1; // min fecundity, fecundity when no help provided.
 const double Xsh    = 1; // cost of help in survival
-const double Xsr    = 1; // benefit of age in survival
+const double Xsr    = 1; // benefit of rank in survival
 const double Xss    = 1; // benefit of group size in survival
 
 
@@ -58,22 +58,27 @@ const double stepBeta     = 0.4;     // mutation step size in beta for the prope
 const double mutDrift     = 0.05;    // mutation rate in the neutral genetic value to track level of relatedness
 const double stepDrift    = 0.4;     // mutation step size in the neutral genetic value to track level of relatedness
 
-double alpha,beta,drift;
-
 const int minsurv     = 50;     // min number of individual that survive
 
 
 
-const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
+const double avFloatersSample = 10; //
 
 enum classes {breeder, helper, floater};
 
 const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
-const int numhelp      = 2;       //initial number of helpers per group when initializing group
+const int numhelp      = 2;       //number of helpers per group when initializing group
 
 const int NumGen       = 1000;   // number of generations
 const int numrep       = 20;     // number of replicates
 const int skip         = 50;     // interval between print-outs
+
+//Statistics and others
+                                ///Check. Why declare here the statistic variables and not in the Statistics function?
+int FloatersSample,gen,rep,killedInd,totalPop;
+double  meanAlpha,stdevAlpha,meanBeta,stdevBeta, meanDrift, stdevDrift, corr_AlphaBeta,
+        meanGroupsize, stdevGroupsize;         // population means, standard deviations and correlations
+
 
 
 
@@ -84,12 +89,12 @@ struct Individual // define individual traits
 	Individual(double alpha_,double beta_, classes own_);
 	Individual(const Individual &mother);
     double alpha, beta, drift,                        // genetic values
-            help, survival;                // phenotypic values
+            help, survival, fecundity;                // phenotypic values
     classes own;                                      // possible classes: breeder, helper, floater
-    int age;
+    int ranks, realfecundity;
 
     //Functions inside Individual
-    void calcHelp (int &help);
+    void calcHelp ();
     void calcSurvival(int vhelpersize);
     void Mutate();
 
@@ -100,8 +105,9 @@ Individual::Individual(double alpha_=0,double beta_=0, classes own_=helper){
 	beta=beta_;
 	drift=DriftNormal(generator);
 	own=own_;
-	age = 1;
+	ranks = 1;
 	survival = -1;      //out of range, so check later for errors
+	fecundity = -1;     //out of range, so check later for errors
 	help = -1;          //out of range, so check later for errors
 }
 
@@ -111,8 +117,9 @@ Individual::Individual(const Individual &mother){
 	drift=mother.drift;
 	Mutate();
 	own=helper;
-	age = 1;
+	ranks = 1;
 	survival = -1;      //out of range, so check later for errors
+	fecundity = -1;     //out of range, so check later for errors
 	help = -1;          //out of range, so check later for errors
 }
 
@@ -121,28 +128,24 @@ struct Group // define group traits
 {
     Group(double alpha_,double beta_,int numhelp_);
     double cumhelp;
-    bool breederalive;
-    double fecundity;
-    int realfecundity;                                 // for the breeder: 1 alive, 0 dead
+    bool breederalive;                                     // for the breeder: 1 alive, 0 dead
 
     Individual vbreeder; // create breeder inside group
     vector<Individual> vhelpers; // create a vector of helpers inside each group
 
 //Functions inside Individual
     void Dispersal(vector<Individual> &vfloaters);
-    void Help(int &cumhelp);
+    void Help();
     void Survival(vector<Individual> &vfloaters, vector<Group> population, int &deaths);
     void Breeder(vector<Individual> &vfloaters);
-    void Fecundity(int &realfecundity);
-    void Reproduction(vector<Group>population, vector<Individual> &vhelpers);
+    void Fecundity();
+    void Reproduction();
 };
 
 Group::	Group(double alpha_=0,double beta_=0,int numhelp_=2)
 {
    	vbreeder = Individual(initAlpha,initBeta,breeder);
-    breederalive = 1;
-    fecundity = -1;         //out of range, so check later for errors
-    realfecundity = -1;     //out of range, so check later for errors
+    breederalive=1;
    	for(int i=0;i<numhelp_;++i)
     {
     	vhelpers.push_back(Individual(initAlpha,initBeta,helper));
@@ -161,15 +164,23 @@ void InitGroup(vector<Group> &population)
 }
 
 
+
 /* BECOME FLOATER (STAY VS DISPERSE) */
+void Individual::calcDispersal()
+{
+    dispersal = 1 / (1 + exp (- abs(beta))); // Range from 0 to 1 to compare to a Uniform distribution
+}
+
+
 void Group::Dispersal(vector<Individual> &vfloaters)
 {
 	vector<Individual>::iterator dispersalIt = vhelpers.begin();
 	int size = vhelpers.size();
 	int count = 0;
+
 	while (!vhelpers.empty() && size>count)
 	{
-		if (Uniform(generator) < dispersalIt->beta) // beta is equal to dispersal propensity
+		if (Uniform(generator) < dispersalIt->calcDispersal()) // beta is equal to dispersal propensity
 		{
 			dispersalIt->own=floater; //modify the class
 			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
@@ -184,24 +195,24 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 }
 
 /*DISPLAY LEVEL OF HELP*/
-void Individual::calcHelp (int &help)
+void Individual::calcHelp ()
 {
-    help = alpha;
-    //help = 1 / (1 + exp (alpha * (age - X0r) - beta * (Group.size - X0n)); //later on it will need to be inside group
+    help = abs (alpha); //absolute value, help cannot be negative
+    //help = 1 / (1 + exp (alpha * (ranks - X0r) - beta * (Group.size - X0n)); //later on it will need to be inside group
 }
 
 
-void Group::Help (int &cumhelp) //Calculate accumulative help of all individuals inside of each group.
+void Group::Help () //Calculate accumulative help of all individuals inside of each group.
 {
 	cumhelp = 0;
 //Level of help for helpers
     for (vector<Individual>::iterator helpIt = vhelpers.begin(); helpIt < vhelpers.end(); ++helpIt)
     {
-		helpIt->calcHelp(int &help);
+		helpIt->calcHelp();
 		cumhelp+= helpIt->help;
     }
 //Level of help for breeders
-	vbreeder.calcHelp(int &help);
+	vbreeder.calcHelp();
 	cumhelp += vbreeder.help;
 }
 
@@ -209,7 +220,7 @@ void Group::Help (int &cumhelp) //Calculate accumulative help of all individuals
 
 void Individual::calcSurvival(int vhelpersize=0)
 {
-        survival = m / (1 + exp (Xsh*help - Xsr*age - Xss*(vhelpersize + 1))); // +1 to know group size (1 breeder + helpers)
+        survival = m / (1 + exp (Xsh*help - Xsr*ranks - Xss*(vhelpersize + 1))); // +1 to know group size (1 breeder + helpers)
 }
 
 
@@ -275,22 +286,22 @@ void Group::Breeder(vector<Individual> &vfloaters)
 {
     //Select a random sample from the floaters
         int i=0;
-        int sumage=0;
-        int currentposition=0; //age of the previous ind taken from Candidates
+        int sumrank=0;
+        int currentposition=0; //rank of the previous ind taken from Candidates
         poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
         uniform_real_distribution<int> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
         uniform_real_distribution<double> Randomposition;
         int RandP = Randomposition (generator);
         int RandN = PoissonFloat (generator);
-        //vector<int>vAge(RandN);
+        //vector<int>vRanks(RandN);
         //vector<int>vIndex(RandN);
         vector<Individual*> Candidates(RandN); ///pointer vector. Problem with the pointer
-        vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
-        while (i < RandN)
+        vector<double>position; //vector of ranks to chose with higher likelihood the ind with higher rank
+        while (i < RandN) ///Change to a proportion instead
         {
             //vIndex[i] = RandF;                      // save the address of the floater sampled
-            //vAge[i] = vfloaters[RandF].age;      // save the age of the floater sampled
-            Candidates[i] = &vfloaters[UniformFloat(generator)];
+            //vRanks[i] = vfloaters[RandF].ranks;      // save the rank of the floater sampled
+            Candidates[i] = &vfloaters[UniformFloat(generator)]; ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES
             i++;
         }
 
@@ -300,39 +311,39 @@ void Group::Breeder(vector<Individual> &vfloaters)
         for (vector<Individual>::iterator helpIt = vhelpers.begin(); helpIt < vhelpers.end(); ++helpIt)
         {
             Candidates.push_back(&(*helpIt));
-            //vAge.push_back(*helpIt.age);
+            //vRanks.push_back(*helpIt.ranks);
             //vIndex.push_back(*helpIt);          /// not sure this is saving the ID
         }
-    ///Choose breeder with higher likelihood for the highest age. Problem with all the for loops
-        for (vector<Individual>::iterator *ageIt = Candidates.begin(); ageIt < Candidates.end(); ++ageIt) //*a creates a vector of pointers to an individual
+    //Choose breeder with higher likelihood for the highest rank
+        for (vector<Individual*>::iterator rankIt = Candidates.begin(); rankIt < Candidates.end(); ++rankIt) //*rankIt creates a vector of pointers to an individual
         {
-            sumage += *ageIt->age; //add all the age from the vector Candidates
+            sumrank += (*rankIt)->ranks; //add all the ranks from the vector Candidates
         }
-        for (vector<Individual>::iterator *age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
+        for (vector<Individual*>::iterator rank2It = Candidates.begin(); rank2It < Candidates.end(); ++rank2It)
         {
-            position.push_back(*age2It->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
+            position.push_back((*rank2It)->ranks / sumrank + currentposition); //create a vector with proportional segments to the rank of each individual
             currentposition = *position.end();
         }
-        for (vector<Individual>::iterator *age3It = Candidates.begin(); age3It < Candidates.end(); ++age3It)
+        for (vector<Individual*>::iterator rank3It = Candidates.begin(); rank3It < Candidates.end(); ++rank3It)
         {
-            if (RandP < position[age3It-Candidates.begin()]) //to access the same ind in the candidates vector
+            if (RandP < position[rank3It-Candidates.begin()]) //to access the same ind in the candidates vector
             {
-                vbreeder = **age3It; //substitute the previous dead breeder
+                vbreeder = **rank3It; //substitute the previous dead breeder
                 breederalive = 1;
 
-                if (*age3It->own == floater) //delete the ind from the vector floaters
+                if ((*rank3It)->own == floater) //delete the ind from the vector floaters
                 {
-                    *age3It = vfloaters[vfloaters.size() - 1];
+                    **rank3It = vfloaters[vfloaters.size() - 1];
                     vfloaters.pop_back();
                 }
-
                 else
                 {
-                    *age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
+                    **rank3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
                     vhelpers.pop_back();
                 }
 
                 vbreeder.own = breeder; //modify the class
+                rank3It = Candidates.end();//end loop
             }
         }
 }
@@ -354,24 +365,37 @@ void Reassign(vector<Individual> &vfloaters, vector<Individual> &vhelpers)
 }
 
 
+/* INCREASE AGE*/
+void Group::increaseAge()
+{
+    for (vector<Group>::iterator ageIt = vhelpers.begin(); ageIt < vhelpers.end; ++ageIt)
+    {
+        ageIt->vhelpers.ranks++;
+    }
+    vbreeder.ranks++;
+}
+
+
 /* REPRODUCTION */
 
-void Group::Fecundity(int &realfecundity)
+void Group::Fecundity()
 
 {
     fecundity = K0 + Group.cumhelp;
     poisson_distribution<int> PoissonFec(fecundity);
     realfecundity = PoissonFec(generator);
+
 }
 
-void Group::Reproduction(vector<Group>population, vector<Individual> &vhelpers) // populate offspring generation
+void Group::Reproduction(int realfecundity)
+        // populate offspring generation
 {
     int i;
     for (vector<Group>::iterator repIt = population.begin(); repIt < population.end; ++repIt)
     {
         for (i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
         {
-        vhelpers.push_back(Individual(vbreeder)); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
+        vhelpers.push_back(Individual(breeder)); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
 }
@@ -383,33 +407,27 @@ void Individual::Mutate() // mutate genome of offspring
     normal_distribution <double> NormalD(0, stepDrift);
 
     if (Uniform(generator)<mutAlpha)
-        Individual.alpha += NormalA(generator);
+        mutAlpha += NormalA(generator);
         //Uniform(generator)<0.5? Individual.alpha-=Uniform(generator)*stepAlpha : Individual.alpha+=Uniform(generator)*stepAlpha;
 
     if (Uniform(generator)<mutBeta)
-        Individual.beta += NormalB(generator);
+        mutBeta += NormalB(generator);
         //Uniform(generator)<0.5? Individual.beta-=Uniform(generator)*stepBeta : Individual.beta+=Uniform(generator)*stepBeta;
 
     if (Uniform(generator)<mutDrift)
-        Individual.drift += NormalD(generator);
+        mutDrift += NormalD(generator);
         //Uniform(generator)<0.5? Individual.drift-=Uniform(generator)*stepDrift : Individual.drift+=Uniform(generator)*stepDrift;
 }
 
 
 /* CALCULATE STATISTICS */
-void Statistics(vector<Group>population)
+void Statistics()
 {
-    int i;
+    //int i, j;
+	double alpha,beta,drift,sumAlpha=0.0,sumBeta=0.0,sumDrift=0.0, sumsqAlpha=0.0,sumsqBeta=0.0,sumsqDrift=0.0,
+        sumprodAlphaBeta=0.0,varAlpha,varBeta,varDrift;
 
-    double  meanAlpha,stdevAlpha,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha,
-            meanBeta,stdevBeta, sumBeta=0.0,sumsqBeta=0.0,varBeta,
-            meanDrift, stdevDrift, sumDrift=0.0,sumsqDrift=0.0,varDrift,
-            corr_AlphaBeta,sumprodAlphaBeta=0.0
-            //,meanGroupsize, stdevGroupsize,
-            ;
-
-
-	for (i=0;i<population.size;i++) ///population.size correct?
+	for (i=0;i<population.size;i++)
 	{
 		alpha=Individual[i].alpha;
 		beta=Individual[i].beta;
@@ -504,13 +522,14 @@ void WriteMeans()
 /* MAIN PROGRAM */
 int main()
 {
+
 	vector<Group> population (maxcolon);
 	vector<Individual> vfloaters;
 
-    for(int rep=0;rep<numrep;rep++)
+    for(rep=0;rep<numrep;rep++)
     {
 
-    int gen=0; // generation zero
+    gen=0; // generation zero
 
 
     // column headings on screen
@@ -525,38 +544,37 @@ int main()
 	Statistics();
 	WriteMeans();
 
-	gen++;
-
 	for (gen=1;gen<=NumGen;gen++)
 	{
         int deaths=0; // to keep track of how many individuals die each generation
 
-        for (vector<Group>::iterator *popdispersal = population.begin(); popdispersal < population.end(); ++popdispersal)
+        for (vector<Group>::iterator popdispersal = population.begin(); popdispersal < population.end(); ++popdispersal)
         {
-            Dispersal(vector<Individual> &vfloaters);
+            popdispersal->Dispersal(vector<Individual> &vfloaters);
         }
 
-        for (vector<Group>::iterator *pophelpsurv = population.begin(); pophelpsurv < population.end(); ++pophelpsurv)
+        for (vector<Group>::iterator pophelpsurv = population.begin(); pophelpsurv < population.end(); ++pophelpsurv)
         {
-            Help(int &cumhelp);
-            Survival(vector<Individual> &vfloaters, vector<Group> population, int &deaths);
-            Individual.age++; //add 1 age or age to all individuals alive
+            pophelpsurv->Help();
+            pophelpsurv->Survival(vector<Individual> &vfloaters, vector<Group> population, int &deaths);
         }
 
-        for (vector<Group>::iterator *popbreeder = population.begin(); popbreeder < population.end(); ++popbreeder)
+        for (vector<Group>::iterator popbreeder = population.begin(); popbreeder < population.end(); ++popbreeder)
         {
             if (popbreeder->breederalive == 0)
             {
-                Breeder(vector<Individual> &vfloaters);
+                popbreeder->Breeder(vector<Individual> &vfloaters);
             }
         }
 
         Reassign(vector<Individual> &vfloaters, vector<Individual> &vhelpers);
 
-        for (vector<Group>::iterator *popreprod = population.begin(); popreprod < population.end(); ++popreprod)
+        for (vector<Group>::iterator popreprod = population.begin(); popreprod < population.end(); ++popreprod)
         {
-            Fecundity(int &realfecundity);
-            Reproduction(vector<Group>population, vector<Individual> &vhelpers);
+            popreprod->increaseAge();//add 1 rank or age to all individuals alive
+
+            popreprod->Fecundity();
+            popreprod->Reproduction(int realfecundity);
         }
 
 		if (gen%skip==0){ Statistics(); WriteMeans();} // write output every 'skip' generations
