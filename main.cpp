@@ -275,7 +275,7 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
 
 /* BECOME BREEDER */
 
-Void group::breeder(vector<individual> &vfloaters)
+Void Group::Breeder(vector<individual> &vfloaters)
 {
    //Select a random sample from the floaters
        int i=0;
@@ -289,7 +289,7 @@ Void group::breeder(vector<individual> &vfloaters)
        int randp = randomposition (generator);
        int randn = poissonfloat (generator);
 
-       Vector<individual*> candidates(randn);
+       vector<Individual*> candidates(randn);
        vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
        while (I < randn) ///change to a proportion instead
        {
@@ -300,25 +300,25 @@ Void group::breeder(vector<individual> &vfloaters)
 
    //Join the helpers in the group to the sample of floaters
 
-       for (vector<individual>::iterator helpit = vhelpers.begin(); helpit < vhelpers.end(); ++helpit)
+       for (vector<Individual>::iterator helpit = vhelpers.begin(); helpit < vhelpers.end(); ++helpit)
        {
            candidates.push_back(&(*helpit));
        }
        cout << "breeder2" << endl;
 
    //Choose breeder with higher likelihood for the highest age
-       for (vector<individual*>::iterator ageit = candidates.begin(); ageit < candidates.end(); ++ageit) //ageit creates a vector of pointers to an individual
+       for (vector<Individual*>::iterator ageit = candidates.begin(); ageit < candidates.end(); ++ageit) //ageit creates a vector of pointers to an individual
        {
            sumage += (*ageit)->age; //add all the age from the vector candidates
        }
        cout << "breeder3" << endl;
-       for (vector<individual*>::iterator age2it = candidates.begin(); age2it < candidates.end(); ++age2it)
+       for (vector<Individual*>::iterator age2it = candidates.begin(); age2it < candidates.end(); ++age2it)
        {
            position.push_back((*age2it)->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
            currentposition = *position.end();
        }
        cout << "breeder4" << endl;
-       for (vector<individual*>::iterator age3it = candidates.begin(); age3it < candidates.end(); ++age3it)
+       for (vector<Individual*>::iterator age3it = candidates.begin(); age3it < candidates.end(); ++age3it)
        {
            if (randp < position[age3it-candidates.begin()]) //to access the same ind in the candidates vector
            {
