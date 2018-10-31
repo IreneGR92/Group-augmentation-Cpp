@@ -129,7 +129,7 @@ struct Group // define group traits
     void Breeder(vector<Individual> &vfloaters);
     void increaseAge();
     void Fecundity();
-    void Reproduction(vector<Group>&vgroups, vector<Individual> &vhelpers);
+    void Reproduction();
 };
 
 Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
@@ -275,73 +275,73 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
 
 /* BECOME BREEDER */
 
-//void Group::Breeder(vector<Individual> &vfloaters)
-//{
-//    //Select a random sample from the floaters
-//        int i=0;
-//        int sumage=0;
-//        int currentposition=0; //age of the previous ind taken from Candidates
-//        int UniformFloatNum;
-//        poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
-//        uniform_real_distribution<float> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
-//        UniformFloatNum = UniformFloat(generator);
-//        uniform_real_distribution<double> Randomposition;
-//        int RandP = Randomposition (generator);
-//        int RandN = PoissonFloat (generator);
-//
-//        vector<Individual*> Candidates(RandN);
-//        vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
-//        while (i < RandN) ///Change to a proportion instead
-//        {
-//            Candidates[i] = &vfloaters[UniformFloatNum]; ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES
-//            i++;
-//        }
-//        cout << "Breeder1" << endl;
-//
-//    //Join the helpers in the group to the sample of floaters
-//
-//        for (vector<Individual>::iterator helpIt = vhelpers.begin(); helpIt < vhelpers.end(); ++helpIt)
-//        {
-//            Candidates.push_back(&(*helpIt));
-//        }
-//        cout << "Breeder2" << endl;
-//
-//    //Choose breeder with higher likelihood for the highest age
-//        for (vector<Individual*>::iterator ageIt = Candidates.begin(); ageIt < Candidates.end(); ++ageIt) //ageIt creates a vector of pointers to an individual
-//        {
-//            sumage += (*ageIt)->age; //add all the age from the vector Candidates
-//        }
-//        cout << "Breeder3" << endl;
-//        for (vector<Individual*>::iterator age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
-//        {
-//            position.push_back((*age2It)->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
-//            currentposition = *position.end();
-//        }
-//        cout << "Breeder4" << endl;
-//        for (vector<Individual*>::iterator age3It = Candidates.begin(); age3It < Candidates.end(); ++age3It)
-//        {
-//            if (RandP < position[age3It-Candidates.begin()]) //to access the same ind in the candidates vector
-//            {
-//                vbreeder = **age3It; //substitute the previous dead breeder
-//                breederalive = 1;
-//
-//                if ((*age3It)->own == floater) //delete the ind from the vector floaters
-//                {
-//                    **age3It = vfloaters[vfloaters.size() - 1];
-//                    vfloaters.pop_back();
-//                }
-//                else
-//                {
-//                    **age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
-//                    vhelpers.pop_back();
-//                }
-//
-//                vbreeder.own = breeder; //modify the class
-//                age3It = Candidates.end();//end loop
-//            }
-//        }
-//        cout << "Breeder5" << endl;
-//}
+Void group::breeder(vector<individual> &vfloaters)
+{
+   //Select a random sample from the floaters
+       int i=0;
+       int sumage=0;
+       int currentposition=0; //age of the previous ind taken from candidates
+       int uniformfloatnum;
+       poisson_distribution<int> poissonfloat(avfloaterssample); //random sample size of floaters taken to compete for breeding spot
+       uniform_real_distribution<float> uniformfloat(0, vfloaters.size()); //random floater id taken in the sample
+       uniformfloatnum = uniformfloat(generator);
+       uniform_real_distribution<double> randomposition;
+       int randp = randomposition (generator);
+       int randn = poissonfloat (generator);
+
+       Vector<individual*> candidates(randn);
+       vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
+       while (I < randn) ///change to a proportion instead
+       {
+           candidates[i] = &vfloaters[uniformfloatnum]; ///problem: it could pick the same ind several times
+           i++;
+       }
+       cout << "breeder1" << endl;
+
+   //Join the helpers in the group to the sample of floaters
+
+       for (vector<individual>::iterator helpit = vhelpers.begin(); helpit < vhelpers.end(); ++helpit)
+       {
+           candidates.push_back(&(*helpit));
+       }
+       cout << "breeder2" << endl;
+
+   //Choose breeder with higher likelihood for the highest age
+       for (vector<individual*>::iterator ageit = candidates.begin(); ageit < candidates.end(); ++ageit) //ageit creates a vector of pointers to an individual
+       {
+           sumage += (*ageit)->age; //add all the age from the vector candidates
+       }
+       cout << "breeder3" << endl;
+       for (vector<individual*>::iterator age2it = candidates.begin(); age2it < candidates.end(); ++age2it)
+       {
+           position.push_back((*age2it)->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
+           currentposition = *position.end();
+       }
+       cout << "breeder4" << endl;
+       for (vector<individual*>::iterator age3it = candidates.begin(); age3it < candidates.end(); ++age3it)
+       {
+           if (randp < position[age3it-candidates.begin()]) //to access the same ind in the candidates vector
+           {
+               vbreeder = **age3it; //substitute the previous dead breeder
+               breederalive = 1;
+
+               if ((*age3it)->own == floater) //delete the ind from the vector floaters
+               {
+                   **age3it = vfloaters[vfloaters.size() - 1];
+                   vfloaters.pop_back();
+               }
+               else
+               {
+                   **age3it = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
+                   vhelpers.pop_back();
+               }
+
+               vbreeder.own = breeder; //modify the class
+               age3it = candidates.end();//end loop
+           }
+       }
+       cout << "breeder5" << endl;
+} 
 
 
 /*REASSIGN FLOATERS*/
@@ -378,20 +378,17 @@ void Group::increaseAge()
 
 void Group::Fecundity()
 {
-    fecundity = K0 + Group.cumhelp;
+    fecundity = K0 + cumhelp;
     cout << "Fecundity: " << fecundity << endl;
     poisson_distribution<int> PoissonFec(fecundity);
     realfecundity = PoissonFec(generator);
 }
 
-void Group::Reproduction(vector<Group>&vgroups, vector<Individual> &vhelpers) // populate offspring generation
+void Group::Reproduction() // populate offspring generation
 {
-    for (vector<Group>::iterator repIt = vgroups.begin(); repIt < vgroups.end(); ++repIt)
+    for (int i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
     {
-        for (int i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
-        {
         vhelpers.push_back(Individual(vbreeder)); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
-        }
     }
 }
 
@@ -568,7 +565,7 @@ int main()
         for (vector<Group>::iterator popreprod = vgroups.begin(); popreprod < vgroups.end(); ++popreprod)
         {
             popreprod->Fecundity();
-            popreprod->Reproduction(vhelpers, vgroups);
+            popreprod->Reproduction();
         }
 
 
