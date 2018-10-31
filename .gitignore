@@ -68,3 +68,5 @@ fabric.properties
 
 .gradle
 
+*.exe
+*.o
