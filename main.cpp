@@ -33,6 +33,15 @@ default_random_engine generator (seed);
 normal_distribution<double> DriftNormal(0, 10);
 uniform_real_distribution<double> Uniform(0, 1);
 
+
+//Run parameters
+const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int numhelp      = 2;       //initial number of helpers per group when initializing group
+
+const int NumGen       = 10;   // number of generations
+const int numrep       = 1;     // number of replicates
+const int skip         = 50;   // interval between print-outs
+
 //Fix values
 const double m         = 0.8;       // predation pressure
 
@@ -52,7 +61,7 @@ const double stepAlpha    = 0.4;     // mutation step size in alpha for level of
 const double initBeta     = 0.0;     // starting value of beta (in gen 0)
 const double mutBeta      = 0.05;    // mutation rate in beta for the propensity to disperse
 const double stepBeta     = 0.4;     // mutation step size in beta for the propensity to disperse
-const double mutDrift     = 0.05;    // mutation rate in the neutral genetic value to track level of relatedness
+const double mutDrift     = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
 const double stepDrift    = 0.4;     // mutation step size in the neutral genetic value to track level of relatedness
 
 const int minsurv     = 50;     // min number of individual that survive
@@ -60,13 +69,6 @@ const int minsurv     = 50;     // min number of individual that survive
 const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
 enum classes {breeder, helper, floater};
-
-const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
-const int numhelp      = 2;       //initial number of helpers per group when initializing group
-
-const int NumGen       = 1000;   // number of generations
-const int numrep       = 20;     // number of replicates
-const int skip         = 50;     // interval between print-outs
 
 
 //Structures
@@ -102,7 +104,7 @@ Individual::Individual(const Individual &mother){
 	alpha=mother.alpha;
 	beta=mother.beta;
 	drift=mother.drift;
-//	Mutate();
+	Mutate();
 	own=helper;
 	age = 1;
 	survival = -1;      //out of range, so check later for errors
@@ -161,6 +163,7 @@ void InitGroup(vector<Group> &vgroups)
 void Individual::calcDispersal()
 {
     dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
+    cout <<"beta: " << beta << endl;
 }
 
 
@@ -191,7 +194,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 void Individual::calcHelp ()
 {
     help = alpha; //absolute value, help cannot be negative
-    cout <<"alpha: " << alpha << endl; ///PROBLEM: All should be 0, none should be negative
+    cout <<"alpha: " << alpha << endl;
     //help = 1 / (1 + exp (alpha * (age - X0r) - beta * (Group.size - X0n)); //later on it will need to be inside group
 }
 
@@ -393,24 +396,27 @@ void Group::Reproduction() // populate offspring generation
         }
 }
 
-//void Individual::Mutate() // mutate genome of offspring
-//{
-//    normal_distribution <double> NormalA(0, stepAlpha); ///could be simplified if I decide to have all the steps size with the same magnitude
-//    normal_distribution <double> NormalB(0, stepBeta);
-//    normal_distribution <double> NormalD(0, stepDrift);
-//
-//    if (Uniform(generator)<mutAlpha)
-//        alpha += NormalA(generator);
-//        if (alpha < 0){alpha==0;}
-//
-//    if (Uniform(generator)<mutBeta)
-//        beta += NormalB(generator);
-//        if (beta < 0){beta==0;}
-//        if (beta > 1){beta==1;}
-//
-//    if (Uniform(generator)<mutDrift)
-//        drift += NormalD(generator);
-// }
+void Individual::Mutate() /// mutate genome of offspring // PROBLEM: All alpha and beta should be 0 in gen=0, they also get negative values!
+{
+    normal_distribution <double> NormalA(0, stepAlpha); ///could be simplified if I decide to have all the steps size with the same magnitude
+    normal_distribution <double> NormalB(0, stepBeta);
+    normal_distribution <double> NormalD(0, stepDrift);
+
+    if (Uniform(generator)< mutAlpha){
+        alpha += NormalA(generator);
+        if (alpha < 0){alpha==0;}
+    }
+
+    if (Uniform(generator)< mutBeta){
+        beta += NormalB(generator);
+        if (beta < 0){beta==0;}
+        if (beta > 1){beta==1;}
+    }
+
+    if (Uniform(generator)< mutDrift){
+        drift += NormalD(generator);
+    }
+ }
 
 
 /* CALCULATE STATISTICS */
@@ -463,28 +469,28 @@ void Group::Reproduction() // populate offspring generation
 
 
 /* WRITE PARAMETER SETTINGS TO OUTPUT FILE */
-//void Printparams()
-//{
-//  fout << endl << "PARAMETER VALUES" << endl
-//
-//       << "initAlpha: " << "\t" << setprecision(4) << initAlpha << endl
-//       << "initBeta: " << "\t" << setprecision(4) << initBeta << endl
-//       << "initDrift: " << "\t" << setprecision(4) << initDrift << endl
-//       << "mutAlpha: " << "\t" << setprecision(4) << mutAlpha << endl
-//       << "stepAlpha: " << "\t" << setprecision(4) << stepAlpha << endl
-//       << "mutBeta: " << "\t" << setprecision(4) << mutBeta << endl
-//       << "stepBeta: " << "\t" << setprecision(4) << stepBeta << endl
-//       << "mutDrift: " << "\t" << setprecision(4) << mutDrift << endl
-//       << "stepDrift: " << "\t" << setprecision(4) << stepDrift << endl
-//       << "m: " << "\t" << m << endl
-//       << "K0: " << "\t" << K0 << endl
-//       << "Xsh: " << "\t" << Xsh << endl
-//       << "Xsr: " << "\t" << Xsr << endl
-//       << "Xsn: " << "\t" << Xsn << endl
-//       << "maxcolon: " << "\t" << maxcolon << endl
-//       << "initN: " << "\t" << initN << endl
-//       << "NumGen: " << "\t" << NumGen << endl;
-//}
+void Printparams()
+{
+  fout << endl << "PARAMETER VALUES" << endl
+
+       << "Initial population: " << "\t" << maxcolon*(numhelp+1) << endl
+       << "Number of colonies: " << "\t" << maxcolon << endl
+       << "Number generations: " << "\t" << NumGen << endl
+       << "Predation: " << "\t" << m << endl
+       << "initAlpha: " << "\t" << setprecision(4) << initAlpha << endl
+       << "initBeta: " << "\t" << setprecision(4) << initBeta << endl
+       << "mutAlpha: " << "\t" << setprecision(4) << mutAlpha << endl
+       << "stepAlpha: " << "\t" << setprecision(4) << stepAlpha << endl
+       << "mutBeta: " << "\t" << setprecision(4) << mutBeta << endl
+       << "stepBeta: " << "\t" << setprecision(4) << stepBeta << endl
+       << "mutDrift: " << "\t" << setprecision(4) << mutDrift << endl
+       << "stepDrift: " << "\t" << setprecision(4) << stepDrift << endl
+       << "K0: " << "\t" << K0 << endl
+       << "Xsh: " << "\t" << Xsh << endl
+       << "Xsr: " << "\t" << Xsr << endl
+       << "Xsn: " << "\t" << Xsn << endl;
+
+}
 
 
 
@@ -518,7 +524,16 @@ void Group::Reproduction() // populate offspring generation
 /* MAIN PROGRAM */
 int main()
 {
+for(int rep=0;rep<numrep;rep++){
+
     int gen=0;
+
+//    // column headings on screen
+//    cout << setw(6) << "gen" << setw(9) << "popsize" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
+//
+//	// column headings in output file
+//	  fout << "generation" << "\t" << "popsize" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
+//         << "stdevAlpha" << "\t" << "stdevBeta" << "\t" << "stdevDrift" << "\t" << "corr_AB" << "\t" << endl;
 
     vector<Individual> vfloaters;
 	vector<Group> vgroups (maxcolon);
@@ -526,6 +541,13 @@ int main()
 	InitGroup(vgroups);
 ///	int population = sizeof(Individual); ///Wrong, this measures the size in bits not how many individuals or objects there are
 //    cout << "Population: " << population << endl;
+
+//	Statistics();
+//	WriteMeans();
+
+    for (gen=1;gen<=NumGen;gen++)
+    {
+        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
         int deaths=0; // to keep track of how many individuals die each generation
 
@@ -568,36 +590,11 @@ int main()
             popreprod->Reproduction();
         }
 
-
-
-//    for(int rep=0;rep<numrep;rep++)
-//    {
-//
-//    int gen=0; // generation zero
-//
-//
-//    // column headings on screen
-//    cout << setw(6) << "gen" << setw(9) << "popsize" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
-//
-//	// column headings in output file
-//	fout << "generation" << "\t" << "popsize" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
-//         << "stdevAlpha" << "\t" << "stdevBeta" << "\t" << "stdevDrift" << "\t" << "corr_AB" << "\t" << endl;
-//
-//
-//	InitGroup(vector<Group> &vgroups)
-//	Statistics();
-//	WriteMeans();
-//
-//	for (gen=1;gen<=NumGen;gen++)
-//	{
-//
 //		if (gen%skip==0){ Statistics(); WriteMeans();} // write output every 'skip' generations
-//	}
-//
-//    fout << endl << endl << endl;
-//
-//    }
-//    Printparams();
+	}
+ //    fout << endl << endl << endl;
+    }
+    Printparams();
 
 	return 0;
 }
