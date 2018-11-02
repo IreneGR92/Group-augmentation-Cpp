@@ -70,3 +70,8 @@ fabric.properties
 
 *.exe
 *.o
+*.txt
+main.exe
+main.o
+*.exe
+*.o

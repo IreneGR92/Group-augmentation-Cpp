@@ -35,23 +35,22 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int maxcolon     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int numhelp      = 2;       //initial number of helpers per group when initializing group
 
-const int NumGen       = 10;   // number of generations
+const int NumGen       = 10000;   // number of generations
 const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.8;       // predation pressure
+const double m         = 0.9;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
 const double K0     = 1; // min fecundity, fecundity when no help provided.
 const double K1     = 1; // benefit of cumhelp in the fecundity
-const double Xsh    = 1; // cost of help in survival
-//const double Xsr    = 1; // benefit of age in survival
+const double Xsh    = 1 ; // cost of help in survival
 const double Xsn    = 1; // benefit of group size in survival
 
 
@@ -60,18 +59,19 @@ const double initAlpha    = 0.0;     // starting value of alpha (in gen 0)
 const double mutAlpha     = 0.05;    // mutation rate in alpha for level of help
 const double stepAlpha    = 0.4;     // mutation step size in alpha for level of help
 const double initBeta     = 0.0;     // starting value of beta (in gen 0)
-const double mutBeta      = 0.0;    // mutation rate in beta for the propensity to disperse
+const double mutBeta      = 0.05;    // mutation rate in beta for the propensity to disperse
 const double stepBeta     = 0.4;     // mutation step size in beta for the propensity to disperse
 const double mutDrift     = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
 const double stepDrift    = 0.4;     // mutation step size in the neutral genetic value to track level of relatedness
 
-const int minsurv     = 50;     // min number of individual that survive
+//const int minsurv     = 50;     // min number of individual that survive
 
 const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
 enum classes {breeder, helper, floater};
 
 //Stats
+int gen;
 int population;
 double  meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
             meanBeta,stdevBeta, sumBeta,sumsqBeta,varBeta,
@@ -208,6 +208,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 void Individual::calcHelp ()
 {
     help = alpha; //absolute value, help cannot be negative
+    cout << "error in alpha: " << alpha <<endl;
     //help = 1 / (1 + exp (alpha * (age - X0r) - beta * (Group.size - X0n)); //later on it will need to be inside group
 }
 
@@ -310,7 +311,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
         vector<Individual*> Candidates;
         vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
 
-        cout << "vfloaters: " << vfloaters.size() <<endl;
+//        cout << "vfloaters: " << vfloaters.size() <<endl;
         if (vfloaters.size()>0){
             while (i < RandN) ///Change to a proportion instead
             {
@@ -337,8 +338,8 @@ void Group::Breeder(vector<Individual> &vfloaters)
 //            cout << (*ageIt)->own << "  " << (*ageIt)->age << endl;
 
         }
-        cout << "sumage: " << sumage <<endl;
-        cout << "size candidates: " << Candidates.size() <<endl;
+//        cout << "sumage: " << sumage <<endl;
+//        cout << "size candidates: " << Candidates.size() <<endl;
 
         for (vector<Individual*>::iterator age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
         {
@@ -347,8 +348,8 @@ void Group::Breeder(vector<Individual> &vfloaters)
         }
 
 		vector<Individual*>::iterator age3It = Candidates.begin();
-		int count = 0;
-		while (count < Candidates.size()){
+		int counting = 0;
+		while (counting < Candidates.size()){
 			if (RandP < position[age3It - Candidates.begin()]) //to access the same ind in the candidates vector
 			{
 				vbreeder = **age3It; //substitute the previous dead breeder
@@ -366,10 +367,10 @@ void Group::Breeder(vector<Individual> &vfloaters)
 				}
 
 				vbreeder.own = breeder; //modify the class
-				count = Candidates.size();//end loop
+				counting = Candidates.size();//end loop
 			}
 			else
-				++age3It, ++count;
+				++age3It, ++counting;
         }
 }
 
@@ -539,30 +540,30 @@ void Printparams()
 
 
 /* WRITE GENETIC TRAIT VALUES TO OUTPUT FILE */
-//void WriteMeans()
-//{
-//
-//  // show values on screen
-//  cout << setw(6) << gen
-//       << setw(9) << population
-//	   << setw(9) << setprecision(4) << meanAlpha
-//	   << setw(9) << setprecision(4) << meanBeta
-//	   << setw(9) << setprecision(4) << meanDrift
-//	   << endl;
-//
-//
-//  // write values to output file
-//  fout << gen
-//       << "\t" << population
-//	   << "\t" << setprecision(4) << meanAlpha
-//	   << "\t" << setprecision(4) << meanBeta
-//	   << "\t" << setprecision(4) << meanDrift
-//	   << "\t" << setprecision(4) << stdevAlpha
-//	   << "\t" << setprecision(4) << stdevBeta
-//	   << "\t" << setprecision(4) << stdevDrift
-//	   << "\t" << setprecision(4) << corr_AB
-//	   << endl;
-//}
+void WriteMeans()
+{
+
+  // show values on screen
+  cout << setw(6) << gen
+       << setw(9) << population
+	   << setw(9) << setprecision(4) << meanAlpha
+	   << setw(9) << setprecision(4) << meanBeta
+	   << setw(9) << setprecision(4) << meanDrift
+	   << endl;
+
+
+  // write values to output file
+  fout << gen
+       << "\t" << population
+	   << "\t" << setprecision(4) << meanAlpha
+	   << "\t" << setprecision(4) << meanBeta
+	   << "\t" << setprecision(4) << meanDrift
+	   << "\t" << setprecision(4) << stdevAlpha
+	   << "\t" << setprecision(4) << stdevBeta
+	   << "\t" << setprecision(4) << stdevDrift
+	   << "\t" << setprecision(4) << corr_AlphaBeta
+	   << endl;
+}
 
 
 /* MAIN PROGRAM */
@@ -570,7 +571,7 @@ int main(){
 
 for(int rep=0;rep<numrep;rep++){
 
-    int gen=0;
+    gen=0;
 
 // Population statistics
     meanAlpha=0.0,stdevAlpha=0.0,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha=0.0,
@@ -579,12 +580,12 @@ for(int rep=0;rep<numrep;rep++){
     corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0,
     meanGroupsize=0.0, stdevGroupsize=0.0;
 
-//    // column headings on screen
-//    cout << setw(6) << "gen" << setw(9) << "population" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
-//
-//	// column headings in output file
-//    fout << "Generation" << "\t" << "Population" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
-//         << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
+    // column headings on screen
+    cout << setw(6) << "gen" << setw(9) << "population" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
+
+	// column headings in output file
+    fout << "Generation" << "\t" << "Population" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
+         << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
 
     vector<Individual> vfloaters;
 	vector<Group> vgroups (maxcolon);
@@ -593,11 +594,11 @@ for(int rep=0;rep<numrep;rep++){
 	population = maxcolon*(numhelp+1);
 
 	Statistics(vgroups);
-//	WriteMeans();
+	WriteMeans();
 
     for (gen=1;gen<=NumGen;gen++)
     {
-        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
+//        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
         int deaths=0; // to keep track of how many individuals die each generation
         population=0;
@@ -634,9 +635,9 @@ for(int rep=0;rep<numrep;rep++){
             }
         }
 
-        cout << "Floaters before reassign: " << vfloaters.size() << endl;
+//        cout << "Floaters before reassign: " << vfloaters.size() << endl;
         Reassign(vfloaters, vgroups);
-        cout << "Floaters after reassign: " << vfloaters.size() << endl;
+//        cout << "Floaters after reassign: " << vfloaters.size() << endl;
 
         for (vector<Group>::iterator increaseAgeIt = vgroups.begin(); increaseAgeIt < vgroups.end(); ++increaseAgeIt)
         {
@@ -654,7 +655,7 @@ for(int rep=0;rep<numrep;rep++){
 
 		if (gen%skip==0){   // write output every 'skip' generations
             Statistics(vgroups);
-//            WriteMeans();
+            WriteMeans();
         }
     }
     fout << endl << endl << endl;
