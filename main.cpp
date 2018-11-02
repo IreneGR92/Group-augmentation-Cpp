@@ -299,15 +299,15 @@ void Group::Breeder(vector<Individual> &vfloaters)
 //    Select a random sample from the floaters
         int i=0;
         int sumage=0;
-        int currentposition=0; //age of the previous ind taken from Candidates
+        double currentposition=0; //age of the previous ind taken from Candidates
         int UniformFloatNum;
         poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
         uniform_real_distribution<float> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
         uniform_real_distribution<double> Randomposition;
-        int RandP = Randomposition (generator);
+        double RandP = Randomposition (generator);
         int RandN = PoissonFloat (generator);
 
-        vector<Individual*> Candidates(RandN);
+        vector<Individual*> Candidates;
         vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
 
         cout << "vfloaters: " << vfloaters.size() <<endl;
@@ -315,7 +315,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
             while (i < RandN) ///Change to a proportion instead
             {
                 UniformFloatNum = UniformFloat(generator);
-                Candidates[i] = &vfloaters[UniformFloatNum]; ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES
+                Candidates.push_back(&vfloaters[UniformFloatNum]); ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES
                 i++;
             }
         }
@@ -343,30 +343,33 @@ void Group::Breeder(vector<Individual> &vfloaters)
         for (vector<Individual*>::iterator age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
         {
             position.push_back((*age2It)->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
-            currentposition = *position.end();
+            currentposition = position[position.size()-1];
         }
 
-        for (vector<Individual*>::iterator age3It = Candidates.begin(); age3It < Candidates.end(); ++age3It)
-        {
-            if (RandP < position[age3It-Candidates.begin()]) //to access the same ind in the candidates vector
-            {
-                vbreeder = **age3It; //substitute the previous dead breeder
-                breederalive = 1;
+		vector<Individual*>::iterator age3It = Candidates.begin();
+		int count = 0;
+		while (count < Candidates.size()){
+			if (RandP < position[age3It - Candidates.begin()]) //to access the same ind in the candidates vector
+			{
+				vbreeder = **age3It; //substitute the previous dead breeder
+				breederalive = 1;
 
-                if ((*age3It)->own == floater) //delete the ind from the vector floaters
-                {
-                    **age3It = vfloaters[vfloaters.size() - 1];
-                    vfloaters.pop_back();
-                }
-                else
-                {
-                    **age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
-                    vhelpers.pop_back();
-                }
+				if ((*age3It)->own == floater) //delete the ind from the vector floaters
+				{
+					**age3It = vfloaters[vfloaters.size() - 1];
+					vfloaters.pop_back();
+				}
+				else
+				{
+					**age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
+					vhelpers.pop_back();
+				}
 
-                vbreeder.own = breeder; //modify the class
-                age3It = Candidates.end();//end loop
-            }
+				vbreeder.own = breeder; //modify the class
+				count = Candidates.size();//end loop
+			}
+			else
+				++age3It, ++count;
         }
 }
 

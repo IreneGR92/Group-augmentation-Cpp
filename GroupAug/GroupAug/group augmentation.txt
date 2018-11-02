@@ -1,0 +1,20 @@
+
+
+
+
+PARAMETER VALUES
+Initial population: 	150
+Number of colonies: 	50
+Number generations: 	10
+Predation: 	0.8
+initAlpha: 	0
+initBeta: 	0
+mutAlpha: 	0.05
+stepAlpha: 	0.4
+mutBeta: 	0
+stepBeta: 	0.4
+mutDrift: 	0.05
+stepDrift: 	0.4
+K0: 	1
+Xsh: 	1
+Xsn: 	1
