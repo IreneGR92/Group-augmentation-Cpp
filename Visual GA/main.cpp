@@ -6,16 +6,16 @@
 
 //HEADER FILES
 
-#include <cstdlib>
-#include <stdio.h>
-#include <ctime>
-#include <iomanip>
 #include <iostream>
+#include <stdio.h>
+#include <cstdlib>
+#include <ctime>
+#include <iomanip> //
 #include <fstream>
 #include <cmath>
 #include <random>
 //#include <chrono> //if we use the system clock as seed
-#include <vector>
+#include <vector> //
 //#include "H:\PhD\CODE\random.h" ///decide for one method
 
 using namespace std;
@@ -43,15 +43,16 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.8;       // predation pressure
+const double m         = 0.9;       // predation pressure
+
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
-const double K0     = 1; // min fecundity, fecundity when no help provided.
-const double K1     = 1; // benefit of cumhelp in the fecundity
-const double Xsh    = 1 ; // cost of help in survival
-const double Xsn    = 1; // benefit of group size in survival
+const float K0     = 1; // min fecundity, fecundity when no help provided.
+const float K1     = 1; // benefit of cumhelp in the fecundity
+const float Xsh    = 1 ; // cost of help in survival
+const float Xsn    = 1; // benefit of group size in survival
 
 
 //Genetic values
@@ -436,7 +437,7 @@ void Group::Fecundity()
 
 void Group::Reproduction() // populate offspring generation
 {
-    if (breederalive=1)
+    if (breederalive==1)
     {
         for (int i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
         {
