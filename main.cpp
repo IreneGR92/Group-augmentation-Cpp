@@ -35,7 +35,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int maxcolon     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int numhelp      = 2;       //initial number of helpers per group when initializing group
 
 const int NumGen       = 10000;   // number of generations
@@ -43,7 +43,7 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.9;       // predation pressure
+const double m         = 0.7;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
@@ -72,7 +72,7 @@ enum classes {breeder, helper, floater};
 
 //Stats
 int gen;
-int population;
+int population, deaths;
 double  meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
             meanBeta,stdevBeta, sumBeta,sumsqBeta,varBeta,
             meanDrift, stdevDrift, sumDrift,sumsqDrift,varDrift,
@@ -149,7 +149,7 @@ struct Group // define group traits
 Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
 {
    	vbreeder = Individual(alpha_,beta_,breeder);
-    breederalive=1;
+    breederalive = 1;
     fecundity = -1;         //out of range, so check later for errors
     realfecundity = -1;     //out of range, so check later for errors
 
@@ -208,7 +208,10 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 void Individual::calcHelp ()
 {
     help = alpha; //absolute value, help cannot be negative
-    cout << "error in alpha: " << alpha <<endl;
+    if (alpha<0)
+    {
+        cout << "error in alpha: " << alpha <<endl;
+    }
     //help = 1 / (1 + exp (alpha * (age - X0r) - beta * (Group.size - X0n)); //later on it will need to be inside group
 }
 
@@ -432,7 +435,7 @@ void Group::Fecundity()
 
 void Group::Reproduction() // populate offspring generation
 {
-    if (breederalive=1)
+    if (breederalive==1)
     {
         for (int i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
         {
@@ -546,6 +549,7 @@ void WriteMeans()
   // show values on screen
   cout << setw(6) << gen
        << setw(9) << population
+       << setw(9) << deaths
 	   << setw(9) << setprecision(4) << meanAlpha
 	   << setw(9) << setprecision(4) << meanBeta
 	   << setw(9) << setprecision(4) << meanDrift
@@ -555,6 +559,7 @@ void WriteMeans()
   // write values to output file
   fout << gen
        << "\t" << population
+       << "\t" << deaths
 	   << "\t" << setprecision(4) << meanAlpha
 	   << "\t" << setprecision(4) << meanBeta
 	   << "\t" << setprecision(4) << meanDrift
@@ -581,10 +586,10 @@ for(int rep=0;rep<numrep;rep++){
     meanGroupsize=0.0, stdevGroupsize=0.0;
 
     // column headings on screen
-    cout << setw(6) << "gen" << setw(9) << "population" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
+    cout << setw(6) << "gen" << setw(9) << "population" << setw(9)<< "deaths" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
 
 	// column headings in output file
-    fout << "Generation" << "\t" << "Population" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
+    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
          << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
 
     vector<Individual> vfloaters;
@@ -600,7 +605,7 @@ for(int rep=0;rep<numrep;rep++){
     {
 //        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-        int deaths=0; // to keep track of how many individuals die each generation
+        deaths=0; // to keep track of how many individuals die each generation
         population=0;
 
 // Population statistics
