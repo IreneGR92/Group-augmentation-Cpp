@@ -314,14 +314,36 @@ void Group::Breeder(vector<Individual> &vfloaters)
         vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
 
 //        cout << "vfloaters: " << vfloaters.size() <<endl;
-        if (vfloaters.size()>0){
+        if (vfloaters.size()>0 && vfloaters.size() > RandN){
             while (i < RandN) ///Change to a proportion instead
             {
                 UniformFloatNum = UniformFloat(generator);
-                Candidates.push_back(&vfloaters[UniformFloatNum]); ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES
+                Candidates.push_back(&vfloaters[UniformFloatNum]); ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES (see commented code below)
                 i++;
             }
         }
+
+		else { //When less floaters available than the sample size, take all of them. Change to a proportion 
+			for (vector<Individual>::iterator floatIt = vfloaters.begin(); floatIt < vfloaters.end(); ++floatIt)
+			{
+				Candidates.push_back(&(*floatIt));
+			}
+		}
+
+		//vector<int>TemporaryCandidates;
+		//UniformFloatNum = UniformFloat(generator);
+		//TemporaryCandidates.push_back(UniformFloatNum);
+		//sort(TemporaryCandidates.begin(), TemporaryCandidates.end());
+		//int temp = 0;
+		//for (vector<int>::iterator itTempCandidates = TemporaryCandidates.begin(); itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates)
+		//{
+		//	if (!itTempCandidates == temp)
+		//	{
+		//		Candidates.push_back(&vfloaters[UniformFloatNum]);
+		//		temp = itTempCandidates;
+		//	}
+		//}
+
 
 //    Join the helpers in the group to the sample of floaters
 

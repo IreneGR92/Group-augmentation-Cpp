@@ -98,3 +98,4 @@ Visual GA/.vs/Visual GA/v15/.suo
 *.sqlite
 *.enc
 *.sqlite-journal
+*.txt
