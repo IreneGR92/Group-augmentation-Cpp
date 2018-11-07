@@ -78,3 +78,21 @@ main.o
 Visual GA/hola.cpp
 *.txt
 *.txt
+*.json
+VS Group Aug Basic/.vs/VS Group Aug Basic/v15/.suo
+VS Group Aug Basic/.vs/VS Group Aug Basic/v15/Browse.VC.db
+*.sln
+*.pdb
+*.ilk
+*.idb
+*.log
+*.ipch
+*.opendb
+*.tlog
+*.filters
+*.vcxproj
+*.obj
+*.db
+*.user
+Visual GA/.vs/Visual GA/v15/.suo
+*.sqlite

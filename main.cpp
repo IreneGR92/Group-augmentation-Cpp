@@ -4,7 +4,7 @@
  Level of help and dispersal with genetic bases. No reaction norms.
 ***********************************************/
 
-//HEADER FILES
+/*HEADER FILES*/
 
 #include <cstdlib>
 #include <stdio.h>
@@ -13,10 +13,9 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <vector>
 #include <random>
 //#include <chrono> //if we use the system clock as seed
-#include <vector>
-//#include "H:\PhD\CODE\random.h" ///decide for one method
 
 using namespace std;
 
@@ -667,6 +666,8 @@ for(int rep=0;rep<numrep;rep++){
 
 }
     Printparams();
+
+	cin.get();
 
     return 0;
 }
