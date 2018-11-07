@@ -305,8 +305,8 @@ void Group::Breeder(vector<Individual> &vfloaters)
         double currentposition=0; //age of the previous ind taken from Candidates
         int UniformFloatNum;
         poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
-        uniform_real_distribution<float> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
-        uniform_real_distribution<double> Randomposition;
+        uniform_int_distribution<int> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
+        uniform_real_distribution<double> Randomposition (0, 1);
         double RandP = Randomposition (generator);
         int RandN = PoissonFloat (generator);
 
@@ -381,7 +381,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
 
 void Reassign(vector<Individual> &vfloaters, vector<Group> &vgroups)
 {
-    uniform_real_distribution<float> UniformMaxCol(0, maxcolon);
+    uniform_int_distribution<int> UniformMaxCol(0, maxcolon);
     int selecGroup;
     vector<Individual>::iterator indIt;
     while (!vfloaters.empty())

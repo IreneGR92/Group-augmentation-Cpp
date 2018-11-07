@@ -96,3 +96,5 @@ VS Group Aug Basic/.vs/VS Group Aug Basic/v15/Browse.VC.db
 *.user
 Visual GA/.vs/Visual GA/v15/.suo
 *.sqlite
+*.enc
+*.sqlite-journal
