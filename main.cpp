@@ -83,7 +83,7 @@ double  meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
 
 struct Individual // define individual traits
 {
-	Individual(double alpha_,double beta_, classes own_);
+	Individual(double alpha_=0,double beta_=0, double drift_=0, classes own_=helper);
 	Individual(const Individual &mother);
     double alpha, beta, drift,                        // genetic values
             dispersal, help, survival;                // phenotypic values
@@ -98,10 +98,12 @@ struct Individual // define individual traits
 
 };
 
-Individual::Individual(double alpha_=0,double beta_=0, classes own_=helper){
+
+Individual::Individual(double alpha_,double beta_, double drift_,classes own_){
 	alpha=alpha_;
 	beta=beta_;
-	drift=DriftNormal(generator);
+	drift=drift_;
+	Mutate();
 	own=own_;
 	age = 1;
 	survival = -1;      //out of range, so check later for errors
@@ -112,11 +114,11 @@ Individual::Individual(const Individual &mother){
 	alpha=mother.alpha;
 	beta=mother.beta;
 	drift=mother.drift;
-	Mutate();
-	own=helper;
-	age = 1;
-	survival = -1;      //out of range, so check later for errors
-	help = -1;          //out of range, so check later for errors
+	own=mother.own;
+	age = mother.age;
+	survival = mother.survival;      //out of range, so check later for errors
+	help = mother.help;          //out of range, so check later for errors
+	dispersal = mother.dispersal;
 }
 
 
@@ -153,14 +155,15 @@ struct Group // define group traits
 
 Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
 {
-   	vbreeder = Individual(alpha_,beta_,breeder);
+   	vbreeder = Individual(alpha_,beta_,DriftNormal(generator),breeder);
     breederalive = 1;
     fecundity = -1;         //out of range, so check later for errors
     realfecundity = -1;     //out of range, so check later for errors
 
    	for(int i=0;i<numhelp_;++i)
     {
-    	vhelpers.push_back(Individual(alpha_,beta_,helper));
+    	vhelpers.push_back(Individual(alpha_,beta_, DriftNormal(generator),
+			helper));
 	}
 }
 
@@ -186,27 +189,52 @@ void Individual::calcDispersal()
 }
 
 
+//void Group::Dispersal(vector<Individual> &vfloaters)
+//{
+//	vector<Individual>::iterator dispersalIt = vhelpers.begin();
+//	int sizevec = vhelpers.size();
+//	int counting = 0;
+//
+//	while (!vhelpers.empty() && sizevec>counting)
+//	{
+//		dispersalIt->calcDispersal();
+//		if (Uniform(generator) < dispersalIt->dispersal) // beta is equal to dispersal propensity
+//		{
+//			Individual tmp = *dispersalIt;
+//			vfloaters.push_back(tmp); //add the individual to the vector floaters in the last position
+//			vfloaters[vfloaters.size()-1].own = floater;
+//			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
+//			vhelpers.pop_back();
+//			++counting;
+//		}
+//		else
+//			++dispersalIt, ++counting;
+//	}
+//    cout << "floater size " << vfloaters.size() << endl;
+//}
+
 void Group::Dispersal(vector<Individual> &vfloaters)
 {
-	vector<Individual>::iterator dispersalIt = vhelpers.begin();
+	int discount = 0;
 	int sizevec = vhelpers.size();
 	int counting = 0;
 
 	while (!vhelpers.empty() && sizevec>counting)
 	{
-	    dispersalIt->calcDispersal();
-		if (Uniform(generator) < dispersalIt->dispersal) // beta is equal to dispersal propensity
+		vhelpers[discount].calcDispersal();
+		if (Uniform(generator) < vhelpers[discount].dispersal) // beta is equal to dispersal propensity
 		{
-			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
-			vfloaters[vfloaters.size()-1].own = floater;
-			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
+			vfloaters.push_back(vhelpers[discount]); //add the individual to the vector floaters in the last position
+			//vfloaters[vfloaters.size() - 1] = vhelpers[discount];
+			vfloaters[vfloaters.size() - 1].own = floater;
+			vhelpers[discount] = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
 			vhelpers.pop_back();
 			++counting;
 		}
 		else
-			++dispersalIt, ++counting;
+			++discount, ++counting;
 	}
-    //cout << "floater size " << vfloaters.size() << endl;
+	//cout << "floater size " << vfloaters.size() << endl;
 }
 
 /*DISPLAY LEVEL OF HELP*/
@@ -467,7 +495,7 @@ void Group::Reproduction() // populate offspring generation
     {
         for (int i=0;i<realfecundity;i++) //number of offspring dependent on real fecundity
         {
-            vhelpers.push_back(Individual(vbreeder)); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
+            vhelpers.push_back(Individual(vbreeder.alpha,vbreeder.beta,vbreeder.drift)); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
 }
@@ -651,7 +679,7 @@ for(int rep=0;rep<numrep;rep++){
         corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0,
         meanGroupsize=0.0, stdevGroupsize=0.0;
 
-
+		cout << "Floaters before dispersal: " << vfloaters.size() << endl;
         for (vector<Group>::iterator dispersalIt = vgroups.begin(); dispersalIt < vgroups.end(); ++dispersalIt)
         {
             dispersalIt->Dispersal(vfloaters);
