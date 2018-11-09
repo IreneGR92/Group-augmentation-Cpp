@@ -42,7 +42,7 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.7;       // predation pressure
+const double m         = 0.8;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
@@ -144,6 +144,12 @@ struct Group // define group traits
     void Reproduction();
 //    void Statistics(vector<Individual>vhelpers);
 };
+
+//void wait_for_return()
+//{
+//	std::cout << "Hit <Enter> to continue\n";
+//	getchar();
+//}
 
 Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
 {
@@ -305,8 +311,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
         double currentposition=0; //age of the previous ind taken from Candidates
         int UniformFloatNum;
         poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
-        uniform_int_distribution<int> UniformFloat(0, vfloaters.size()); //random floater ID taken in the sample
-        uniform_real_distribution<double> Randomposition (0, 1);
+		uniform_real_distribution<double> Randomposition (0.0, 1.0);
         double RandP = Randomposition (generator);
         int RandN = PoissonFloat (generator);
 
@@ -317,7 +322,8 @@ void Group::Breeder(vector<Individual> &vfloaters)
         if (vfloaters.size()>0 && vfloaters.size() > RandN){
             while (i < RandN) ///Change to a proportion instead
             {
-                UniformFloatNum = UniformFloat(generator);
+				uniform_int_distribution<int> UniformFloat(0, vfloaters.size()-1); //random floater ID taken in the sample
+				UniformFloatNum = UniformFloat(generator);
                 Candidates.push_back(&vfloaters[UniformFloatNum]); ///PROBLEM: IT COULD PICK THE SAME IND SEVERAL TIMES (see commented code below)
                 i++;
             }
@@ -367,7 +373,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
 
         for (vector<Individual*>::iterator age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
         {
-            position.push_back((*age2It)->age / sumage + currentposition); //create a vector with proportional segments to the age of each individual
+            position.push_back(static_cast<double>((*age2It)->age) / static_cast<double>(sumage) + currentposition); //create a vector with proportional segments to the age of each individual
             currentposition = position[position.size()-1];
         }
 
@@ -396,6 +402,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
 			else
 				++age3It, ++counting;
         }
+//		if (!breederalive) wait_for_return();
 }
 
 
@@ -403,12 +410,12 @@ void Group::Breeder(vector<Individual> &vfloaters)
 
 void Reassign(vector<Individual> &vfloaters, vector<Group> &vgroups)
 {
-    uniform_int_distribution<int> UniformMaxCol(0, maxcolon);
+    uniform_int_distribution<int> UniformMaxCol(0, maxcolon-1);
     int selecGroup;
     vector<Individual>::iterator indIt;
     while (!vfloaters.empty())
     {
-        indIt = vfloaters.end();
+        indIt = vfloaters.end()-1;
         selecGroup = UniformMaxCol(generator);
         indIt->own=helper; //modify the class
         vgroups[selecGroup].vhelpers.push_back(*indIt); //add the floater to the helper vector in a randomly selected group
@@ -590,7 +597,11 @@ void WriteMeans()
 	   << "\t" << setprecision(4) << corr_AlphaBeta
 	   << endl;
 }
-
+void wait_for_return()
+{
+	std::cout << "Hit <Enter> to continue\n";
+	getchar();
+}
 
 /* MAIN PROGRAM */
 int main(){
@@ -624,7 +635,11 @@ for(int rep=0;rep<numrep;rep++){
 
     for (gen=1;gen<=NumGen;gen++)
     {
-//        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
+        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
+
+		//if (gen == 3) {
+		//	wait_for_return();
+		//}
 
         deaths=0; // to keep track of how many individuals die each generation
         population=0;
@@ -640,7 +655,7 @@ for(int rep=0;rep<numrep;rep++){
         for (vector<Group>::iterator dispersalIt = vgroups.begin(); dispersalIt < vgroups.end(); ++dispersalIt)
         {
             dispersalIt->Dispersal(vfloaters);
-//            cout << "Floaters after dispersal: " << vfloaters.size() << endl;
+            cout << "Floaters after dispersal: " << vfloaters.size() << endl;
         }
 
         for (vector<Group>::iterator helpsurvIt = vgroups.begin(); helpsurvIt < vgroups.end(); ++helpsurvIt)
@@ -663,6 +678,11 @@ for(int rep=0;rep<numrep;rep++){
 
 //        cout << "Floaters before reassign: " << vfloaters.size() << endl;
         Reassign(vfloaters, vgroups);
+		if (!vfloaters.empty()) {
+			cout << "Not all floaters were reassigned!" << endl;
+		}
+
+	
 //        cout << "Floaters after reassign: " << vfloaters.size() << endl;
 
         for (vector<Group>::iterator increaseAgeIt = vgroups.begin(); increaseAgeIt < vgroups.end(); ++increaseAgeIt)
@@ -688,8 +708,6 @@ for(int rep=0;rep<numrep;rep++){
 
 }
     Printparams();
-
-	cin.get();
 
     return 0;
 }
