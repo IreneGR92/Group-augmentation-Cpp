@@ -21,8 +21,8 @@ using namespace std;
 
 ofstream fout("group augmentation.txt");     // output file
 
-/*CONSTANTS AND STRUCTURES*/
 
+/*CONSTANTS AND STRUCTURES*/
 
 // Random numbers
 //mt19937 mt(time(0)); // random number generator
@@ -48,7 +48,7 @@ const double m         = 0.8;       // predation pressure
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
 const double K0     = 1; // min fecundity, fecundity when no help provided.
-const double K1     = 1; // benefit of cumhelp in the fecundity
+const double K1     = 0.5; // benefit of cumhelp in the fecundity
 const double Xsh    = 1 ; // cost of help in survival
 const double Xsn    = 1; // benefit of group size in survival
 
@@ -56,12 +56,12 @@ const double Xsn    = 1; // benefit of group size in survival
 //Genetic values
 const double initAlpha    = 0.0;     // starting value of alpha (in gen 0)
 const double mutAlpha     = 0.05;    // mutation rate in alpha for level of help
-const double stepAlpha    = 0.4;     // mutation step size in alpha for level of help
+const double stepAlpha    = 0.1;     // mutation step size in alpha for level of help
 const double initBeta     = 0.0;     // starting value of beta (in gen 0)
 const double mutBeta      = 0.05;    // mutation rate in beta for the propensity to disperse
-const double stepBeta     = 0.4;     // mutation step size in beta for the propensity to disperse
+const double stepBeta     = 0.1;     // mutation step size in beta for the propensity to disperse
 const double mutDrift     = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
-const double stepDrift    = 0.4;     // mutation step size in the neutral genetic value to track level of relatedness
+const double stepDrift    = 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
 
 //const int minsurv     = 50;     // min number of individual that survive
 
@@ -108,17 +108,18 @@ Individual::Individual(double alpha_,double beta_, double drift_,classes own_){
 	age = 1;
 	survival = -1;      //out of range, so check later for errors
 	help = -1;          //out of range, so check later for errors
+	dispersal = -1;		//out of range, so check later for errors
 }
 
-Individual::Individual(const Individual &mother){
-	alpha=mother.alpha;
-	beta=mother.beta;
-	drift=mother.drift;
-	own=mother.own;
-	age = mother.age;
-	survival = mother.survival;      //out of range, so check later for errors
-	help = mother.help;          //out of range, so check later for errors
-	dispersal = mother.dispersal;
+Individual::Individual(const Individual &copy){
+	alpha=copy.alpha;
+	beta=copy.beta;
+	drift=copy.drift;
+	own=copy.own;
+	age = copy.age;
+	survival = copy.survival;      
+	help = copy.help;          
+	dispersal = copy.dispersal;
 }
 
 
@@ -147,11 +148,6 @@ struct Group // define group traits
 //    void Statistics(vector<Individual>vhelpers);
 };
 
-//void wait_for_return()
-//{
-//	std::cout << "Hit <Enter> to continue\n";
-//	getchar();
-//}
 
 Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
 {
@@ -180,62 +176,46 @@ void InitGroup(vector<Group> &vgroups)
 
 
 /* BECOME FLOATER (STAY VS DISPERSE) */
+
 void Individual::calcDispersal()
 {
-    dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
-    if (beta<0 || beta>1){
-        cout <<"error in beta: " << beta << endl;
-    }
+	dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
+	if (beta < 0 || beta > 1) {
+		cout << "error in beta: " << beta << endl;
+	}
+	if (dispersal < 0 || dispersal > 1) {
+		cout << "error in dispersal: " << dispersal << endl;
+	}
 }
 
 
-//void Group::Dispersal(vector<Individual> &vfloaters)
-//{
-//	vector<Individual>::iterator dispersalIt = vhelpers.begin();
-//	int sizevec = vhelpers.size();
-//	int counting = 0;
-//
-//	while (!vhelpers.empty() && sizevec>counting)
-//	{
-//		dispersalIt->calcDispersal();
-//		if (Uniform(generator) < dispersalIt->dispersal) // beta is equal to dispersal propensity
-//		{
-//			Individual tmp = *dispersalIt;
-//			vfloaters.push_back(tmp); //add the individual to the vector floaters in the last position
-//			vfloaters[vfloaters.size()-1].own = floater;
-//			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
-//			vhelpers.pop_back();
-//			++counting;
-//		}
-//		else
-//			++dispersalIt, ++counting;
-//	}
-//    cout << "floater size " << vfloaters.size() << endl;
-//}
-
 void Group::Dispersal(vector<Individual> &vfloaters)
 {
-	int discount = 0;
+	vector<Individual>::iterator dispersalIt = vhelpers.begin();
 	int sizevec = vhelpers.size();
 	int counting = 0;
 
-	while (!vhelpers.empty() && sizevec>counting)
+	while (!vhelpers.empty() && sizevec > counting)
 	{
-		vhelpers[discount].calcDispersal();
-		if (Uniform(generator) < vhelpers[discount].dispersal) // beta is equal to dispersal propensity
+		dispersalIt->calcDispersal();
+		if (dispersalIt->dispersal < 0) {
+			cout << "error in dispersal: " << dispersalIt->dispersal << endl;
+		}
+
+		if (Uniform(generator) < dispersalIt->dispersal) // beta is equal to dispersal propensity
 		{
-			vfloaters.push_back(vhelpers[discount]); //add the individual to the vector floaters in the last position
-			//vfloaters[vfloaters.size() - 1] = vhelpers[discount];
+			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
 			vfloaters[vfloaters.size() - 1].own = floater;
-			vhelpers[discount] = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
+			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
 			vhelpers.pop_back();
 			++counting;
 		}
 		else
-			++discount, ++counting;
+			++dispersalIt, ++counting;
 	}
 	//cout << "floater size " << vfloaters.size() << endl;
 }
+
 
 /*DISPLAY LEVEL OF HELP*/
 void Individual::calcHelp ()
@@ -663,7 +643,7 @@ for(int rep=0;rep<numrep;rep++){
 
     for (gen=1;gen<=NumGen;gen++)
     {
-        cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
+        //cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
 		//if (gen == 3) {
 		//	wait_for_return();
@@ -679,11 +659,11 @@ for(int rep=0;rep<numrep;rep++){
         corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0,
         meanGroupsize=0.0, stdevGroupsize=0.0;
 
-		cout << "Floaters before dispersal: " << vfloaters.size() << endl;
+		//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
         for (vector<Group>::iterator dispersalIt = vgroups.begin(); dispersalIt < vgroups.end(); ++dispersalIt)
         {
             dispersalIt->Dispersal(vfloaters);
-            cout << "Floaters after dispersal: " << vfloaters.size() << endl;
+        //    cout << "Floaters after dispersal: " << vfloaters.size() << endl;
         }
 
         for (vector<Group>::iterator helpsurvIt = vgroups.begin(); helpsurvIt < vgroups.end(); ++helpsurvIt)
@@ -736,6 +716,8 @@ for(int rep=0;rep<numrep;rep++){
 
 }
     Printparams();
+
+	wait_for_return();
 
     return 0;
 }
