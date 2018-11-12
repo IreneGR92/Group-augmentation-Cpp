@@ -42,7 +42,7 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.8;       // predation pressure
+const double m         = 0.75;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
@@ -72,11 +72,11 @@ enum classes {breeder, helper, floater};
 //Stats
 int gen;
 int population, deaths;
-double  meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
+double  meanGroupsize, stdevGroupSize, maxGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
+			meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
             meanBeta,stdevBeta, sumBeta,sumsqBeta,varBeta,
             meanDrift, stdevDrift, sumDrift,sumsqDrift,varDrift,
-            corr_AlphaBeta,sumprodAlphaBeta,
-            meanGroupsize, stdevGroupsize;         // population statistics
+            corr_AlphaBeta,sumprodAlphaBeta;         // population statistics
 
 
 //Structures
@@ -129,7 +129,7 @@ struct Group // define group traits
     double cumhelp;
     int totalHelpers;
     bool breederalive;                                     // for the breeder: 1 alive, 0 dead
-    int totalIndividualGroup;
+    int groupSize;
     double fecundity;
     int realfecundity;
 
@@ -456,7 +456,7 @@ void Group::increaseAge()
 
 void Group::TotalPopulation()
 {
-    totalIndividualGroup=vhelpers.size()+1;
+    groupSize=vhelpers.size()+1;
 }
 
 
@@ -522,6 +522,9 @@ void Statistics(vector<Group>vgroups){
             sumsqDrift+=indStatsIt->drift*indStatsIt->drift;
 
         }
+		sumGroupSize += groupStatsIt->groupSize;
+		sumsqGroupSize += groupStatsIt->groupSize*groupStatsIt->groupSize;
+		if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
 
         sumAlpha+=groupStatsIt->vbreeder.alpha;
 		sumsqAlpha+=groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.alpha;
@@ -535,15 +538,18 @@ void Statistics(vector<Group>vgroups){
 		sumprodAlphaBeta+=groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.beta;
     }
 
-    meanAlpha=sumAlpha/population;
+	meanGroupsize = sumGroupSize / maxcolon;
+	meanAlpha=sumAlpha/population;
     meanBeta=sumBeta/population;
     meanDrift=sumDrift/population; ///differentiate between within group and global
 
+	varGroupSize = sumsqGroupSize / maxcolon - meanGroupsize * meanGroupsize;
 	varAlpha=sumsqAlpha/population-meanAlpha*meanAlpha;
 	varBeta=sumsqBeta/population-meanBeta*meanBeta;
 	varDrift=sumsqDrift/population-meanDrift*meanDrift; ///differentiate between within group and global
 
 // to know if there is a problem, variance cannot be negative
+	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
 	varAlpha>0? stdevAlpha=sqrt(varAlpha):stdevAlpha=0;
 	varBeta>0? stdevBeta=sqrt(varBeta):stdevBeta=0;
 	varDrift>0? stdevDrift=sqrt(varDrift):stdevDrift=0; ///differentiate between within group and global
@@ -588,6 +594,8 @@ void WriteMeans()
   cout << setw(6) << gen
        << setw(9) << population
        << setw(9) << deaths
+	   << setw(9) << meanGroupsize
+	   << setw(9) << maxGroupSize
 	   << setw(9) << setprecision(4) << meanAlpha
 	   << setw(9) << setprecision(4) << meanBeta
 	   << setw(9) << setprecision(4) << meanDrift
@@ -598,9 +606,11 @@ void WriteMeans()
   fout << gen
        << "\t" << population
        << "\t" << deaths
+	   << "\t" << meanGroupsize
 	   << "\t" << setprecision(4) << meanAlpha
 	   << "\t" << setprecision(4) << meanBeta
 	   << "\t" << setprecision(4) << meanDrift
+	   << "\t" << setprecision(4) << stdevGroupSize
 	   << "\t" << setprecision(4) << stdevAlpha
 	   << "\t" << setprecision(4) << stdevBeta
 	   << "\t" << setprecision(4) << stdevDrift
@@ -621,18 +631,20 @@ for(int rep=0;rep<numrep;rep++){
     gen=0;
 
 // Population statistics
-    meanAlpha=0.0,stdevAlpha=0.0,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha=0.0,
-    meanBeta=0.0,stdevBeta=0.0, sumBeta=0.0,sumsqBeta=0.0,varBeta=0.0,
-    meanDrift=0.0, stdevDrift=0.0, sumDrift=0.0,sumsqDrift=0.0,varDrift=0.0,
-    corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0,
-    meanGroupsize=0.0, stdevGroupsize=0.0;
+	meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize=0.0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+	meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
+	meanBeta = 0.0, stdevBeta = 0.0, sumBeta = 0.0, sumsqBeta = 0.0, varBeta = 0.0,
+	meanDrift = 0.0, stdevDrift = 0.0, sumDrift = 0.0, sumsqDrift = 0.0, varDrift = 0.0,
+	corr_AlphaBeta = 0.0, sumprodAlphaBeta = 0.0;
+    
 
     // column headings on screen
-    cout << setw(6) << "gen" << setw(9) << "population" << setw(9)<< "deaths" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
+    cout << setw(6) << "gen" << setw(9) << "population" << setw(9) << "deaths" << setw(9) 
+		<< "groupSize" << setw(9) << "maxGroupSize" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
 
 	// column headings in output file
-    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"  <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
-         << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
+    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Group_size" << "\t" <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
+		 << "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
 
     vector<Individual> vfloaters;
 	vector<Group> vgroups (maxcolon);
@@ -655,11 +667,11 @@ for(int rep=0;rep<numrep;rep++){
         population=0;
 
 // Population statistics
-        meanAlpha=0.0,stdevAlpha=0.0,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha=0.0,
+		meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize=0.0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+		meanAlpha=0.0,stdevAlpha=0.0,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha=0.0,
         meanBeta=0.0,stdevBeta=0.0, sumBeta=0.0,sumsqBeta=0.0,varBeta=0.0,
         meanDrift=0.0, stdevDrift=0.0, sumDrift=0.0,sumsqDrift=0.0,varDrift=0.0,
-        corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0,
-        meanGroupsize=0.0, stdevGroupsize=0.0;
+        corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0;
 
 		//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
         for (vector<Group>::iterator dispersalIt = vgroups.begin(); dispersalIt < vgroups.end(); ++dispersalIt)
@@ -699,7 +711,7 @@ for(int rep=0;rep<numrep;rep++){
         {
             increaseAgeIt->increaseAge(); //add 1 rank or age to all individuals alive
             increaseAgeIt->TotalPopulation();
-            population += increaseAgeIt->totalIndividualGroup;
+            population += increaseAgeIt->groupSize;
         }
  //       cout << "Population: " << population << endl;
 
