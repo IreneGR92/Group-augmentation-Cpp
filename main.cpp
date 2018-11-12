@@ -42,13 +42,13 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.75;       // predation pressure
+const double m         = 0.8;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
 const double K0     = 1; // min fecundity, fecundity when no help provided.
-const double K1     = 0.5; // benefit of cumhelp in the fecundity
+const double K1     = 1; // benefit of cumhelp in the fecundity
 const double Xsh    = 1 ; // cost of help in survival
 const double Xsn    = 2; // benefit of group size in survival
 
@@ -64,6 +64,7 @@ const double mutDrift     = 0.05;    // mutation rate in the neutral selected va
 const double stepDrift    = 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
 
 //const int minsurv     = 50;     // min number of individual that survive
+const int maxNumHelpers = 10;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
 
 const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
@@ -464,9 +465,14 @@ void Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-    fecundity = K0 + K1*cumhelp;
-    poisson_distribution<int> PoissonFec(fecundity);
-    realfecundity = PoissonFec(generator);
+	if (vhelpers.size() < maxNumHelpers) { //adds a cap to max number of ind in a group
+		fecundity = K0 + K1 * cumhelp;
+		poisson_distribution<int> PoissonFec(fecundity);
+		realfecundity = PoissonFec(generator);
+	}
+	else
+		realfecundity = 0;
+	
 //    cout << "Fecundity: " << fecundity <<"\t"<< "Real Fecundity: " << realfecundity << endl;
 }
 
