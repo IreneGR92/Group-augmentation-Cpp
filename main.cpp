@@ -66,7 +66,7 @@ const double stepDrift    = 0.1;     // mutation step size in the neutral geneti
 //const int minsurv     = 50;     // min number of individual that survive
 const int maxNumHelpers = 10;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
 
-const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
+//const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
 enum classes {breeder, helper, floater};
 
@@ -146,7 +146,6 @@ struct Group // define group traits
     void TotalPopulation();
     void Fecundity();
     void Reproduction();
-//    void Statistics(vector<Individual>vhelpers);
 };
 
 
@@ -319,10 +318,12 @@ void Group::Breeder(vector<Individual> &vfloaters)
         int sumage=0;
         double currentposition=0; //age of the previous ind taken from Candidates
         int UniformFloatNum;
-        poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
-		uniform_real_distribution<double> Randomposition (0.0, 1.0);
-        double RandP = Randomposition (generator);
-        int RandN = PoissonFloat (generator);
+        //poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
+        double RandP = Uniform (generator);
+        //int RandN = PoissonFloat (generator);
+		int proportFloaters = round(vfloaters.size()*10/maxcolon); ///justify the 10 multiplier
+
+		//cout << proportFloaters << endl;
 
         vector<Individual*> Candidates;
         vector<double>position; //vector of age to chose with higher likelihood the ind with higher age
@@ -330,8 +331,8 @@ void Group::Breeder(vector<Individual> &vfloaters)
 
 		//        cout << "vfloaters: " << vfloaters.size() <<endl;
 
-		if (vfloaters.size() > 0 && vfloaters.size() > RandN) {
-			while (i < RandN) ///Change to a proportion instead
+		if (vfloaters.size() > 0 && vfloaters.size() > proportFloaters) {
+			while (i < proportFloaters) ///Change to a proportion instead
 			{
 				uniform_int_distribution<int> UniformFloat(0, vfloaters.size() - 1); //random floater ID taken in the sample
 				UniformFloatNum = UniformFloat(generator);
