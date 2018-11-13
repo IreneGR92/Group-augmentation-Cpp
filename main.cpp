@@ -27,14 +27,15 @@ ofstream fout("group augmentation.txt");     // output file
 // Random numbers
 //mt19937 mt(time(0)); // random number generator
 //unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); // if we don't want to obtain the same simulation under the same parameters
-unsigned seed = 0; ///change value for every generation ////in the same run takes different random values, but different runs same values unless we change the seed
+unsigned seed = 0; //in the same run takes different random values, but different runs same values unless we change the seed
 default_random_engine generator (seed);
-normal_distribution<double> DriftNormal(0, 10);
+//normal_distribution<double> DriftNormal(0, 10);
+uniform_real_distribution<double> DriftNormal(0, 100); //not relevent which one we use
 uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int maxcolon     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int numhelp      = 2;       //initial number of helpers per group when initializing group
 
 const int NumGen       = 10000;   // number of generations
@@ -42,7 +43,7 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.8;       // predation pressure
+const double m         = 0.9;       // predation pressure
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
@@ -70,13 +71,16 @@ const int maxNumHelpers = 10;	  // cap for the total number of individuals insid
 
 enum classes {breeder, helper, floater};
 
+const int NO_VALUE = -1;
+
 //Stats
 int gen;
-int population, deaths;
+int population, deaths, floatersgenerated;
 double  meanGroupsize, stdevGroupSize, maxGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
 			meanAlpha,stdevAlpha,sumAlpha,sumsqAlpha,varAlpha,
             meanBeta,stdevBeta, sumBeta,sumsqBeta,varBeta,
-            meanDrift, stdevDrift, sumDrift,sumsqDrift,varDrift,
+            meanDrift, stdevDrift, sumDrift,sumsqDrift,varDrift, 
+			meanRelatedness, stdevRelatedness, sumRelatedness, sumsqRelatedness, varRelatedness,
             corr_AlphaBeta,sumprodAlphaBeta;         // population statistics
 
 
@@ -107,9 +111,9 @@ Individual::Individual(double alpha_,double beta_, double drift_,classes own_){
 	Mutate();
 	own=own_;
 	age = 1;
-	survival = -1;      //out of range, so check later for errors
-	help = -1;          //out of range, so check later for errors
-	dispersal = -1;		//out of range, so check later for errors
+	survival = NO_VALUE;      
+	help = NO_VALUE;          
+	dispersal = NO_VALUE;		
 }
 
 Individual::Individual(const Individual &copy){
@@ -133,6 +137,7 @@ struct Group // define group traits
     int groupSize;
     double fecundity;
     int realfecundity;
+	double driftHelpers, relatedness;
 
     Individual vbreeder; // create breeder inside group
     vector<Individual> vhelpers; // create a vector of helpers inside each group
@@ -143,6 +148,7 @@ struct Group // define group traits
     void SurvivalGroup(int &deaths);
     void Breeder(vector<Individual> &vfloaters);
     void increaseAge();
+	void Relatedness();
     void TotalPopulation();
     void Fecundity();
     void Reproduction();
@@ -153,8 +159,8 @@ Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
 {
    	vbreeder = Individual(alpha_,beta_,DriftNormal(generator),breeder);
     breederalive = 1;
-    fecundity = -1;         //out of range, so check later for errors
-    realfecundity = -1;     //out of range, so check later for errors
+    fecundity = NO_VALUE;         
+    realfecundity = NO_VALUE;     
 
    	for(int i=0;i<numhelp_;++i)
     {
@@ -202,7 +208,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 			cout << "error in dispersal: " << dispersalIt->dispersal << endl;
 		}
 
-		if (Uniform(generator) < dispersalIt->dispersal) // beta is equal to dispersal propensity
+		if (Uniform(generator) < dispersalIt->dispersal) 
 		{
 			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
 			vfloaters[vfloaters.size() - 1].own = floater;
@@ -220,7 +226,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 /*DISPLAY LEVEL OF HELP*/
 void Individual::calcHelp ()
 {
-    help = alpha; //absolute value, help cannot be negative
+    help = alpha; 
     if (alpha<0)
     {
         cout << "error in alpha: " << alpha <<endl;
@@ -270,7 +276,7 @@ void Group::SurvivalGroup(int &deaths)
             *survHIt = vhelpers[vhelpers.size() - 1];
             vhelpers.pop_back();
             ++counting;
-            deaths++; //set to 0 for each generation in main
+            deaths++; 
         }
         else
         ++survHIt, ++counting; //go to next individual
@@ -281,7 +287,7 @@ void Group::SurvivalGroup(int &deaths)
     if (Uniform(generator) > vbreeder.survival)
     {
         breederalive=0;
-        vbreeder.age=-1;
+        vbreeder.age= NO_VALUE;
         deaths++;
     }
 }
@@ -294,8 +300,10 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
     while (!vfloaters.empty() && sizevec>counting)
     {
 //        cout << survFIt->own << "   " <<survFIt->age << endl;
+
         //Calculate value of survival
         survFIt->calcSurvival(0);
+
         //Mortality
         if (Uniform(generator) > survFIt->survival)
         {
@@ -344,7 +352,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
 			int temp = 0;
 			for (vector<int>::iterator itTempCandidates = TemporaryCandidates.begin(); itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates)
 			{
-				if (!(*itTempCandidates == temp))
+				if (!(*itTempCandidates == temp)) //to make sure the same ind is not taken more than ones
 				{
 					Candidates.push_back(&vfloaters[UniformFloatNum]);
 					temp = *itTempCandidates;
@@ -352,14 +360,12 @@ void Group::Breeder(vector<Individual> &vfloaters)
 			}
 		}
 
-		else { //When less floaters available than the sample size, take all of them. Change to a proportion 
+		else { ///When less floaters available than the sample size, take all of them. Change to a proportion 
 			for (vector<Individual>::iterator floatIt = vfloaters.begin(); floatIt < vfloaters.end(); ++floatIt)
 			{
 				Candidates.push_back(&(*floatIt));
 			}
 		}
-
-
 
 
 //    Join the helpers in the group to the sample of floaters
@@ -384,7 +390,7 @@ void Group::Breeder(vector<Individual> &vfloaters)
 
         for (vector<Individual*>::iterator age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It)
         {
-            position.push_back(static_cast<double>((*age2It)->age) / static_cast<double>(sumage) + currentposition); //create a vector with proportional segments to the age of each individual
+            position.push_back(static_cast<double>((*age2It)->age) / static_cast<double>(sumage) + currentposition); //creates a vector with proportional segments to the age of each individual
             currentposition = position[position.size()-1];
         }
 
@@ -413,7 +419,6 @@ void Group::Breeder(vector<Individual> &vfloaters)
 			else
 				++age3It, ++counting;
         }
-//		if (!breederalive) wait_for_return();
 }
 
 
@@ -442,16 +447,36 @@ void Group::increaseAge()
     {
         ageIt->age++;
     }
-    if (breederalive==1)
-    {
+    if (breederalive==1){
         vbreeder.age++;
 //        cout << "Age breeder: " << vbreeder.age << endl;
     }
-    else
-    {
-//        cout << "Age breeder: BREEDER DEAD!" << endl;
+    else{
+		vbreeder.age = NO_VALUE;
+		//        cout << "Age breeder: BREEDER DEAD!" << endl;
     }
+}
 
+/* RELATEDNESS*/
+void Group::Relatedness() {
+	
+	driftHelpers = 0;
+	relatedness = 0;
+
+	for (vector<Individual>::iterator relatednessIt = vhelpers.begin(); relatednessIt < vhelpers.end(); ++relatednessIt)
+	{
+		driftHelpers += relatednessIt->drift;
+		//cout<< driftHelpers/ vhelpers.size()
+	}
+
+	if (breederalive == 1 && vhelpers.size()!=0)
+	{
+		relatedness = abs(vbreeder.drift - driftHelpers/ vhelpers.size());
+	}
+	else
+	{
+		relatedness = NO_VALUE;
+	}
 }
 
 /*CALCULATE TOTAL NUMBER OF INDIVIDUALS PER GROUP*/
@@ -515,6 +540,8 @@ void Individual::Mutate() /// mutate genome of offspring // PROBLEM: All alpha a
 /* CALCULATE STATISTICS */
 void Statistics(vector<Group>vgroups){
 
+	int exludedGroups = 0;
+
 	for (vector<Group>::iterator groupStatsIt = vgroups.begin(); groupStatsIt < vgroups.end(); ++groupStatsIt){
 
         for (vector<Individual>::iterator indStatsIt = groupStatsIt->vhelpers.begin(); indStatsIt < groupStatsIt->vhelpers.end(); ++indStatsIt){
@@ -542,26 +569,40 @@ void Statistics(vector<Group>vgroups){
 		sumDrift+=groupStatsIt->vbreeder.drift;
 		sumsqDrift+=groupStatsIt->vbreeder.drift*groupStatsIt->vbreeder.drift;
 
+		if (groupStatsIt->relatedness != NO_VALUE) {
+			sumRelatedness += groupStatsIt->relatedness;
+			sumsqRelatedness += groupStatsIt->relatedness*groupStatsIt->relatedness;
+		}
+		else {
+			exludedGroups++; //prevent to calculate mean of relatedness for empty groups
+		}
+		
+
+
 		sumprodAlphaBeta+=groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.beta;
     }
 
 	meanGroupsize = sumGroupSize / maxcolon;
 	meanAlpha=sumAlpha/population;
     meanBeta=sumBeta/population;
-    meanDrift=sumDrift/population; ///differentiate between within group and global
+    meanDrift=sumDrift/population; 
+	meanRelatedness = sumRelatedness / (maxcolon-exludedGroups);
 
 	varGroupSize = sumsqGroupSize / maxcolon - meanGroupsize * meanGroupsize;
 	varAlpha=sumsqAlpha/population-meanAlpha*meanAlpha;
 	varBeta=sumsqBeta/population-meanBeta*meanBeta;
-	varDrift=sumsqDrift/population-meanDrift*meanDrift; ///differentiate between within group and global
+	varDrift=sumsqDrift/population-meanDrift*meanDrift; 
+	varRelatedness = sumsqRelatedness / maxcolon - meanRelatedness * meanRelatedness;
 
 // to know if there is a problem, variance cannot be negative
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
 	varAlpha>0? stdevAlpha=sqrt(varAlpha):stdevAlpha=0;
 	varBeta>0? stdevBeta=sqrt(varBeta):stdevBeta=0;
-	varDrift>0? stdevDrift=sqrt(varDrift):stdevDrift=0; ///differentiate between within group and global
+	varDrift>0? stdevDrift=sqrt(varDrift):stdevDrift=0; 
+	varRelatedness > 0 ? stdevRelatedness = sqrt(varRelatedness) : stdevRelatedness = 0;
 
-	(stdevAlpha>0 && stdevBeta>0)? corr_AlphaBeta=(sumprodAlphaBeta/population-meanAlpha*meanBeta)/(stdevAlpha*stdevBeta):corr_AlphaBeta=0; ///add correlations between alpha and beta to withing group relatedness
+	(stdevAlpha>0 && stdevBeta>0)? corr_AlphaBeta=(sumprodAlphaBeta/population-meanAlpha*meanBeta)/(stdevAlpha*stdevBeta):corr_AlphaBeta=0; 
+	///add correlations between alpha and beta to withing group relatedness
 
 }
 
@@ -601,11 +642,12 @@ void WriteMeans()
   cout << setw(6) << gen
        << setw(9) << population
        << setw(9) << deaths
+	   << setw(9) << floatersgenerated
 	   << setw(9) << meanGroupsize
 	   << setw(9) << maxGroupSize
 	   << setw(9) << setprecision(4) << meanAlpha
 	   << setw(9) << setprecision(4) << meanBeta
-	   << setw(9) << setprecision(4) << meanDrift
+	   << setw(9) << setprecision(4) << meanRelatedness
 	   << endl;
 
 
@@ -616,11 +658,11 @@ void WriteMeans()
 	   << "\t" << meanGroupsize
 	   << "\t" << setprecision(4) << meanAlpha
 	   << "\t" << setprecision(4) << meanBeta
-	   << "\t" << setprecision(4) << meanDrift
+	   << "\t" << setprecision(4) << meanRelatedness
 	   << "\t" << setprecision(4) << stdevGroupSize
 	   << "\t" << setprecision(4) << stdevAlpha
 	   << "\t" << setprecision(4) << stdevBeta
-	   << "\t" << setprecision(4) << stdevDrift
+	   << "\t" << setprecision(4) << stdevRelatedness
 	   << "\t" << setprecision(4) << corr_AlphaBeta
 	   << endl;
 }
@@ -642,16 +684,20 @@ for(int rep=0;rep<numrep;rep++){
 	meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
 	meanBeta = 0.0, stdevBeta = 0.0, sumBeta = 0.0, sumsqBeta = 0.0, varBeta = 0.0,
 	meanDrift = 0.0, stdevDrift = 0.0, sumDrift = 0.0, sumsqDrift = 0.0, varDrift = 0.0,
+	meanRelatedness=0.0, stdevRelatedness = 0.0, sumRelatedness = 0.0, sumsqRelatedness = 0.0, varRelatedness = 0.0,
 	corr_AlphaBeta = 0.0, sumprodAlphaBeta = 0.0;
     
 
     // column headings on screen
-    cout << setw(6) << "gen" << setw(9) << "population" << setw(9) << "deaths" << setw(9) 
-		<< "groupSize" << setw(9) << "maxGroupSize" << setw(9) << "alpha" << setw(9) << "beta" << setw(9) << "drift" << endl;
+    cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9) 
+		<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9)
+		<< "alpha" << setw(9) << "beta" << setw(9) << "relat" << endl;
 
 	// column headings in output file
-    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Group_size" << "\t" <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanDrift" << "\t"
-		 << "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Drift" << "\t" << "corr_AB" << "\t" << endl;
+    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" 
+		 << "Group_size" << "\t" <<  "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanRelatedness" << "\t"
+		 << "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Relatedness" 
+		 << "\t" << "corr_AB" << "\t" << endl;
 
     vector<Individual> vfloaters;
 	vector<Group> vgroups (maxcolon);
@@ -666,24 +712,27 @@ for(int rep=0;rep<numrep;rep++){
     {
         //cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-		//if (gen == 3) {
+		//if (gen == 370) {
 		//	wait_for_return();
 		//}
 
         deaths=0; // to keep track of how many individuals die each generation
         population=0;
+		floatersgenerated = 0;
 
 // Population statistics
 		meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize=0.0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
 		meanAlpha=0.0,stdevAlpha=0.0,sumAlpha=0.0,sumsqAlpha=0.0,varAlpha=0.0,
         meanBeta=0.0,stdevBeta=0.0, sumBeta=0.0,sumsqBeta=0.0,varBeta=0.0,
         meanDrift=0.0, stdevDrift=0.0, sumDrift=0.0,sumsqDrift=0.0,varDrift=0.0,
+		meanRelatedness = 0.0, stdevRelatedness = 0.0, sumRelatedness = 0.0, sumsqRelatedness = 0.0, varRelatedness = 0.0,
         corr_AlphaBeta=0.0,sumprodAlphaBeta=0.0;
 
 		//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
         for (vector<Group>::iterator dispersalIt = vgroups.begin(); dispersalIt < vgroups.end(); ++dispersalIt)
         {
             dispersalIt->Dispersal(vfloaters);
+			floatersgenerated = vfloaters.size();
         //    cout << "Floaters after dispersal: " << vfloaters.size() << endl;
         }
 
@@ -717,22 +766,24 @@ for(int rep=0;rep<numrep;rep++){
         for (vector<Group>::iterator increaseAgeIt = vgroups.begin(); increaseAgeIt < vgroups.end(); ++increaseAgeIt)
         {
             increaseAgeIt->increaseAge(); //add 1 rank or age to all individuals alive
-            increaseAgeIt->TotalPopulation();
-            population += increaseAgeIt->groupSize;
-        }
- //       cout << "Population: " << population << endl;
+			increaseAgeIt->Relatedness();
+
+			increaseAgeIt->TotalPopulation();
+			population += increaseAgeIt->groupSize; //calculate number of ind in the whole population
+		}
+
+		if (gen%skip == 0) {   // write output every 'skip' generations
+			Statistics(vgroups);
+			WriteMeans();
+		}
 
         for (vector<Group>::iterator reprodIt = vgroups.begin(); reprodIt < vgroups.end(); ++reprodIt)
         {
             reprodIt->Fecundity();
             reprodIt->Reproduction();
-        }
-
-		if (gen%skip==0){   // write output every 'skip' generations
-            Statistics(vgroups);
-            WriteMeans();
-        }
+        }	
     }
+
     fout << endl << endl << endl;
 
 }
