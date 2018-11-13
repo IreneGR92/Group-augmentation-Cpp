@@ -43,7 +43,7 @@ const int numrep       = 1;     // number of replicates
 const int skip         = 50;   // interval between print-outs
 
 //Fix values
-const double m         = 0.9;       // predation pressure
+const double predation = 0.1;
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
@@ -253,7 +253,7 @@ void Group::Help () //Calculate accumulative help of all individuals inside of e
 
 void Individual::calcSurvival(int totalHelpers)
 {
-        survival = m / (1 + exp (Xsh*help - Xsn*(totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+        survival = (1 - predation) / (1 + exp (Xsh*help - Xsn*(totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
 }
 
 
@@ -616,7 +616,7 @@ void Printparams()
        << "Initial population: " << "\t" << maxcolon*(numhelp+1) << endl
        << "Number of colonies: " << "\t" << maxcolon << endl
        << "Number generations: " << "\t" << NumGen << endl
-       << "Predation: " << "\t" << m << endl
+       << "Predation: " << "\t" << predation << endl
        << "initAlpha: " << "\t" << setprecision(4) << initAlpha << endl
        << "initBeta: " << "\t" << setprecision(4) << initBeta << endl
        << "mutAlpha: " << "\t" << setprecision(4) << mutAlpha << endl
