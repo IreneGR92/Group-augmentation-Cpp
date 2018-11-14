@@ -35,7 +35,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int maxcolon     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int maxcolon     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int numhelp      = 2;       //initial number of helpers per group when initializing group
 
 const int NumGen       = 10000;   // number of generations
@@ -50,8 +50,8 @@ const double predation = 0.1;
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
 const double K0     = 1; // min fecundity, fecundity when no help provided.
 const double K1     = 1; // benefit of cumhelp in the fecundity
-const double Xsh    = 1 ; // cost of help in survival
-const double Xsn    = 2; // benefit of group size in survival
+const double Xsh    = 1; // cost of help in survival
+const double Xsn    = 1; // benefit of group size in survival
 
 
 //Genetic values
@@ -167,6 +167,8 @@ Group::	Group(double alpha_=initAlpha,double beta_=initBeta,int numhelp_=2)
     	vhelpers.push_back(Individual(alpha_,beta_, DriftNormal(generator),
 			helper));
 	}
+
+	TotalPopulation();
 }
 
 
@@ -471,7 +473,7 @@ void Group::Relatedness() {
 
 	if (breederalive == 1 && vhelpers.size()!=0)
 	{
-		relatedness = abs(vbreeder.drift - driftHelpers/ vhelpers.size());
+		relatedness = abs(vbreeder.drift - driftHelpers/ vhelpers.size()); ///coefient of regression instead, covarianza/varianza
 	}
 	else
 	{
@@ -492,7 +494,7 @@ void Group::TotalPopulation()
 void Group::Fecundity()
 {
 	if (vhelpers.size() < maxNumHelpers) { //adds a cap to max number of ind in a group
-		fecundity = K0 + K1 * cumhelp;
+		fecundity = K0 + K1 * cumhelp; ///change to not linear
 		poisson_distribution<int> PoissonFec(fecundity);
 		realfecundity = PoissonFec(generator);
 	}
@@ -769,6 +771,7 @@ for(int rep=0;rep<numrep;rep++){
 			increaseAgeIt->Relatedness();
 
 			increaseAgeIt->TotalPopulation();
+
 			population += increaseAgeIt->groupSize; //calculate number of ind in the whole population
 		}
 
