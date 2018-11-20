@@ -67,6 +67,7 @@ const double STEP_DRIFT			= 0.1;     // mutation step size in the neutral geneti
 
 //const int minsurv     = 50;     // min number of individual that survive
 const int CAP_NUM_HELPERS = 10;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
+const double CAP_SURVIVAL = 0.3;	  //adds extra mortality when population is bigger than CAP_NUM_HELPERS*MAX_COLONIES
 
 //const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
@@ -167,8 +168,7 @@ Group::	Group(double alpha_=INIT_ALPHA,double beta_=INIT_BETA,int numhelp_=2)
 
    	for(int i=0;i<numhelp_;++i)
     {
-    	vhelpers.push_back(Individual(alpha_,beta_, DriftNormal(generator),
-			HELPER));
+    	vhelpers.push_back(Individual(alpha_,beta_, DriftNormal(generator),HELPER));
 	}
 }
 
@@ -259,6 +259,13 @@ void Group::Help () //Calculate accumulative help of all individuals inside of e
 double Individual::calcSurvival(int totalHelpers)
 {
 	survival = (1 - PREDATION) / (1 + exp (Xsh*help - Xsn*(totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+	if (population > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers> CAP_NUM_HELPERS && Uniform(generator) > 0.5) {
+		survival -= CAP_SURVIVAL;
+	}
+	if (survival < 0) {
+		survival = 0;
+	}
+	
 	return survival;
 }
 
@@ -526,13 +533,9 @@ double Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-	if (vhelpers.size() < CAP_NUM_HELPERS) { ///adds a cap to max number of ind in a group.Change!
-		fecundity = K0 + K1 * cumhelp;
-		poisson_distribution<int> PoissonFec(fecundity);
-		realfecundity = PoissonFec(generator);
-	}
-	else
-		realfecundity = 0;
+	fecundity = K0 + K1 * cumhelp;
+	poisson_distribution<int> PoissonFec(fecundity);
+	realfecundity = PoissonFec(generator);
 	
 //    cout << "Fecundity: " << fecundity <<"\t"<< "Real Fecundity: " << realfecundity << endl;
 }
