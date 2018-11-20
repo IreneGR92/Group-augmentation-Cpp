@@ -36,11 +36,11 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int MAX_COLONIES = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int MAX_COLONIES = 100;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int INIT_NUM_HELPERS = 2;
 
 const int NUM_GENERATIONS = 10000;
-const int NUM_REPLICATES = 2;
+const int NUM_REPLICATES = 1;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -66,8 +66,9 @@ const double MUTATION_DRIFT = 0.05;    // mutation rate in the neutral selected 
 const double STEP_DRIFT = 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
 
 //const int minsurv     = 50;     // min number of individual that survive
-const int CAP_NUM_HELPERS = 10;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
-const double CAP_SURVIVAL = 0.3;	  //adds extra mortality when population is bigger than CAP_NUM_HELPERS*MAX_COLONIES
+const int CAP_NUM_HELPERS = 7;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
+const double CAP_SURVIVAL = 0.4;	  //adds extra mortality when population is bigger than CAP_NUM_HELPERS*MAX_COLONIES
+const double PROB_CAP_SURVIVAL = 0.2;
 
 //const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
@@ -77,7 +78,7 @@ const int NO_VALUE = -1;
 
 //Statistics
 int gen;
-int population, deaths, floatersgenerated, emptyGroup, totalHelpersPop;
+int population, populationBeforeSurv, deaths, floatersgenerated, emptyGroup, totalHelpersPop;
 double relatednessGl; //global relatedness, covariance of population parameters
 double  meanGroupsize, stdevGroupSize, maxGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
 meanAlpha, stdevAlpha, sumAlpha, sumsqAlpha, varAlpha,
@@ -259,13 +260,12 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 double Individual::calcSurvival(int totalHelpers)
 {
 	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-	if ((population > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers > CAP_NUM_HELPERS) && Uniform(generator) > 0.5) {
+	if ((populationBeforeSurv > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers > CAP_NUM_HELPERS) && Uniform(generator) > PROB_CAP_SURVIVAL) {
 		survival -= CAP_SURVIVAL;
 	}
 	if (survival < 0) {
 		survival = 0;
 	}
-
 	return survival;
 }
 
@@ -748,7 +748,7 @@ int main() {
 		vector<Group> vgroups(MAX_COLONIES);
 
 		InitGroup(vgroups);
-		//population = maxcolon*(numhelp+1);
+	
 		for (vector<Group>::iterator relatednessIt = vgroups.begin(); relatednessIt < vgroups.end(); ++relatednessIt) {
 			relatednessIt->ProductDrift();
 			population += relatednessIt->TotalPopulation(); //calculate number of ind in the whole population
@@ -761,12 +761,13 @@ int main() {
 		{
 			//cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-			//if (gen == 370) {
-			//	wait_for_return();
-			//}
+			if (gen == 500) {
+				wait_for_return();
+			}
 
 			deaths = 0; // to keep track of how many individuals die each generation
 			population = 0; //total of ind in the whole simulation for the expecific generation
+			populationBeforeSurv = 0;
 			floatersgenerated = 0;
 
 			// Population statistics
@@ -781,6 +782,7 @@ int main() {
 			//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
 			for (vector<Group>::iterator itDispersal = vgroups.begin(); itDispersal < vgroups.end(); ++itDispersal)
 			{
+				populationBeforeSurv += itDispersal->TotalPopulation();
 				itDispersal->Dispersal(vfloaters);
 				floatersgenerated = vfloaters.size();
 				//    cout << "Floaters after dispersal: " << vfloaters.size() << endl;
