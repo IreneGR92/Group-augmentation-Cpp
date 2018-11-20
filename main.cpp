@@ -20,7 +20,7 @@
 
 using namespace std;
 
-ofstream fout("group augmentation.txt");     // output file
+ofstream fout("group_augmentation.txt");     // output file
 
 
 /*CONSTANTS AND STRUCTURES*/
