@@ -159,7 +159,7 @@ struct Group // define group traits
 };
 
 
-Group::	Group(double alpha_=INIT_ALPHA,double beta_=INIT_BETA,int numhelp_=2)
+Group::	Group(double alpha_=INIT_ALPHA,double beta_=INIT_BETA,int numhelp_= INIT_NUM_HELPERS)
 {
    	vbreeder = Individual(alpha_,beta_,DriftNormal(generator),BREEDER);
     breederalive = 1;
