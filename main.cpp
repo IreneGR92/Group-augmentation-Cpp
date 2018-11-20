@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 #include <vector>
 #include <random>
 //#include <chrono> //if we use the system clock as seed
