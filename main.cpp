@@ -36,11 +36,11 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int MAX_COLONIES     = 50;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
+const int MAX_COLONIES     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int INIT_NUM_HELPERS = 2;       
 
 const int NUM_GENERATIONS  = 10000;  
-const int NUM_REPLICATES   = 1;     
+const int NUM_REPLICATES   = 2;     
 const int SKIP			   = 50;   // interval between print-outs
 
 //Fix values 
@@ -259,7 +259,7 @@ void Group::Help () //Calculate accumulative help of all individuals inside of e
 double Individual::calcSurvival(int totalHelpers)
 {
 	survival = (1 - PREDATION) / (1 + exp (Xsh*help - Xsn*(totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-	if (population > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers> CAP_NUM_HELPERS && Uniform(generator) > 0.5) {
+	if ((population > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers> CAP_NUM_HELPERS) && Uniform(generator) > 0.5) {
 		survival -= CAP_SURVIVAL;
 	}
 	if (survival < 0) {
