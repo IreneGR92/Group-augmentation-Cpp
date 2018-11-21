@@ -36,13 +36,8 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-<<<<<<< HEAD
-const int maxcolon     = 500;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
-const int numhelp      = 2;       //initial number of helpers per group when initializing group
-=======
 const int MAX_COLONIES = 100;     // max number of groups or colonies --> breeding spots. Whole population size = maxcolon * (numhelp + 1)
 const int INIT_NUM_HELPERS = 2;
->>>>>>> 4a025530bf21f0fcf9f42223cced6afaa7c2e133
 
 const int NUM_GENERATIONS = 10000;
 const int NUM_REPLICATES = 1;
@@ -54,28 +49,21 @@ const double PREDATION = 0.1;
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
-<<<<<<< HEAD
 const double K0     = 1; // min fecundity, fecundity when no help provided.
 const double K1     = 1; // benefit of cumhelp in the fecundity
 const double Xsh    = 1; // cost of help in survival
 const double Xsn    = 1; // benefit of group size in survival
-=======
-const double K0 = 1; // min fecundity, fecundity when no help provided.
-const double K1 = 1; // benefit of cumhelp in the fecundity
-const double Xsh = 1; // cost of help in survival
-const double Xsn = 2; // benefit of group size in survival
->>>>>>> 4a025530bf21f0fcf9f42223cced6afaa7c2e133
 
 
 //Genetic values
-const double INIT_ALPHA = 0.0;     // starting value of alpha (in gen 0)
+const double INIT_ALPHA		= 0.0;     // starting value of alpha (in gen 0)
 const double MUTATION_ALPHA = 0.05;    // mutation rate in alpha for level of help
-const double STEP_ALPHA = 0.1;     // mutation step size in alpha for level of help
-const double INIT_BETA = 0.0;     // starting value of beta (in gen 0)
-const double MUTATION_BETA = 0.05;    // mutation rate in beta for the propensity to disperse
-const double STEP_BETA = 0.1;     // mutation step size in beta for the propensity to disperse
+const double STEP_ALPHA		= 0.1;     // mutation step size in alpha for level of help
+const double INIT_BETA		= 0.0;     // starting value of beta (in gen 0)
+const double MUTATION_BETA	= 0.05;    // mutation rate in beta for the propensity to disperse
+const double STEP_BETA		= 0.1;     // mutation step size in beta for the propensity to disperse
 const double MUTATION_DRIFT = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
-const double STEP_DRIFT = 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
+const double STEP_DRIFT		= 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
 
 //const int minsurv     = 50;     // min number of individual that survive
 const int CAP_NUM_HELPERS = 7;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
@@ -498,11 +486,7 @@ void Group::Relatedness() { //0 means they are completly related
 
 	if (breederalive == 1 && vhelpers.size() != 0)
 	{
-<<<<<<< HEAD
-		relatedness = abs(vbreeder.drift - driftHelpers/ vhelpers.size()); ///coefient of regression instead, covarianza/varianza
-=======
 		relatedness = abs(vbreeder.drift - driftHelpers / vhelpers.size());
->>>>>>> 4a025530bf21f0fcf9f42223cced6afaa7c2e133
 	}
 	else
 	{
@@ -551,23 +535,11 @@ double Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-<<<<<<< HEAD
-	if (vhelpers.size() < maxNumHelpers) { //adds a cap to max number of ind in a group
-		fecundity = K0 + K1 * cumhelp; ///change to not linear
-		poisson_distribution<int> PoissonFec(fecundity);
-		realfecundity = PoissonFec(generator);
-	}
-	else
-		realfecundity = 0;
-	
-//    cout << "Fecundity: " << fecundity <<"\t"<< "Real Fecundity: " << realfecundity << endl;
-=======
 	fecundity = K0 + K1 * cumhelp;
 	poisson_distribution<int> PoissonFec(fecundity);
 	realfecundity = PoissonFec(generator);
 
 	//    cout << "Fecundity: " << fecundity <<"\t"<< "Real Fecundity: " << realfecundity << endl;
->>>>>>> 4a025530bf21f0fcf9f42223cced6afaa7c2e133
 }
 
 void Group::Reproduction() // populate offspring generation
@@ -753,12 +725,6 @@ int main() {
 
 		gen = 0;
 
-<<<<<<< HEAD
-			increaseAgeIt->TotalPopulation();
-
-			population += increaseAgeIt->groupSize; //calculate number of ind in the whole population
-		}
-=======
 		// Population statistics
 		meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0.0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
 			meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
@@ -779,7 +745,7 @@ int main() {
 			<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanBeta" << "\t" << "meanRelatedness" << "\t" << "RelatednessGl" << "\t"
 			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_Beta" << "\t" << "SD_Relatedness"
 			<< "\t" << "corr_AB" << "\t" << endl;
->>>>>>> 4a025530bf21f0fcf9f42223cced6afaa7c2e133
+
 
 		vector<Individual> vfloaters;
 		vector<Group> vgroups(MAX_COLONIES);
