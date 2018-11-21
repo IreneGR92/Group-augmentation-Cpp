@@ -66,9 +66,9 @@ const double MUTATION_DRIFT = 0.05;    // mutation rate in the neutral selected 
 const double STEP_DRIFT		= 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
 
 //const int minsurv     = 50;     // min number of individual that survive
-const int CAP_NUM_HELPERS = 7;	  // cap for the total number of individuals inside a group. Affect fecundity no survival (assumes smaller size fish will die)
-const double CAP_SURVIVAL = 0.4;	  //adds extra mortality when population is bigger than CAP_NUM_HELPERS*MAX_COLONIES
-const double PROB_CAP_SURVIVAL = 0.2;
+const int CAP_NUM_HELPERS = 7;	  // cap for the total number of individuals inside a group. 
+const double CAP_SURVIVAL = 0.7;	  //adds extra mortality when population is bigger than CAP_NUM_HELPERS*MAX_COLONIES
+const double PROB_CAP_SURVIVAL = 1;   //probability of been killed after passing the cap threshold
 
 //const double avFloatersSample = 10; ///average number of floaters sampled from the total ///Check first if there are enough floaters, take a proportion instead??
 
@@ -262,7 +262,7 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 double Individual::calcSurvival(int totalHelpers)
 {
 	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-	if ((populationBeforeSurv > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers > CAP_NUM_HELPERS) && Uniform(generator) > PROB_CAP_SURVIVAL) {
+	if ((populationBeforeSurv > MAX_COLONIES*CAP_NUM_HELPERS || totalHelpers > CAP_NUM_HELPERS) && Uniform(generator) < PROB_CAP_SURVIVAL) {
 		survival -= CAP_SURVIVAL;
 	}
 	if (survival < 0) {
@@ -764,7 +764,7 @@ int main() {
 		{
 			//cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-			if (gen == 500) {
+			if (gen == 400) {
 				wait_for_return();
 			}
 
