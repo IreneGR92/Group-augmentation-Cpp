@@ -101,3 +101,8 @@ Visual GA/.vs/Visual GA/v15/.suo
 *.txt
 *.txt
 *.xlsx
+.RData
+.Rhistory
+GA.R
+VS Group Aug Basic/Release/VS Group Aug Basic.ipdb
+*.iobj
