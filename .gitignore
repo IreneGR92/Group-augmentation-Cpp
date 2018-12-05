@@ -106,3 +106,5 @@ Visual GA/.vs/Visual GA/v15/.suo
 GA.R
 VS Group Aug Basic/Release/VS Group Aug Basic.ipdb
 *.iobj
+*.docx
+*.R

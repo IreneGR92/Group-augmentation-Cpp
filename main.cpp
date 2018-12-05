@@ -64,7 +64,7 @@ const double INIT_ALPHA		= 0.0;     // starting value of alpha (in gen 0)
 const double MUTATION_ALPHA = 0.05;    // mutation rate in alpha for level of help
 const double STEP_ALPHA		= 0.1;     // mutation step size in alpha for level of help
 const double INIT_ALPHA_AGE = 0.0;     
-const double MUTATION_ALPHA_AGE = 0.05;    
+const double MUTATION_ALPHA_AGE = 0.0;    
 //const double STEP_ALPHA_AGE = 0.1;
 const double INIT_ALPHA_AGE2 = 0.0;
 const double MUTATION_ALPHA_AGE2 = 0.0;
@@ -670,10 +670,10 @@ void Printparams()
 		<< "mutAlpha: " << "\t" << setprecision(4) << MUTATION_ALPHA << endl
 		<< "mutAlphaAge: " << "\t" << setprecision(4) << MUTATION_ALPHA_AGE << endl
 		<< "mutAlphaAge2: " << "\t" << setprecision(4) << MUTATION_ALPHA_AGE2 << endl
-		<< "stepAlpha: " << "\t" << setprecision(4) << STEP_ALPHA << endl
 		<< "mutBeta: " << "\t" << setprecision(4) << MUTATION_BETA << endl
-		<< "stepBeta: " << "\t" << setprecision(4) << STEP_BETA << endl
 		<< "mutDrift: " << "\t" << setprecision(4) << MUTATION_DRIFT << endl
+		<< "stepAlpha: " << "\t" << setprecision(4) << STEP_ALPHA << endl
+		<< "stepBeta: " << "\t" << setprecision(4) << STEP_BETA << endl
 		<< "stepDrift: " << "\t" << setprecision(4) << STEP_DRIFT << endl
 		<< "K0: " << "\t" << K0 << endl
 		<< "K1: " << "\t" << K1 << endl
@@ -693,10 +693,10 @@ void Printparams()
 		<< "mutAlpha: " << "\t" << setprecision(4) << MUTATION_ALPHA << endl
 		<< "mutAlphaAge: " << "\t" << setprecision(4) << MUTATION_ALPHA_AGE << endl
 		<< "mutAlphaAge2: " << "\t" << setprecision(4) << MUTATION_ALPHA_AGE2 << endl
-		<< "stepAlpha: " << "\t" << setprecision(4) << STEP_ALPHA << endl
 		<< "mutBeta: " << "\t" << setprecision(4) << MUTATION_BETA << endl
-		<< "stepBeta: " << "\t" << setprecision(4) << STEP_BETA << endl
 		<< "mutDrift: " << "\t" << setprecision(4) << MUTATION_DRIFT << endl
+		<< "stepAlpha: " << "\t" << setprecision(4) << STEP_ALPHA << endl
+		<< "stepBeta: " << "\t" << setprecision(4) << STEP_BETA << endl
 		<< "stepDrift: " << "\t" << setprecision(4) << STEP_DRIFT << endl
 		<< "K0: " << "\t" << K0 << endl
 		<< "K1: " << "\t" << K1 << endl
@@ -772,7 +772,8 @@ int main() {
 		fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
 			<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 			<< "meanBeta" << "\t"  << "Relatedness" << "\t"
-			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_Beta" << "\t"  << "corr_AB" << "\t" << endl;
+			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t" 
+			<< "SD_Beta" << "\t"  << "corr_AB" << "\t" << endl;
 
 		// column headings in output file 2
 		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "drift" << "\t" << "age" << "\t" << endl;
