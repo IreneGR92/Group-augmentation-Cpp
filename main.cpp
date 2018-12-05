@@ -41,7 +41,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 const int MAX_COLONIES = 1000;     // max number of groups or colonies --> breeding spots. 
 const int INIT_NUM_HELPERS = 2;
 
-const int NUM_GENERATIONS = 20000;
+const int NUM_GENERATIONS = 200;
 const int NUM_REPLICATES = 1;
 const int SKIP = 50;   // interval between print-outs
 
@@ -61,7 +61,7 @@ const double Xsn    = 5; // benefit of group size in survival
 
 	//For help
 const double INIT_ALPHA		= 0.0;     // starting value of alpha (in gen 0)
-const double MUTATION_ALPHA = 0.05;    // mutation rate in alpha for level of help
+const double MUTATION_ALPHA = 0.0;    // mutation rate in alpha for level of help
 const double STEP_ALPHA		= 0.1;     // mutation step size in alpha for level of help
 const double INIT_ALPHA_AGE = 0.0;     
 const double MUTATION_ALPHA_AGE = 0.0;    
@@ -71,8 +71,8 @@ const double MUTATION_ALPHA_AGE2 = 0.0;
 //const double STEP_ALPHA_AGE2 = 0.1;
 
 	//For dispersal
-const double INIT_BETA		= 0.0;     // starting value of beta (in gen 0)
-const double MUTATION_BETA	= 0.05;    // mutation rate in beta for the propensity to disperse
+const double INIT_BETA		= 1;     // starting value of beta (in gen 0)
+const double MUTATION_BETA	= 0.0;    // mutation rate in beta for the propensity to disperse
 const double STEP_BETA		= 0.1;     // mutation step size in beta for the propensity to disperse
 
 	//For relatedness
@@ -483,7 +483,8 @@ void Group::ProductDrift() { //to calculate global relatedness
 	{
 		uniform_int_distribution<int> UniformHelpers(0, vhelpers.size() - 1);
 
-		driftHelper = vhelpers[UniformHelpers(generator)].drift;
+		int chosenhelp = UniformHelpers(generator);
+		driftHelper = vhelpers[chosenhelp].drift;
 
 		productDriftHB = vbreeder.drift * driftHelper;
 		productDriftBB = vbreeder.drift * vbreeder.drift;
@@ -597,6 +598,14 @@ void Statistics(vector<Group>vgroups) {
 			sumBeta += indStatsIt->beta;
 			sumsqBeta += indStatsIt->beta*indStatsIt->beta;
 
+			if (groupStatsIt->breederalive){
+				sumDriftB += groupStatsIt->vbreeder.drift;
+				sumDriftH += indStatsIt->drift;
+				sumDriftBH += indStatsIt->drift*groupStatsIt->vbreeder.drift;
+				sumDriftBB += groupStatsIt->vbreeder.drift*groupStatsIt->vbreeder.drift;
+				++driftGroupSize;
+			}
+
 		}
 
 		sumGroupSize += groupStatsIt->groupSize;
@@ -615,12 +624,13 @@ void Statistics(vector<Group>vgroups) {
 		if (groupStatsIt->breederalive == 1) sumBeta += groupStatsIt->vbreeder.beta;
 		if (groupStatsIt->breederalive == 1) sumsqBeta += groupStatsIt->vbreeder.beta*groupStatsIt->vbreeder.beta;
 
-		sumDriftH += groupStatsIt->driftHelper;
-		if (groupStatsIt->breederalive == 1) sumDriftB += groupStatsIt->vbreeder.drift;
-
-		sumDriftBH += groupStatsIt->productDriftHB;
-		sumDriftBB += groupStatsIt->productDriftBB;
-
+		
+		/*if (groupStatsIt->breederalive == 1) {
+			sumDriftB += groupStatsIt->vbreeder.drift;
+			sumDriftH += groupStatsIt->driftHelper;
+			sumDriftBH += groupStatsIt->productDriftHB;
+			sumDriftBB += groupStatsIt->productDriftBB;
+		}*/
 		if (groupStatsIt->breederalive == 1) sumprodAlphaBeta += groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.beta;
 	}
 
@@ -776,7 +786,7 @@ int main() {
 			<< "SD_Beta" << "\t"  << "corr_AB" << "\t" << endl;
 
 		// column headings in output file 2
-		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "drift" << "\t" << "age" << "\t" << endl;
+		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "drift" << "\t" << "age"<< endl;
 
 
 		vector<Individual> vfloaters;
@@ -845,7 +855,7 @@ int main() {
 			for (vector<Group>::iterator itAgeRelatedness = vgroups.begin(); itAgeRelatedness < vgroups.end(); ++itAgeRelatedness)
 			{
 				itAgeRelatedness->IncreaseAge(); //add 1 rank or age to all individuals alive
-				itAgeRelatedness->ProductDrift();
+				//itAgeRelatedness->ProductDrift();
 
 				population += itAgeRelatedness->TotalPopulation(); //calculate number of ind in the whole population
 			}
@@ -855,14 +865,8 @@ int main() {
 				WriteMeans();
 			}
 
-			for (vector<Group>::iterator itReproduction = vgroups.begin(); itReproduction < vgroups.end(); ++itReproduction)
-			{
-				itReproduction->Fecundity();
-				itReproduction->Reproduction();
-			}
-
 			//Print last generation
-			if (gen == (NUM_GENERATIONS-1)) {
+			if (gen == (NUM_GENERATIONS)) {
 
 				int groupID = 0;
 
@@ -893,6 +897,12 @@ int main() {
 					groupID++;
 				}
 			}
+
+			for (vector<Group>::iterator itReproduction = vgroups.begin(); itReproduction < vgroups.end(); ++itReproduction)
+			{
+				itReproduction->Fecundity();
+				itReproduction->Reproduction();
+			}		
 
 		}
 
