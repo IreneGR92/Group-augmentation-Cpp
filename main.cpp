@@ -38,31 +38,32 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const int MAX_COLONIES = 1000;     // max number of groups or colonies --> breeding spots. 
+const int MAX_COLONIES = 5000;     // max number of groups or colonies --> breeding spots. 
 const int INIT_NUM_HELPERS = 2;
 
-const int NUM_GENERATIONS = 200;
-const int NUM_REPLICATES = 1;
+const int NUM_GENERATIONS = 20000;
+const int NUM_REPLICATES = 2;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double PREDATION = 0.2;
+const double PREDATION = 0.1;
+const double BIAS_FLOAT_BREEDER = 2;
 
 // Modifiers
 //const double X0r    = 1; // inflexion point in the level of help formula for the influence of rank/age
 //const double X0n    = 1; // inflexion point in the level of help formula for the influence of group size
-const double K0     = 1; // min fecundity, fecundity when no help provided.
-const double K1     = 1; // benefit of cumhelp in the fecundity
-const double Xsh    = 10; // cost of help in survival
-const double Xsn    = 5; // benefit of group size in survival
+const double K0     = 1.3; // min fecundity, fecundity when no help provided.
+const double K1     = 0; // benefit of cumhelp in the fecundity
+const double Xsh    = 1; // cost of help in survival
+const double Xsn    = 0.5; // benefit of group size in survival
 
 
 //Genetic values
 
 	//For help
 const double INIT_ALPHA		= 0.0;     // starting value of alpha (in gen 0)
-const double MUTATION_ALPHA = 0.0;    // mutation rate in alpha for level of help
-const double STEP_ALPHA		= 0.1;     // mutation step size in alpha for level of help
+const double MUTATION_ALPHA = 0.05;    // mutation rate in alpha for level of help
+const double STEP_ALPHA		= 0.01;     // mutation step size in alpha for level of help
 const double INIT_ALPHA_AGE = 0.0;     
 const double MUTATION_ALPHA_AGE = 0.0;    
 //const double STEP_ALPHA_AGE = 0.1;
@@ -71,13 +72,13 @@ const double MUTATION_ALPHA_AGE2 = 0.0;
 //const double STEP_ALPHA_AGE2 = 0.1;
 
 	//For dispersal
-const double INIT_BETA		= 1;     // starting value of beta (in gen 0)
-const double MUTATION_BETA	= 0.0;    // mutation rate in beta for the propensity to disperse
-const double STEP_BETA		= 0.1;     // mutation step size in beta for the propensity to disperse
+const double INIT_BETA		= 0.0;     // starting value of beta (in gen 0)
+const double MUTATION_BETA	= 0.05;    // mutation rate in beta for the propensity to disperse
+const double STEP_BETA		= 0.01;     // mutation step size in beta for the propensity to disperse
 
 	//For relatedness
 const double MUTATION_DRIFT = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
-const double STEP_DRIFT		= 0.1;     // mutation step size in the neutral genetic value to track level of relatedness
+const double STEP_DRIFT		= 0.01;     // mutation step size in the neutral genetic value to track level of relatedness
 
 enum classes { BREEDER, HELPER, FLOATER };
 
@@ -269,8 +270,12 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-
+	if(BREEDER||HELPER||FLOATER){
+	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers-0.1))); // +1 to know group size (1 breeder + helpers)
+	}
+	else {
+		survival = (1 - PREDATION) / 2;
+	}
 	return survival;
 }
 
@@ -288,6 +293,7 @@ void Group::SurvivalGroup(int &deaths)
 	{
 		//Calculate value of survival
 		survHIt->calcSurvival(totalHelpers);
+
 		//Mortality
 		if (Uniform(generator) > survHIt->survival)
 		{
@@ -317,9 +323,7 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
 	int counting = 0;
 	while (!vfloaters.empty() && sizevec > counting)
 	{
-		//        cout << survFIt->own << "   " <<survFIt->age << endl;
-
-				//Calculate value of survival
+		//Calculate value of survival
 		survFIt->calcSurvival(0);
 
 		//Mortality
@@ -347,7 +351,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters)
 	double RandP = Uniform(generator);
 	//poisson_distribution<int> PoissonFloat(avFloatersSample); //random sample size of floaters taken to compete for breeding spot
 	//int RandN = PoissonFloat (generator);
-	int proportFloaters = round(vfloaters.size() * 10 / MAX_COLONIES); ///justify the 10 multiplier
+	int proportFloaters = round(vfloaters.size() * BIAS_FLOAT_BREEDER / MAX_COLONIES); ///justify the 10 multiplier
 
 	//cout << proportFloaters << endl;
 
@@ -516,7 +520,7 @@ void Group::Fecundity()
 {
 	//fecundity = K0 + K1 * cumhelp;
 	//fecundity = K0 + K1 * log(cumhelp+1);
-	fecundity = K0 + cumhelp / (1 + cumhelp * K1);
+	fecundity = K0 + K1 * cumhelp / (1 + cumhelp * K1);
 
 	poisson_distribution<int> PoissonFec(fecundity);
 	realfecundity = PoissonFec(generator);
