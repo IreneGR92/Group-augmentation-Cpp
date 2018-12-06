@@ -75,6 +75,9 @@ const double MUTATION_ALPHA_AGE2 = 0.0;
 const double INIT_BETA		= 0.0;     // starting value of beta (in gen 0)
 const double MUTATION_BETA	= 0.05;    // mutation rate in beta for the propensity to disperse
 const double STEP_BETA		= 0.01;     // mutation step size in beta for the propensity to disperse
+const double INIT_BETA_AGE = 0.0;     // starting value of beta (in gen 0)
+const double MUTATION_BETA_AGE = 0.05;    // mutation rate in beta for the propensity to disperse
+
 
 	//For relatedness
 const double MUTATION_DRIFT = 0.05;    // mutation rate in the neutral selected value to track level of relatedness
