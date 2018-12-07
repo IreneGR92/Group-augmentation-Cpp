@@ -221,7 +221,7 @@ double Individual::calcDispersal()
 	else {
 		dispersal = 1 / (1 + exp(betaAge*age - beta));
 	}
-	
+
 	return dispersal;
 }
 
@@ -257,9 +257,9 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 /*DISPLAY LEVEL OF HELP*/
 double Individual::calcHelp()
 {
-	help = alpha + alphaAge*age + alphaAge2*age*age;
+	help = alpha + alphaAge * age + alphaAge2 * age*age;
 
-	if (help < 0) { help = 0;}
+	if (help < 0) { help = 0; }
 
 	return help;
 }
@@ -283,8 +283,8 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	if(BREEDER||HELPER||FLOATER){
-	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers-0.1))); // +1 to know group size (1 breeder + helpers)
+	if (BREEDER || HELPER || FLOATER) {
+		survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers - 0.1))); // +1 to know group size (1 breeder + helpers)
 	}
 	else {
 		survival = (1 - PREDATION) / 2;
@@ -522,7 +522,7 @@ double Group::TotalPopulation()
 	else {
 		groupSize = vhelpers.size();
 	}
-	
+
 	return groupSize;
 }
 
@@ -566,11 +566,11 @@ void Individual::Mutate() // mutate genome of offspring
 		}
 	}
 
-	if (Uniform(generator) < MUTATION_ALPHA_AGE) { 
+	if (Uniform(generator) < MUTATION_ALPHA_AGE) {
 		alphaAge += NormalA(generator);
 	}
 
-	if (Uniform(generator) < MUTATION_ALPHA_AGE2) { 
+	if (Uniform(generator) < MUTATION_ALPHA_AGE2) {
 		alphaAge2 += NormalA(generator);
 	}
 
@@ -596,15 +596,15 @@ void Individual::Mutate() // mutate genome of offspring
 void Statistics(vector<Group>vgroups) {
 
 	relatedness = 0.0,
-	meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
-	meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
-	meanAlphaAge = 0.0, stdevAlphaAge = 0.0, sumAlphaAge = 0.0, sumsqAlphaAge = 0.0, varAlphaAge = 0.0,
-	meanAlphaAge2 = 0.0, stdevAlphaAge2 = 0.0, sumAlphaAge2 = 0.0, sumsqAlphaAge2 = 0.0, varAlphaAge2 = 0.0,
-	meanBeta = 0.0, stdevBeta = 0.0, sumBeta = 0.0, sumsqBeta = 0.0, varBeta = 0.0,
-	meanBetaAge = 0.0, stdevBetaAge = 0.0, sumBetaAge = 0.0, sumsqBetaAge = 0.0, varBetaAge = 0.0,
-	meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
-	meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0, productDriftHB = 0.0, productDriftBB = 0.0,
-	corr_AlphaBeta = 0.0, sumprodAlphaBeta = 0.0;
+		meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+		meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
+		meanAlphaAge = 0.0, stdevAlphaAge = 0.0, sumAlphaAge = 0.0, sumsqAlphaAge = 0.0, varAlphaAge = 0.0,
+		meanAlphaAge2 = 0.0, stdevAlphaAge2 = 0.0, sumAlphaAge2 = 0.0, sumsqAlphaAge2 = 0.0, varAlphaAge2 = 0.0,
+		meanBeta = 0.0, stdevBeta = 0.0, sumBeta = 0.0, sumsqBeta = 0.0, varBeta = 0.0,
+		meanBetaAge = 0.0, stdevBetaAge = 0.0, sumBetaAge = 0.0, sumsqBetaAge = 0.0, varBetaAge = 0.0,
+		meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
+		meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0, productDriftHB = 0.0, productDriftBB = 0.0,
+		corr_AlphaBeta = 0.0, sumprodAlphaBeta = 0.0;
 
 	for (vector<Group>::iterator groupStatsIt = vgroups.begin(); groupStatsIt < vgroups.end(); ++groupStatsIt) {
 
@@ -625,7 +625,7 @@ void Statistics(vector<Group>vgroups) {
 			sumBetaAge += indStatsIt->betaAge;
 			sumsqBetaAge += indStatsIt->betaAge*indStatsIt->betaAge;
 
-			if (groupStatsIt->breederalive){
+			if (groupStatsIt->breederalive) {
 				sumDriftB += groupStatsIt->vbreeder.drift;
 				sumDriftH += indStatsIt->drift;
 				sumDriftBH += indStatsIt->drift*groupStatsIt->vbreeder.drift;
@@ -654,7 +654,7 @@ void Statistics(vector<Group>vgroups) {
 		if (groupStatsIt->breederalive == 1) sumBetaAge += groupStatsIt->vbreeder.betaAge;
 		if (groupStatsIt->breederalive == 1) sumsqBetaAge += groupStatsIt->vbreeder.betaAge*groupStatsIt->vbreeder.betaAge;
 
-		
+
 		/*if (groupStatsIt->breederalive == 1) {
 			sumDriftB += groupStatsIt->vbreeder.drift;
 			sumDriftH += groupStatsIt->driftHelper;
@@ -670,7 +670,7 @@ void Statistics(vector<Group>vgroups) {
 	meanAlphaAge2 = sumAlphaAge2 / population;
 	meanBeta = sumBeta / population;
 	meanBetaAge = sumBetaAge / population;
-	meanDriftB = sumDriftB / driftGroupSize; 
+	meanDriftB = sumDriftB / driftGroupSize;
 	meanDriftH = sumDriftH / driftGroupSize;
 	meanDriftBH = sumDriftBH / driftGroupSize;
 	meanDriftBB = sumDriftBB / driftGroupSize;
@@ -823,18 +823,18 @@ int main() {
 		fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
 			<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 			<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "Relatedness" << "\t"
-			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t" 
+			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
 			<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
 
 		// column headings in output file 2
-		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "betaAge" << "\t" << "drift" << "\t" << "age"<< endl;
+		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "betaAge" << "\t" << "drift" << "\t" << "age" << endl;
 
 
 		vector<Individual> vfloaters;
 		vector<Group> vgroups(MAX_COLONIES);
 
 		InitGroup(vgroups);
-	
+
 		for (vector<Group>::iterator relatednessIt = vgroups.begin(); relatednessIt < vgroups.end(); ++relatednessIt) {
 			relatednessIt->ProductDrift();
 			population += relatednessIt->TotalPopulation(); //calculate number of ind in the whole population
@@ -945,7 +945,7 @@ int main() {
 			{
 				itReproduction->Fecundity();
 				itReproduction->Reproduction();
-			}		
+			}
 
 		}
 
