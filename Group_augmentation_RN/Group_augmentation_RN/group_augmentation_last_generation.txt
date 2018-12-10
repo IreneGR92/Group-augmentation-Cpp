@@ -1,0 +1,1 @@
+groupID	type	alpha	alphaAge	alphaAge2	beta	betaAge	drift	age
