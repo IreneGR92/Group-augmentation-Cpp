@@ -68,3 +68,30 @@ fabric.properties
 
 .gradle
 
+*.exe
+*.o
+*.exe
+*.o
+*.json
+*.sln
+*.pdb
+*.ilk
+*.idb
+*.log
+*.ipch
+*.opendb
+*.tlog
+*.filters
+*.vcxproj
+*.obj
+*.db
+*.user
+*.sqlite
+*.enc
+*.sqlite-journal
+*.txt
+*.txt
+*.xlsx
+*.iobj
+*.docx
+*.R
