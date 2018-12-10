@@ -41,20 +41,20 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM = 1;		//Apply reaction norms?
 const int MAX_COLONIES	 = 5000;     // max number of groups or colonies --> breeding spots. 
 
-const int NUM_GENERATIONS = 4000;
+const int NUM_GENERATIONS = 10000;
 const int NUM_REPLICATES  = 5;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double PREDATION = 0.1;
+const double PREDATION = 0.2;
 const double BIAS_FLOAT_BREEDER = 2;
-const int    INIT_NUM_HELPERS = 5;
+const int    INIT_NUM_HELPERS = 3;
 
 // Modifiers
-const double K0     = 1.2;	// min fecundity, fecundity when no help provided.
+const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
 const double Xsh    = 1;	// cost of help in survival
-const double Xsn    = 0.5;	// benefit of group size in survival
+const double Xsn    = 1;	// benefit of group size in survival
 
 
 //Genetic values
@@ -283,12 +283,8 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	if (BREEDER || HELPER || FLOATER) {
-		survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers - 0.1))); // +1 to know group size (1 breeder + helpers)
-	}
-	else {
-		survival = (1 - PREDATION) / 2;
-	}
+	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+
 	return survival;
 }
 
