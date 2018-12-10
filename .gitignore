@@ -70,17 +70,9 @@ fabric.properties
 
 *.exe
 *.o
-*.txt
-main.exe
-main.o
 *.exe
 *.o
-Visual GA/hola.cpp
-*.txt
-*.txt
 *.json
-VS Group Aug Basic/.vs/VS Group Aug Basic/v15/.suo
-VS Group Aug Basic/.vs/VS Group Aug Basic/v15/Browse.VC.db
 *.sln
 *.pdb
 *.ilk
@@ -94,17 +86,12 @@ VS Group Aug Basic/.vs/VS Group Aug Basic/v15/Browse.VC.db
 *.obj
 *.db
 *.user
-Visual GA/.vs/Visual GA/v15/.suo
 *.sqlite
 *.enc
 *.sqlite-journal
 *.txt
 *.txt
 *.xlsx
-.RData
-.Rhistory
-GA.R
-VS Group Aug Basic/Release/VS Group Aug Basic.ipdb
 *.iobj
 *.docx
 *.R

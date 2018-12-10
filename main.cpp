@@ -39,10 +39,10 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 //Run parameters
 const bool REACTION_NORM = 1;		//Apply reaction norms?
-const int MAX_COLONIES	 = 5000;     // max number of groups or colonies --> breeding spots. 
+const int MAX_COLONIES	 = 1000;     // max number of groups or colonies --> breeding spots. 
 
-const int NUM_GENERATIONS = 10000;
-const int NUM_REPLICATES  = 5;
+const int NUM_GENERATIONS = 50000;
+const int NUM_REPLICATES  = 3;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -71,7 +71,7 @@ const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of 
     
 
 	//For dispersal
-const double INIT_BETA			= 0.0;			// bigger values higher dispersal
+const double INIT_BETA			= 1.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
 const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
