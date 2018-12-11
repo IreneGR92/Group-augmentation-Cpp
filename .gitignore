@@ -102,3 +102,12 @@ fabric.properties
 *.ipdb
 *.pdb
 *.exe
+*.txt
+*.tlog
+*.log
+*.obj
+*.pdb
+*.exe
+*.iobj
+*.ipdb
+*.pdb

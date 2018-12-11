@@ -41,7 +41,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM = 0;		//Apply reaction norms? 0=Basic model
 const int MAX_COLONIES	 = 1000;     // max number of groups or colonies --> breeding spots. 
 
-const int NUM_GENERATIONS = 100000;
+const int NUM_GENERATIONS = 100;
 const int NUM_REPLICATES  = 3;
 const int SKIP = 50;   // interval between print-outs
 
@@ -763,6 +763,13 @@ void wait_for_return()
 /* MAIN PROGRAM */
 int main() {
 
+	// column headings in output file 1
+	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
+		<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
+		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "Relatedness" << "\t"
+		<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
+		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
+
 	for (int rep = 0; rep < NUM_REPLICATES; rep++) {
 
 		gen = 0;
@@ -778,12 +785,6 @@ int main() {
 			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
 			<< "beta" << setw(9) << "betaAge" << setw(9) << "relat" << endl;
 
-		// column headings in output file 1
-		fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
-			<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
-			<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "Relatedness" << "\t"
-			<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-			<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
 
 		// column headings in output file 2
 		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "betaAge" << "\t" << "drift" << "\t" << "age" << endl;
@@ -902,7 +903,7 @@ int main() {
 
 		}
 
-		fout << endl << endl << endl;
+		//fout << endl << endl << endl;
 		fout2 << endl << endl << endl;
 
 	}
