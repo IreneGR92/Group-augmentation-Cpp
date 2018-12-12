@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_.txt");     
-ofstream fout2("group_augmentation_last_generation.txt");
+ofstream fout("group_augmentation_Xsh=3.txt");     
+ofstream fout2("group_augmentation_last_generation_Xsh=3.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -39,10 +39,10 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 //Run parameters
 const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
-const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal? 
+const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
-const int NUM_GENERATIONS = 500000;
+const int NUM_GENERATIONS = 50000;
 const int NUM_REPLICATES  = 3;
 const int SKIP = 50;   // interval between print-outs
 
@@ -54,7 +54,7 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 1;	// cost of help in survival
+const double Xsh    = 3;	// cost of help in survival
 const double Xsn    = 1;	// benefit of group size in survival
 
 
@@ -72,10 +72,10 @@ const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of 
     
 
 	//For dispersal
-const double INIT_BETA			= 0.0;			// bigger values higher dispersal
+const double INIT_BETA			= 1.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
-const double MUTATION_BETA		= 0.0;			// mutation rate for the propensity to disperse
+const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
 const double MUTATION_BETA_AGE	= 0.05;    
 const double STEP_BETA			= 0.01;			// mutation step size for the propensity to disperse
 
@@ -669,8 +669,8 @@ void Printparams()
 {
 	fout << endl << "PARAMETER VALUES" << endl
 
-		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP
-		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL
+		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
+		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
@@ -696,8 +696,8 @@ void Printparams()
 
 	fout2 << endl << "PARAMETER VALUES" << endl
 
-		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP
-		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL
+		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
+		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
@@ -783,6 +783,13 @@ int main() {
 		<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
 		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
 
+	// column headings in output file 2
+	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
+		<< "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2"<< "\t" 
+		<< "beta" << "\t" << "betaAge" << "\t" << "drift"  << endl;
+
+
+
 	for (int rep = 0; rep < NUM_REPLICATES; rep++) {
 
 		gen = 0;
@@ -797,10 +804,6 @@ int main() {
 			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9)
 			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
 			<< "beta" << setw(9) << "betaAge" << setw(9) << "relat" << endl;
-
-
-		// column headings in output file 2
-		fout2 << "groupID" << "\t" << "type" << "\t" << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t" << "beta" << "\t" << "betaAge" << "\t" << "drift" << "\t" << "age" << endl;
 
 
 		vector<Individual> vfloaters;
@@ -880,27 +883,31 @@ int main() {
 
 				for (vector<Group>::iterator itGroups = vgroups.begin(); itGroups < vgroups.end(); ++itGroups)
 				{
-					fout2 << groupID
+					fout2 << fixed << showpoint
+						<< rep
+						<< "\t" << groupID
 						<< "\t" << itGroups->vbreeder.fishType
+						<< "\t" << setprecision(4) << itGroups->vbreeder.age
 						<< "\t" << setprecision(4) << itGroups->vbreeder.alpha
 						<< "\t" << setprecision(4) << itGroups->vbreeder.alphaAge
 						<< "\t" << setprecision(4) << itGroups->vbreeder.alphaAge2
 						<< "\t" << setprecision(4) << itGroups->vbreeder.beta
 						<< "\t" << setprecision(4) << itGroups->vbreeder.betaAge
 						<< "\t" << setprecision(4) << itGroups->vbreeder.drift
-						<< "\t" << setprecision(4) << itGroups->vbreeder.age
 						<< endl;
 
 					for (vector<Individual>::iterator itHelpers = itGroups->vhelpers.begin(); itHelpers < itGroups->vhelpers.end(); ++itHelpers) {
-						fout2 << groupID
+						fout2 << fixed << showpoint 
+							<< rep
+							<< "\t" << groupID
 							<< "\t" << itHelpers->fishType
+							<< "\t" << setprecision(4) << itHelpers->age
 							<< "\t" << setprecision(4) << itHelpers->alpha
 							<< "\t" << setprecision(4) << itHelpers->alphaAge
 							<< "\t" << setprecision(4) << itHelpers->alphaAge2
 							<< "\t" << setprecision(4) << itHelpers->beta
 							<< "\t" << setprecision(4) << itHelpers->betaAge
 							<< "\t" << setprecision(4) << itHelpers->drift
-							<< "\t" << setprecision(4) << itHelpers->age
 							<< endl;
 					}
 
@@ -917,7 +924,7 @@ int main() {
 		}
 
 		//fout << endl << endl << endl;
-		fout2 << endl << endl << endl;
+		//fout2 << endl << endl << endl;
 
 	}
 	Printparams();
