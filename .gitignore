@@ -111,3 +111,13 @@ fabric.properties
 *.iobj
 *.ipdb
 *.pdb
+*.txt
+*.db
+*.pdb
+*.iobj
+*.exe
+*.log
+*.lastbuildstate
+*.tlog
+*.db
+Group_augmentation_RN/.vs/Group_augmentation_RN/v15/.suo

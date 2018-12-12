@@ -38,15 +38,16 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM = 0;		//Apply reaction norms? 0=Basic model
-const int MAX_COLONIES	 = 1000;     // max number of groups or colonies --> breeding spots. 
+const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
+const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal? 
 
-const int NUM_GENERATIONS = 100;
+const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
+const int NUM_GENERATIONS = 500000;
 const int NUM_REPLICATES  = 3;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double PREDATION = 0.15;
+const double PREDATION = 0.1;
 const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
@@ -71,10 +72,10 @@ const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of 
     
 
 	//For dispersal
-const double INIT_BETA			= 1.0;			// bigger values higher dispersal
+const double INIT_BETA			= 0.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
-const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
+const double MUTATION_BETA		= 0.0;			// mutation rate for the propensity to disperse
 const double MUTATION_BETA_AGE	= 0.05;    
 const double STEP_BETA			= 0.01;			// mutation step size for the propensity to disperse
 
@@ -207,7 +208,7 @@ void InitGroup(vector<Group> &vgroups)
 
 double Individual::calcDispersal()
 {
-	if (!REACTION_NORM) {
+	if (!REACTION_NORM_DISPERSAL) {
 
 		dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
 
@@ -255,7 +256,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 /*DISPLAY LEVEL OF HELP*/
 double Individual::calcHelp()
 {
-	if (!REACTION_NORM) {
+	if (!REACTION_NORM_HELP) {
 		help = alpha;
 	}
 	else {
@@ -524,11 +525,11 @@ void Individual::Mutate() // mutate genome of offspring
 
 	if (Uniform(generator) < MUTATION_ALPHA) {
 		alpha += NormalA(generator);
-		if (!REACTION_NORM) {
+		if (!REACTION_NORM_HELP) {
 			if (alpha < 0) { alpha = 0; }
 		}
 	}
-	if (REACTION_NORM) {
+	if (REACTION_NORM_HELP) {
 		if (Uniform(generator) < MUTATION_ALPHA_AGE) {
 			alphaAge += NormalA(generator);
 		}
@@ -540,12 +541,12 @@ void Individual::Mutate() // mutate genome of offspring
 
 	if (Uniform(generator) < MUTATION_BETA) {
 		beta += NormalB(generator);
-		if (!REACTION_NORM) {
+		if (!REACTION_NORM_DISPERSAL) {
 			if (beta < 0) { beta = 0; }
 			if (beta > 1) { beta = 1; }
 		}
 	}
-	if (REACTION_NORM) {
+	if (REACTION_NORM_DISPERSAL) {
 		if (Uniform(generator) < MUTATION_BETA_AGE) {
 			betaAge += NormalD(generator);
 		}
@@ -634,6 +635,14 @@ void Statistics(vector<Group>vgroups) {
 	meanDriftBB = sumDriftBB / driftGroupSize;
 
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
+	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 1; } //prevent to divide by 0
+
+	/*if (gen == 60500)
+	{
+		cout << "meanDriftB= " << meanDriftB << '/t' << "meanDriftH= " << meanDriftH << '/t' << "meanDriftBH= " << meanDriftBH << '/t' << "meanDriftBB= " << meanDriftBB << endl;
+		cout << "numerator=" << meanDriftBH - meanDriftB * meanDriftH << '/t' << "denominator= " << meanDriftBB - meanDriftB * meanDriftB << endl;
+		cout << "relatedness= " << relatedness << endl;
+	}*/
 
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupsize * meanGroupsize;
 	varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
@@ -660,6 +669,8 @@ void Printparams()
 {
 	fout << endl << "PARAMETER VALUES" << endl
 
+		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP
+		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
@@ -685,28 +696,30 @@ void Printparams()
 
 	fout2 << endl << "PARAMETER VALUES" << endl
 
+		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP
+		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
-		<< "Predation: " << "\t" << PREDATION << endl
-		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
-		<< "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
-		<< "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
-		<< "initBeta: " << "\t" << INIT_BETA << endl
-		<< "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
-		<< "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
-		<< "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
-		<< "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
-		<< "mutBeta: " << "\t" << MUTATION_BETA << endl
-		<< "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
-		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
-		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
-		<< "stepBeta: " << "\t" << STEP_BETA << endl
-		<< "stepDrift: " << "\t" << STEP_DRIFT << endl
-		<< "K0: " << "\t" << K0 << endl
-		<< "K1: " << "\t" << K1 << endl
-		<< "Xsh: " << "\t" << Xsh << endl
-		<< "Xsn: " << "\t" << Xsn << endl;
+		<< "Predation: " << "\t"		<< PREDATION << endl
+		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
+		<< "initAlphaAge: " << "\t"		<< INIT_ALPHA_AGE << endl
+		<< "initAlphaAge2: " << "\t"	<< INIT_ALPHA_AGE2 << endl
+		<< "initBeta: " << "\t"			<< INIT_BETA << endl
+		<< "initBetaAge: " << "\t"		<< INIT_BETA_AGE << endl
+		<< "mutAlpha: " << "\t"			<< MUTATION_ALPHA << endl
+		<< "mutAlphaAge: " << "\t"		<< MUTATION_ALPHA_AGE << endl
+		<< "mutAlphaAge2: " << "\t"		<< MUTATION_ALPHA_AGE2 << endl
+		<< "mutBeta: " << "\t"			<< MUTATION_BETA << endl
+		<< "mutBetaAge: " << "\t"		<< MUTATION_BETA_AGE << endl
+		<< "mutDrift: " << "\t"			<< MUTATION_DRIFT << endl
+		<< "stepAlpha: " << "\t"		<< STEP_ALPHA << endl
+		<< "stepBeta: " << "\t"			<< STEP_BETA << endl
+		<< "stepDrift: " << "\t"		<< STEP_DRIFT << endl
+		<< "K0: " << "\t"	<< K0 << endl
+		<< "K1: " << "\t"	<< K1 << endl
+		<< "Xsh: " << "\t"	<< Xsh << endl
+		<< "Xsn: " << "\t"	<< Xsn << endl;
 
 }
 
@@ -806,7 +819,7 @@ int main() {
 		{
 			//cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-			//if (gen == 9998) {
+			//if (gen == 60550) {
 			//	wait_for_return();
 			//}
 
