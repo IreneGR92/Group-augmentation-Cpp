@@ -1,13 +1,13 @@
 rm(list=ls())
 getwd()
-setwd('C:\\Users\\igaru\\Documents\\GitHub\\Output_files')
-GA<-read.table("group_augmentation_.txt",header = TRUE,nrows=3003)
+setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+GA<-read.table("group_augmentation_m=0.2.txt",header = TRUE,nrows=3003)
 
-head(GA)
+#head(GA)
 str(GA)
-dim(GA)
+#dim(GA)
 #View(GA)
-summary(GA)
+#summary(GA)
 
 ##Formulas
 
@@ -33,19 +33,27 @@ legend(locator(1),c("age=1","age=5","age=7"), lwd=c(2,2,2), col=c("red","blue","
 plot(GA$Generation,dispersal_Formula(1), type="l", col="red", lwd=2, xlab="Generation", ylab="Dispersal", ylim=range(min=0, max=1)) 
 lines(GA$Generation,dispersal_Formula(5), type="l", col="blue", lwd=2)
 title("Dispersal as reaction norm to age")
-legend(locator(1),c("age=1","age=5"), lwd=c(2,2), col=c("red","blue"), y.intersp=1)
+#legend(locator(1),c("age=1","age=5"), lwd=c(2,2), col=c("red","blue"), y.intersp=1)
 
 ##Relatedness plot
 
-plot(GA$Generation, GA$Relatedness, type="l", col="orange", lwd=2, xlab="Generation", ylab="Relatedness", ylim=range(min=-0.2, max=1))
+plot(GA$Generation, GA$Relatedness, type="l", col="orange", lwd=2, xlab="Generation", ylab="Relatedness", ylim=range(min=0, max=1))
 title("Relatedness")
 
 
-##Relationship between help and dispersal (basic model only)
-plot(GA$Generation,GA$meanAlpha, type="l", col="red", lwd=2, xlab="Generation", ylab=" ", ylim=range(min=0, max=1)) 
-lines(GA$Generation,GA$meanBeta, type="l", col="blue", lwd=2)
-title("Correlation help-dispersal")
-legend(locator(1),c("dispersal","help"), lwd=c(2,2), col=c("red","blue"), y.intersp=1)
+##Population stability?
+
+plot(GA$Generation, GA$Group_size, type="l", col="blue", lwd=2, xlab="Generation", ylab="Group size")
+title("Group size")
+
+
+
+
+
+
+
+
+
 
 
 # #Genes set as factors by default, change to doubles
