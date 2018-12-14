@@ -1,7 +1,7 @@
 rm(list=ls())
 getwd()
 setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
-GA<-read.table("group_augmentation_m=0.2.txt",header = TRUE,nrows=3003)
+GA<-read.table("group_augmentation_K1=2.txt",header = TRUE,nrows=3003)
 
 #head(GA)
 str(GA)
@@ -25,7 +25,7 @@ plot(GA$Generation,help_Formula(1), type="l", col="red", lwd=2, xlab="Generation
 lines(GA$Generation,help_Formula(5), type="l", col="blue", lwd=1.8)
 lines(GA$Generation,help_Formula(7), type="l", col="green", lwd=1.8)
 title("Help as reaction norm to age")
-legend(locator(1),c("age=1","age=5","age=7"), lwd=c(2,2,2), col=c("red","blue","green"), y.intersp=0.8)
+#legend(locator(1),c("age=1","age=5","age=7"), lwd=c(2,2,2), col=c("red","blue","green"), y.intersp=0.8)
 
  
 ##Dispersal plot

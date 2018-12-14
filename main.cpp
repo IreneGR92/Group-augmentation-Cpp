@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_Xsh=3.txt");     
-ofstream fout2("group_augmentation_last_generation_Xsh=3.txt");
+ofstream fout("group_augmentation_NRN.txt");     
+ofstream fout2("group_augmentation_last_generation_NRN.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -38,8 +38,8 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
-const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
+const bool REACTION_NORM_HELP = 0;		//Apply reaction norm to age for level of help? 
+const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
 const int NUM_GENERATIONS = 50000;
@@ -54,7 +54,7 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 3;	// cost of help in survival
+const double Xsh    = 1;	// cost of help in survival
 const double Xsn    = 1;	// benefit of group size in survival
 
 
@@ -72,7 +72,7 @@ const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of 
     
 
 	//For dispersal
-const double INIT_BETA			= 1.0;			// bigger values higher dispersal
+const double INIT_BETA			= 0.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
 const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
@@ -93,6 +93,7 @@ const int NO_VALUE = -1;
 int gen, population, populationBeforeSurv, deaths, floatersgenerated, driftGroupSize, maxGroupSize;
 double relatedness; 
 double  meanGroupsize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
+meanAge, stdevAge, sumAge, sumsqAge, varAge,
 meanAlpha, stdevAlpha, sumAlpha, sumsqAlpha, varAlpha,
 meanAlphaAge, stdevAlphaAge, sumAlphaAge, sumsqAlphaAge, varAlphaAge,
 meanAlphaAge2, stdevAlphaAge2, sumAlphaAge2, sumsqAlphaAge2, varAlphaAge2,
@@ -563,6 +564,7 @@ void Statistics(vector<Group>vgroups) {
 
 	relatedness = 0.0,
 		meanGroupsize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+		meanAge = 0.0, stdevAge = 0.0, sumAge = 0.0, sumsqAge = 0.0, varAge = 0.0,
 		meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
 		meanAlphaAge = 0.0, stdevAlphaAge = 0.0, sumAlphaAge = 0.0, sumsqAlphaAge = 0.0, varAlphaAge = 0.0,
 		meanAlphaAge2 = 0.0, stdevAlphaAge2 = 0.0, sumAlphaAge2 = 0.0, sumsqAlphaAge2 = 0.0, varAlphaAge2 = 0.0,
@@ -576,6 +578,9 @@ void Statistics(vector<Group>vgroups) {
 
 		for (vector<Individual>::iterator indStatsIt = groupStatsIt->vhelpers.begin(); indStatsIt < groupStatsIt->vhelpers.end(); ++indStatsIt) {
 
+			sumAge += indStatsIt->age;
+			sumsqAge += indStatsIt->alpha*indStatsIt->age;
+			
 			sumAlpha += indStatsIt->alpha;
 			sumsqAlpha += indStatsIt->alpha*indStatsIt->alpha;
 
@@ -605,6 +610,9 @@ void Statistics(vector<Group>vgroups) {
 		sumsqGroupSize += groupStatsIt->groupSize*groupStatsIt->groupSize;
 		if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
 
+		if (groupStatsIt->breederalive == 1) sumAge += groupStatsIt->vbreeder.age;
+		if (groupStatsIt->breederalive == 1) sumsqAge += groupStatsIt->vbreeder.age*groupStatsIt->vbreeder.age;
+
 		if (groupStatsIt->breederalive == 1) sumAlpha += groupStatsIt->vbreeder.alpha;
 		if (groupStatsIt->breederalive == 1) sumsqAlpha += groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.alpha;
 
@@ -624,6 +632,7 @@ void Statistics(vector<Group>vgroups) {
 	}
 
 	meanGroupsize = sumGroupSize / MAX_COLONIES;
+	meanAge = sumAge / population;
 	meanAlpha = sumAlpha / population; ///population=sumGroupSize so simplify!
 	meanAlphaAge = sumAlphaAge / population;
 	meanAlphaAge2 = sumAlphaAge2 / population;
@@ -645,6 +654,7 @@ void Statistics(vector<Group>vgroups) {
 	}*/
 
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupsize * meanGroupsize;
+	varAge = sumsqAge / population - meanAge * meanAge;
 	varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
 	varAlphaAge = sumsqAlphaAge / population - meanAlphaAge * meanAlphaAge;
 	varAlphaAge2 = sumsqAlphaAge2 / population - meanAlphaAge2 * meanAlphaAge2;
@@ -653,13 +663,14 @@ void Statistics(vector<Group>vgroups) {
 
 	// to know if there is a problem (variance cannot be negative)
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
+	varAge > 0 ? stdevAge = sqrt(varAge) : stdevAge = 0;
 	varAlpha > 0 ? stdevAlpha = sqrt(varAlpha) : stdevAlpha = 0;
 	varAlphaAge > 0 ? stdevAlphaAge = sqrt(varAlphaAge) : stdevAlphaAge = 0;
 	varAlphaAge2 > 0 ? stdevAlphaAge2 = sqrt(varAlphaAge2) : stdevAlphaAge2 = 0;
 	varBeta > 0 ? stdevBeta = sqrt(varBeta) : stdevBeta = 0;
 	varBetaAge > 0 ? stdevBetaAge = sqrt(varBetaAge) : stdevBetaAge = 0;
 
-	(stdevAlpha > 0 && stdevBeta > 0) ? corr_AlphaBeta = (sumprodAlphaBeta / population - meanAlpha * meanBeta) / (stdevAlpha*stdevBeta) : corr_AlphaBeta = 0;
+	//(stdevAlpha > 0 && stdevBeta > 0) ? corr_AlphaBeta = (sumprodAlphaBeta / population - meanAlpha * meanBeta) / (stdevAlpha*stdevBeta) : corr_AlphaBeta = 0;
 }
 
 
@@ -675,6 +686,7 @@ void Printparams()
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
 		<< "Predation: " << "\t"		<< PREDATION << endl
+		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
 		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
 		<< "initAlphaAge: " << "\t"		<< INIT_ALPHA_AGE << endl
 		<< "initAlphaAge2: " << "\t"	<< INIT_ALPHA_AGE2 << endl
@@ -702,6 +714,7 @@ void Printparams()
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
 		<< "Predation: " << "\t"		<< PREDATION << endl
+		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
 		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
 		<< "initAlphaAge: " << "\t"		<< INIT_ALPHA_AGE << endl
 		<< "initAlphaAge2: " << "\t"	<< INIT_ALPHA_AGE2 << endl
@@ -737,6 +750,7 @@ void WriteMeans()
 		<< setw(9) << floatersgenerated
 		<< setw(9) << setprecision(2) << meanGroupsize
 		<< setw(9) << maxGroupSize
+		<< setw(9) << setprecision(2) << meanAge
 		<< setw(9) << setprecision(4) << meanAlpha
 		<< setw(9) << setprecision(4) << meanAlphaAge
 		<< setw(9) << setprecision(4) << meanAlphaAge2
@@ -752,6 +766,7 @@ void WriteMeans()
 		<< "\t" << population
 		<< "\t" << deaths
 		<< "\t" << setprecision(2) << meanGroupsize
+		<< "\t" << setprecision(4) << meanAge
 		<< "\t" << setprecision(4) << meanAlpha
 		<< "\t" << setprecision(4) << meanAlphaAge
 		<< "\t" << setprecision(4) << meanAlphaAge2
@@ -759,12 +774,13 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << meanBetaAge
 		<< "\t" << setprecision(4) << relatedness
 		<< "\t" << setprecision(2) << stdevGroupSize
+		<< "\t" << setprecision(2) << stdevAge
 		<< "\t" << setprecision(4) << stdevAlpha
 		<< "\t" << setprecision(4) << stdevAlphaAge
 		<< "\t" << setprecision(4) << stdevAlphaAge2
 		<< "\t" << setprecision(4) << stdevBeta
 		<< "\t" << setprecision(4) << stdevBetaAge
-		<< "\t" << setprecision(4) << corr_AlphaBeta
+		//<< "\t" << setprecision(4) << corr_AlphaBeta
 		<< endl;
 }
 void wait_for_return()
@@ -778,9 +794,9 @@ int main() {
 
 	// column headings in output file 1
 	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
-		<< "Group_size" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
+		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "Relatedness" << "\t"
-		<< "SD_GroupSize" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
+		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
 		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
 
 	// column headings in output file 2
@@ -801,7 +817,7 @@ int main() {
 
 		// column headings on screen
 		cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9)
-			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9)
+			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9) << "age" << setw(9) 
 			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
 			<< "beta" << setw(9) << "betaAge" << setw(9) << "relat" << endl;
 
