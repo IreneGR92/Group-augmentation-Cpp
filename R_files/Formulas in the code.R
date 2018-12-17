@@ -1,24 +1,40 @@
+rm(list=ls())
+
 #DISPERSAL
-beta<- 0
-betaAge<- 1
+
 age<-seq(from=1,by=1, length=15)
 
+dispersal_Formula<-function(beta, betaAge){
+  dispersal<-1 / (1 + exp(betaAge*age - beta))
+  return(dispersal)}
+
 dispersal<- 1 / (1 + exp(betaAge*age - beta))
-dispersal2<-1 / (1 + exp(betaAge*(age - beta)))
-plot(age,dispersal, type="l", col="red", lwd=3, xlab="age", ylab="dispersal", ylim=range(min=0, max=1))
-lines(age,dispersal2, type="l", col="blue", lwd=3)
+
+plot(age,dispersal_Formula(0,0), type="l", col="red", lwd=3, xlab="age", ylab="dispersal", ylim=range(min=0, max=1))
+lines(age,dispersal_Formula(0.25,0.25), type="l", col="blue", lwd=3)
+lines(age,dispersal_Formula(-0.25,0.25), type="l", col="green", lwd=4)
+lines(age,dispersal_Formula(0.25,-0.25), type="l", col="purple", lwd=4)
+lines(age,dispersal_Formula(-0.25,-0.25), type="l", col="black", lwd=4)
+title("Dispersal")
 
 #HELP
 
-alpha<- -10
-alphaAge<- 0
-alphaAge2<- 0.5
 age<-seq(from=1,by=1, length=15)
 
-help<- alpha + alphaAge*age + alphaAge2*age*age
-plot(age,help, type="l", col="red", lwd=3, xlab="age", ylab="help")#, ylim=range(min=0, max=10)
-#lines(age,help, type="l", col="blue", lwd=3)
+help_Formula<-function(alpha, alphaAge, alphaAge2){
+  help<-alpha + alphaAge*age + alphaAge2*age*age
+  return(help)}
 
+plot(age, help_Formula(2,0.3,0.03), type="l", col="red", lwd=4, xlab="Age", ylab="Help", ylim=range(min=0, max=10))
+lines(age,help_Formula(2,0.3,-0.03), type="l", col="blue", lwd=4)
+lines(age,help_Formula(2,-0.3,0.03), type="l", col="green", lwd=4)
+lines(age,help_Formula(2,-0.3,-0.03), type="l", col="purple", lwd=4)
+title("Help")
+legend(locator(1),c("linear= +, quadratic= +",
+                    "linear= +, quadratic= -", 
+                    "linear= -, quadratic= +",
+                    "linear= -, quadratic= -"), 
+       lwd=c(2,2,2,2), col=c("red","blue","green","purple"), y.intersp=1)
 
 
 #SURVIVAL

@@ -42,8 +42,8 @@ const bool REACTION_NORM_HELP = 0;		//Apply reaction norm to age for level of he
 const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
-const int NUM_GENERATIONS = 50000;
-const int NUM_REPLICATES  = 3;
+const int NUM_GENERATIONS = 100000;
+const int MAX_NUM_REPLICATES  = 3;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -72,7 +72,7 @@ const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of 
     
 
 	//For dispersal
-const double INIT_BETA			= 0.0;			// bigger values higher dispersal
+const double INIT_BETA			= 1.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
 const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
@@ -90,7 +90,7 @@ enum classes { BREEDER, HELPER, FLOATER };
 const int NO_VALUE = -1;
 
 //Population parameters and Statistics
-int gen, population, populationBeforeSurv, deaths, floatersgenerated, driftGroupSize, maxGroupSize;
+int replica, gen, population, populationBeforeSurv, deaths, floatersgenerated, driftGroupSize, maxGroupSize;
 double relatedness; 
 double  meanGroupsize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
 meanAge, stdevAge, sumAge, sumsqAge, varAge,
@@ -644,7 +644,7 @@ void Statistics(vector<Group>vgroups) {
 	meanDriftBB = sumDriftBB / driftGroupSize;
 
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
-	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 1; } //prevent to divide by 0
+	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 2; } //prevent to divide by 0
 
 	/*if (gen == 60500)
 	{
@@ -678,13 +678,14 @@ void Statistics(vector<Group>vgroups) {
 /* WRITE PARAMETER SETTINGS TO OUTPUT FILE */
 void Printparams()
 {
-	fout << endl << "PARAMETER VALUES" << endl
+	fout << "PARAMETER VALUES" << endl
 
 		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
 		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
+		<< "Number replicates: " << "\t" << MAX_NUM_REPLICATES << endl
 		<< "Predation: " << "\t"		<< PREDATION << endl
 		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
 		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
@@ -704,15 +705,16 @@ void Printparams()
 		<< "K0: " << "\t"	<< K0 << endl
 		<< "K1: " << "\t"	<< K1 << endl
 		<< "Xsh: " << "\t"	<< Xsh << endl
-		<< "Xsn: " << "\t"	<< Xsn << endl;
+		<< "Xsn: " << "\t"	<< Xsn << endl << endl;
 
-	fout2 << endl << "PARAMETER VALUES" << endl
+	fout2 << "PARAMETER VALUES" << endl
 
 		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
 		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
+		<< "Number replicates: " << "\t" << MAX_NUM_REPLICATES << endl
 		<< "Predation: " << "\t"		<< PREDATION << endl
 		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
 		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
@@ -732,7 +734,7 @@ void Printparams()
 		<< "K0: " << "\t"	<< K0 << endl
 		<< "K1: " << "\t"	<< K1 << endl
 		<< "Xsh: " << "\t"	<< Xsh << endl
-		<< "Xsn: " << "\t"	<< Xsn << endl;
+		<< "Xsn: " << "\t"	<< Xsn << endl << endl;
 
 }
 
@@ -791,13 +793,15 @@ void wait_for_return()
 
 /* MAIN PROGRAM */
 int main() {
-
+	
+	Printparams();
+	
 	// column headings in output file 1
 	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
 		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "Relatedness" << "\t"
 		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "corr_AB" << "\t" << endl;
+		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" /*<< "corr_AB" << "\t"*/ << endl;
 
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
@@ -806,7 +810,7 @@ int main() {
 
 
 
-	for (int rep = 0; rep < NUM_REPLICATES; rep++) {
+	for (replica = 0; replica < MAX_NUM_REPLICATES; replica++) {
 
 		gen = 0;
 		deaths = 0; // to keep track of how many individuals die each generation
@@ -900,7 +904,7 @@ int main() {
 				for (vector<Group>::iterator itGroups = vgroups.begin(); itGroups < vgroups.end(); ++itGroups)
 				{
 					fout2 << fixed << showpoint
-						<< rep
+						<< replica + 1
 						<< "\t" << groupID
 						<< "\t" << itGroups->vbreeder.fishType
 						<< "\t" << setprecision(4) << itGroups->vbreeder.age
@@ -914,7 +918,7 @@ int main() {
 
 					for (vector<Individual>::iterator itHelpers = itGroups->vhelpers.begin(); itHelpers < itGroups->vhelpers.end(); ++itHelpers) {
 						fout2 << fixed << showpoint 
-							<< rep
+							<< replica + 1 
 							<< "\t" << groupID
 							<< "\t" << itHelpers->fishType
 							<< "\t" << setprecision(4) << itHelpers->age
@@ -943,7 +947,6 @@ int main() {
 		//fout2 << endl << endl << endl;
 
 	}
-	Printparams();
 
 	wait_for_return();
 
