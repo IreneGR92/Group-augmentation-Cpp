@@ -1,8 +1,9 @@
 rm(list=ls())
 library(data.table)
 getwd()
-setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
-GA2<-read.table("group_augmentation_last_generation_m=0.2.txt",header = TRUE, skip=27)
+#setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
+GA2<-read.table("group_augmentation_last_generation_init.txt",header = TRUE, skip=27)
 GA2 <- subset(GA2, age>0)
 setDF(GA2)
 
@@ -53,13 +54,13 @@ library(formattable)
 descriptives <- data.frame(Variable=c("alpha", "alphaAge", "alphaAge2",
                                       "beta", "betaAge", "age", "Help","Dispersal"),
                  Sign=c("=","=","=","=","=","=","=","="),
-                 Mean=c(means[mean(1:3),3],means[mean(1:3),4],means[mean(1:3),5],
-                        means[mean(1:3),6],means[mean(1:3),7],means[mean(1:3),2],
-                        means[mean(1:3),9],means[mean(1:3),10]),
+                 Mean=c(means[mean(1:20),3],means[mean(1:20),4],means[mean(1:20),5],
+                        means[mean(1:20),6],means[mean(1:20),7],means[mean(1:20),2],
+                        means[mean(1:20),9],means[mean(1:20),10]),
                  Sign=c("±","±","±","±","±","±","±","±"),
-                 SD=c(SD[mean(1:3),3],SD[mean(1:3),4],SD[mean(1:3),5],
-                      SD[mean(1:3),6],SD[mean(1:3),7],SD[mean(1:3),2],
-                      SD[mean(1:3),9],SD[mean(1:3),10]))
+                 SD=c(SD[mean(1:20),3],SD[mean(1:20),4],SD[mean(1:20),5],
+                      SD[mean(1:20),6],SD[mean(1:20),7],SD[mean(1:20),2],
+                      SD[mean(1:20),9],SD[mean(1:20),10]))
 
 descriptives
 

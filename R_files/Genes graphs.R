@@ -1,7 +1,14 @@
 rm(list=ls())
 getwd()
-setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
-GA<-read.table("group_augmentation_m=0.2.txt",header = TRUE,skip=27)
+#setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
+GA<-read.table("group_augmentation_init.txt",header = TRUE,skip=27)
+
+library("lattice")
+library("Formula")
+library("survival")
+library("ggplot2")
+library("Hmisc")
 
 #head(GA)
 str(GA)
@@ -44,22 +51,40 @@ GA_means<-do_mean(GA)
 GA_SD<-do_sd(GA)
 
 
+
 ##Help plot
-plot(GA_means$Generation,GA_means$Help, type="l", col="red",lwd=2, xlab="Generation", ylab="Help",ylim=range(min=0, max=1))
-title("Help")
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Help)) +
+  geom_ribbon(aes(ymin=GA_means$Help-GA_SD$Help, ymax=GA_means$Help+GA_SD$Help),
+              alpha=0.3) +
+  geom_line(color="red", size=1)+
+  xlab("Generation")+ ylab("Help")+title("Help")+
+  coord_cartesian(ylim = c(0.049, 1)) 
+
 
 ##Dispersal plot
-plot(GA_means$Generation,GA_means$Dispersal, type="l", col="blue", lwd=2, xlab="Generation", ylab="Dispersal", ylim=range(min=0, max=1)) 
-title("Dispersal")
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Dispersal)) +
+  geom_ribbon(aes(ymin=GA_means$Dispersal-GA_SD$Dispersal, ymax=GA_means$Dispersal+GA_SD$Dispersal),
+              alpha=0.3) +
+  geom_line(color="blue", size=1)+
+  xlab("Generation")+ ylab("Dispersal")+title("Dispersal")+
+  coord_cartesian(ylim = c(0.049, 1)) 
 
 ##Relatedness plot
-plot(GA_means$Generation,GA_means$Relatedness, type="l", col="orange", lwd=2, xlab="Generation", ylab="Relatedness", ylim=range(min=0, max=1))
-title("Relatedness")
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Relatedness)) +
+  geom_ribbon(aes(ymin=GA_means$Relatedness-GA_SD$Relatedness, ymax=GA_means$Relatedness+GA_SD$Relatedness),
+              alpha=0.3) +
+  geom_line(color="orange", size=1)+
+  xlab("Generation")+ ylab("Relatedness")+title("Relatedness")+
+  coord_cartesian(ylim = c(0.049, 1)) 
 
 
 ##Population stability?
-plot(GA_means$Generation,GA_means$Group_size, type="l", col="purple", lwd=2, xlab="Generation", ylab="Group size")
-title("Group size")
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
+  geom_ribbon(aes(ymin=GA_means$Group_size-GA_SD$Group_size, ymax=GA_means$Group_size+GA_SD$Group_size),
+              alpha=0.3) +
+  geom_line(color="purple", size=1)+
+  xlab("Generation")+ ylab("Group size")+title("Group size")
+  
 
 
 
@@ -111,3 +136,6 @@ title("Group size")
 #lines(GA$Generation,help_Formula(7), type="l", col="green", lwd=1.8)
 #title("Help as reaction norm to age")
 #legend(locator(1),c("age=1","age=5","age=7"), lwd=c(2,2,2), col=c("red","blue","green"), y.intersp=0.8)
+
+#plot(GA_means$Generation,GA_means$Help, type="l", col="red",lwd=2, xlab="Generation", ylab="Help",ylim=range(min=0, max=1))
+#title("Help")
