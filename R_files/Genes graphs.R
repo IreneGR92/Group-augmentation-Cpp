@@ -1,39 +1,17 @@
 rm(list=ls())
 getwd()
-#setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
-setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
+setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+#setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
 GA<-read.table("group_augmentation_init.txt",header = TRUE,skip=27)
 
-library("lattice")
-library("Formula")
-library("survival")
 library("ggplot2")
-library("Hmisc")
+
 
 #head(GA)
-str(GA)
+#str(GA)
 #dim(GA)
 #View(GA)
 #summary(GA)
-
-##Formulas
-replace_with_zero_if_below_zero <- function(x) {
-  x <- ifelse(x<0,0,x)
-  return(x)
-}
-
-help_Formula<-function(){
-  help<-GA$meanAlpha+GA$meanAlphaAge*GA$Age+GA$meanAlphaAge2*GA$Age*GA$Age
-  help <- sapply(help, replace_with_zero_if_below_zero)
-  return(help)}
-
-GA$Help <- help_Formula()#includes breeders 
-
-dispersal_Formula<-function(){
-  dispersal<-1 / (1 + exp(GA$meanBetaAge*GA$Age - GA$meanBeta))
-  return(dispersal)}
-
-GA$Dispersal<-dispersal_Formula()
 
 
 ##Means between replicas
@@ -53,20 +31,20 @@ GA_SD<-do_sd(GA)
 
 
 ##Help plot
-ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Help)) +
-  geom_ribbon(aes(ymin=GA_means$Help-GA_SD$Help, ymax=GA_means$Help+GA_SD$Help),
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$meanHelp)) +
+  geom_ribbon(aes(ymin=GA_means$meanHelp-GA_SD$meanHelp, ymax=GA_means$meanHelp+GA_SD$meanHelp),
               alpha=0.3) +
   geom_line(color="red", size=1)+
-  xlab("Generation")+ ylab("Help")+title("Help")+
+  xlab("Generation")+ ylab("Help")+
   coord_cartesian(ylim = c(0.049, 1)) 
 
 
 ##Dispersal plot
-ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Dispersal)) +
-  geom_ribbon(aes(ymin=GA_means$Dispersal-GA_SD$Dispersal, ymax=GA_means$Dispersal+GA_SD$Dispersal),
+ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$meanDispersal)) +
+  geom_ribbon(aes(ymin=GA_means$meanDispersal-GA_SD$meanDispersal, ymax=GA_means$meanDispersal+GA_SD$meanDispersal),
               alpha=0.3) +
   geom_line(color="blue", size=1)+
-  xlab("Generation")+ ylab("Dispersal")+title("Dispersal")+
+  xlab("Generation")+ ylab("Dispersal")+
   coord_cartesian(ylim = c(0.049, 1)) 
 
 ##Relatedness plot
@@ -74,7 +52,7 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Relatedness)) +
   geom_ribbon(aes(ymin=GA_means$Relatedness-GA_SD$Relatedness, ymax=GA_means$Relatedness+GA_SD$Relatedness),
               alpha=0.3) +
   geom_line(color="orange", size=1)+
-  xlab("Generation")+ ylab("Relatedness")+title("Relatedness")+
+  xlab("Generation")+ ylab("Relatedness")+
   coord_cartesian(ylim = c(0.049, 1)) 
 
 
@@ -83,7 +61,7 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
   geom_ribbon(aes(ymin=GA_means$Group_size-GA_SD$Group_size, ymax=GA_means$Group_size+GA_SD$Group_size),
               alpha=0.3) +
   geom_line(color="purple", size=1)+
-  xlab("Generation")+ ylab("Group size")+title("Group size")
+  xlab("Generation")+ ylab("Group size")
   
 
 
@@ -139,3 +117,25 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
 
 #plot(GA_means$Generation,GA_means$Help, type="l", col="red",lwd=2, xlab="Generation", ylab="Help",ylim=range(min=0, max=1))
 #title("Help")
+
+
+# ##Formulas
+# replace_with_zero_if_below_zero <- function(x) {
+#   x <- ifelse(x<0,0,x)
+#   return(x)
+# }
+# 
+# help_Formula<-function(){
+#   help<-GA$meanAlpha+GA$meanAlphaAge*GA$Age+GA$meanAlphaAge2*GA$Age*GA$Age
+#   help <- sapply(help, replace_with_zero_if_below_zero)
+#   return(help)}
+# 
+# GA$Help <- help_Formula()#includes breeders 
+# 
+# dispersal_Formula<-function(){
+#   dispersal<-1 / (1 + exp(GA$meanBetaAge*GA$Age - GA$meanBeta))
+#   return(dispersal)}
+# 
+# GA$Dispersal<-dispersal_Formula()
+
+
