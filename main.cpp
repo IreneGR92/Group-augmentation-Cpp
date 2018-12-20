@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_m=0.2.txt");     
-ofstream fout2("group_augmentation_last_generation_m=0.2.txt");
+ofstream fout("group_augmentation_NRN_help.txt");     
+ofstream fout2("group_augmentation_last_generation_NRN_help.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -37,7 +37,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
+const bool REACTION_NORM_HELP = 0;		//Apply reaction norm to age for level of help? 
 const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
@@ -46,7 +46,7 @@ const int MAX_NUM_REPLICATES  = 5;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double PREDATION = 0.2;
+const double PREDATION = 0.1;
 const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
@@ -181,14 +181,14 @@ struct Group // define group traits
 
 Group::Group(double alpha_ = INIT_ALPHA, double alphaAge_ = INIT_ALPHA_AGE, double alphaAge2_ = INIT_ALPHA_AGE2, double beta_ = INIT_BETA, double betaAge_ = INIT_BETA_AGE, int numhelp_ = INIT_NUM_HELPERS)
 {
-	vbreeder = Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftNormal(generator), BREEDER);
+	vbreeder = Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), BREEDER);
 	breederalive = 1;
 	fecundity = NO_VALUE;
 	realfecundity = NO_VALUE;
 
 	for (int i = 0; i < numhelp_; ++i)
 	{
-		vhelpers.push_back(Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftNormal(generator), HELPER));
+		vhelpers.push_back(Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), HELPER));
 	}
 
 	TotalPopulation();
