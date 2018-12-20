@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_NRN_help.txt");     
-ofstream fout2("group_augmentation_last_generation_NRN_help.txt");
+ofstream fout("group_augmentation_init.txt");     
+ofstream fout2("group_augmentation_last_generation_init.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -37,12 +37,12 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM_HELP = 0;		//Apply reaction norm to age for level of help? 
+const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
 const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
 const int NUM_GENERATIONS = 100000;
-const int MAX_NUM_REPLICATES  = 5;
+const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -102,7 +102,7 @@ meanHelp, stdevHelp, sumHelp, sumsqHelp, varHelp,
 meanDispersal, stdevDispersal, sumDispersal, sumsqDispersal, varDispersal,
 meanDriftB, sumDriftB, meanDriftH, sumDriftH,											//relatedness
 meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,
-corr_AlphaBeta, sumprodAlphaBeta;
+corr_HelpDispersal, sumprodHelpDispersal;
 
 
 //Structures
@@ -575,7 +575,7 @@ void Statistics(vector<Group>vgroups) {
 		meanDispersal = 0.0, stdevDispersal = 0.0, sumDispersal = 0.0, sumsqDispersal = 0.0, varDispersal = 0.0,
 		meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
 		meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0, 
-		corr_AlphaBeta = 0.0, sumprodAlphaBeta = 0.0;
+		corr_HelpDispersal = 0.0, sumprodHelpDispersal = 0.0;
 
 	for (vector<Group>::iterator groupStatsIt = vgroups.begin(); groupStatsIt < vgroups.end(); ++groupStatsIt) {
 
@@ -604,6 +604,8 @@ void Statistics(vector<Group>vgroups) {
 
 			sumDispersal += indStatsIt->dispersal;
 			sumsqDispersal += indStatsIt->dispersal*indStatsIt->dispersal;
+
+			sumprodHelpDispersal += indStatsIt->help*indStatsIt->dispersal;
 
 			if (groupStatsIt->breederalive) {
 				sumDriftB += groupStatsIt->vbreeder.drift;
@@ -638,7 +640,6 @@ void Statistics(vector<Group>vgroups) {
 		if (groupStatsIt->breederalive == 1) sumBetaAge += groupStatsIt->vbreeder.betaAge;
 		if (groupStatsIt->breederalive == 1) sumsqBetaAge += groupStatsIt->vbreeder.betaAge*groupStatsIt->vbreeder.betaAge;
 
-		if (groupStatsIt->breederalive == 1) sumprodAlphaBeta += groupStatsIt->vbreeder.alpha*groupStatsIt->vbreeder.beta;
 	}
 
 	meanGroupsize = sumGroupSize / MAX_COLONIES;
@@ -686,7 +687,7 @@ void Statistics(vector<Group>vgroups) {
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
 
-	//(stdevAlpha > 0 && stdevBeta > 0) ? corr_AlphaBeta = (sumprodAlphaBeta / population - meanAlpha * meanBeta) / (stdevAlpha*stdevBeta) : corr_AlphaBeta = 0;
+	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / population - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
 }
 
 
@@ -802,8 +803,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << stdevBetaAge
 		<< "\t" << setprecision(4) << stdevHelp
 		<< "\t" << setprecision(4) << stdevDispersal
-
-		//<< "\t" << setprecision(4) << corr_AlphaBeta
+		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< endl;
 }
 void wait_for_return()
@@ -822,7 +822,7 @@ int main() {
 		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "meanHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
 		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal"  /*<< "corr_AB" << "\t"*/ << endl;
+		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp" << endl;
 
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
