@@ -1,6 +1,6 @@
 rm(list=ls())
 getwd()
-setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files\\20_replicas')
 #setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
 GA<-read.table("group_augmentation_init.txt",header = TRUE,skip=27)
 
@@ -29,6 +29,7 @@ GA_means<-do_mean(GA)
 GA_SD<-do_sd(GA)
 
 
+################## PLOTS ############################
 
 ##Help plot
 ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$meanHelp)) +
@@ -65,6 +66,59 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
   
 
 
+################## STATS LAST GENERATION ############################
+
+##Means and SD of the means of the variables between the different replicas
+
+do_mean_LG<-function(x){
+  x<-round(mean(x[GA$Generation==100000]), digits = 4)
+  return(x)
+}
+
+do_SD_LG<-function(x){
+  x<-round(sd(x[GA$Generation==100000]), digits = 4)
+  return(x)
+}
+
+meanAlpha<-do_mean_LG(GA$meanAlpha)
+meanAlphaAge<-do_mean_LG(GA$meanAlphaAge)
+meanAlphaAge2<-do_mean_LG(GA$meanAlphaAge2)
+meanBeta<-do_mean_LG(GA$meanBeta)
+meanBetaAge<-do_mean_LG(GA$meanBetaAge)
+meanAge<-do_mean_LG(GA$Age)
+meanHelp<-do_mean_LG(GA$meanHelp)
+meanDispersal<-do_mean_LG(GA$meanDispersal)
+meanRelatedness<-do_mean_LG(GA$Relatedness)
+meanCorr_Help_Disp<-do_mean_LG(GA$corr_Help_Disp)
+
+SD_Alpha<-do_SD_LG(GA$meanAlpha)
+SD_AlphaAge<-do_SD_LG(GA$meanAlphaAge)
+SD_AlphaAge2<-do_SD_LG(GA$meanAlphaAge2)
+SD_Beta<-do_SD_LG(GA$meanBeta)
+SD_BetaAge<-do_SD_LG(GA$meanBetaAge)
+SD_Age<-do_SD_LG(GA$Age)
+SD_Help<-do_SD_LG(GA$meanHelp)
+SD_Dispersal<-do_SD_LG(GA$meanDispersal)
+SD_Relatedness<-do_SD_LG(GA$Relatedness)
+SDcorr_Help_Disp<-do_SD_LG(GA$corr_Help_Disp)
+
+
+library(formattable)
+
+descriptives <- data.frame(Variable=c("alpha", "alphaAge", "alphaAge2",
+                                      "beta", "betaAge", "age", 
+                                      "Help","Dispersal", "Relatedness","Help_Disp"),
+                           Sign=c("=","=","=","=","=","=","=","=","=","="),
+                           Mean=c(meanAlpha, meanAlphaAge, meanAlphaAge2,
+                                  meanBeta, meanBetaAge, meanAge,
+                                  meanHelp,meanDispersal,meanRelatedness,meanCorr_Help_Disp),
+                           Sign=c("±","±","±","±","±","±","±","±","±","±"),
+                           SD=c(SD_Alpha,SD_AlphaAge,SD_AlphaAge2,
+                                SD_Beta,SD_BetaAge,SD_Age,
+                                SD_Help,SD_Dispersal,SD_Relatedness,SDcorr_Help_Disp))
+
+descriptives
+
 
 
 
@@ -78,36 +132,6 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
 # if (is.factor(GA$meanAlpha)) {
 #   meanAlpha<-as.numeric(levels(GA$meanAlpha))[GA$meanAlpha]
 # } else{meanAlpha<-GA$meanAlpha}
-# 
-# if (is.factor(GA$meanAlphaAge)) {
-#   meanAlphaAge<-as.numeric(levels(GA$meanAlphaAge))[GA$meanAlphaAge]
-# } else{meanAlphaAge<-GA$meanAlphaAge}
-# 
-# if (is.factor(GA$meanAlphaAge2)) {
-#   meanAlphaAge2<-as.numeric(levels(GA$meanAlphaAge2))[GA$meanAlphaAge2]
-# } else{meanAlphaAge2<-GA$meanAlphaAge2}
-# 
-# if (is.factor(GA$meanBeta)) {
-#   meanBeta<-as.numeric(levels(GA$meanBeta))[GA$meanBeta]
-# } else{meanBeta<-GA$meanBeta}
-# 
-# if (is.factor(GA$meanBetaAge)) {
-#   meanBetaAge<-as.numeric(levels(GA$meanBetaAge))[GA$meanBetaAge]
-# } else{meanBetaAge<-GA$meanBetaAge}
-# 
-# if (is.factor(GA$Relatedness)) {
-#   Relatedness<-as.numeric(levels(GA$Relatedness))[GA$Relatedness]
-# } else{Relatedness<-GA$Relatedness}
-# 
-# 
-# #Attention with the NA introduced!
-# summary(meanAlpha)
-# summary(meanAlphaAge)
-# summary(meanAlphaAge2)
-# summary(meanBeta)
-# summary(meanBetaAge)
-# summary(Relatedness)
-
 
 #plot(GA$Generation,help_Formula(1), type="l", col="red", lwd=2, xlab="Generation", ylab="Help",ylim=range(min=0, max=1))
 #lines(GA$Generation,help_Formula(5), type="l", col="blue", lwd=1.8)
@@ -115,27 +139,14 @@ ggplot(GA_means, aes(x=GA_means$Generation, y=GA_means$Group_size)) +
 #title("Help as reaction norm to age")
 #legend(locator(1),c("age=1","age=5","age=7"), lwd=c(2,2,2), col=c("red","blue","green"), y.intersp=0.8)
 
-#plot(GA_means$Generation,GA_means$Help, type="l", col="red",lwd=2, xlab="Generation", ylab="Help",ylim=range(min=0, max=1))
-#title("Help")
-
-
-# ##Formulas
-# replace_with_zero_if_below_zero <- function(x) {
-#   x <- ifelse(x<0,0,x)
-#   return(x)
-# }
+#Mean and SD of Relatedness for last generation
 # 
-# help_Formula<-function(){
-#   help<-GA$meanAlpha+GA$meanAlphaAge*GA$Age+GA$meanAlphaAge2*GA$Age*GA$Age
-#   help <- sapply(help, replace_with_zero_if_below_zero)
-#   return(help)}
+# meanRelatedness<-round(mean(GA$Relatedness[GA$Generation==100000]), digits = 4)
+# sdRelatedness<-round(sd(GA$Relatedness[GA$Generation==100000]), digits = 4)
 # 
-# GA$Help <- help_Formula()#includes breeders 
-# 
-# dispersal_Formula<-function(){
-#   dispersal<-1 / (1 + exp(GA$meanBetaAge*GA$Age - GA$meanBeta))
-#   return(dispersal)}
-# 
-# GA$Dispersal<-dispersal_Formula()
-
-
+# descriptives <- data.frame(Variable=c("relatedness"),
+#                            Sign=c("="),
+#                            Mean=c(meanRelatedness),
+#                            Sign=c("±"),
+#                            SD=c(sdRelatedness))
+# descriptives

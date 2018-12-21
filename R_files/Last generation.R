@@ -1,9 +1,9 @@
 rm(list=ls())
 library(data.table)
 getwd()
-setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files')
+setwd('H:\\PhD\\CODE\\Group_augmentation_Cplusplus\\Output_files\\20_replicas')
 #setwd('C:\\Users\\igaru\\Documents\\GitHub\\Group_augmentation_Cplusplus\\Group_augmentation_RN\\Group_augmentation_RN')
-GA2<-read.table("group_augmentation_last_generation_NRN.txt",header = TRUE, skip=27)
+GA2<-read.table("group_augmentation_last_generation_init.txt",header = TRUE, skip=27)
 GA2 <- subset(GA2, age>0)
 setDF(GA2)
 
@@ -38,38 +38,41 @@ dispersal_Formula<-function(){
 GA2$Dispersal<-dispersal_Formula()
 GA2[GA2$type==0,]$Dispersal<-NA
 
-#View(GA2)
-
-
-##DESCRIPTIVE STATISTICS
-
-###Means and SD by replicas
-means<-round(aggregate(GA2[, 4:12], list(GA2$replica), mean, na.rm=TRUE), digits = 4)
-
-SD<-round(aggregate(GA2[, 4:12], list(GA2$replica), sd, na.rm=TRUE), digits = 4)
-
-
-library(formattable)
-
-#3 replicas in this case (change values when more replicas applied)
-descriptives <- data.frame(Variable=c("alpha", "alphaAge", "alphaAge2",
-                                      "beta", "betaAge", "age", "Help","Dispersal"),
-                 Sign=c("=","=","=","=","=","=","=","="),
-                 Mean=c(means[mean(1:3),3],means[mean(1:3),4],means[mean(1:3),5],
-                        means[mean(1:3),6],means[mean(1:3),7],means[mean(1:3),2],
-                        means[mean(1:3),9],means[mean(1:3),10]),
-                 Sign=c("±","±","±","±","±","±","±","±"),
-                 SD=c(SD[mean(1:3),3],SD[mean(1:3),4],SD[mean(1:3),5],
-                      SD[mean(1:3),6],SD[mean(1:3),7],SD[mean(1:3),2],
-                      SD[mean(1:3),9],SD[mean(1:3),10]))
-
-descriptives
-
 
 ##PLOTS
 
 plot(GA2$Help, GA2$Dispersal,col=GA2$replica, xlab="Help", ylab="Dispersal")
 title("Dispersal vs Help")
+
+
+
+
+# ##DESCRIPTIVE STATISTICS
+# 
+# ###Means and SD by replicas
+# means<-round(aggregate(GA2[, 4:12], list(GA2$replica), mean, na.rm=TRUE), digits = 4)
+# 
+# SD<-round(aggregate(GA2[, 4:12], list(GA2$replica), sd, na.rm=TRUE), digits = 4)
+# 
+# 
+# library(formattable)
+# 
+# #20 replicas in this case (change values when more replicas applied) NOT SURE IF THIS IS CORRECT, DIFFERENT RESULTS TO THE OTHER FILE
+# descriptives <- data.frame(Variable=c("alpha", "alphaAge", "alphaAge2",
+#                                       "beta", "betaAge", "age", "Help","Dispersal"),
+#                  Sign=c("=","=","=","=","=","=","=","="),
+#                  Mean=c(means[mean(1:20),3],means[mean(1:20),4],means[mean(1:20),5],
+#                         means[mean(1:20),6],means[mean(1:20),7],means[mean(1:20),2],
+#                         means[mean(1:20),9],means[mean(1:20),10]),
+#                  Sign=c("±","±","±","±","±","±","±","±"),
+#                  SD=c(means[sd(1:20),3],means[sd(1:20),4],means[sd(1:20),5],
+#                       means[sd(1:20),6],means[sd(1:20),7],means[sd(1:20),2],
+#                       means[sd(1:20),9],means[sd(1:20),10]))
+# 
+# descriptives
+
+
+
 
 
 

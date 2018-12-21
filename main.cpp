@@ -41,7 +41,7 @@ const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of he
 const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
-const int NUM_GENERATIONS = 100000;
+const int NUM_GENERATIONS = 200000;
 const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
@@ -53,7 +53,7 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 1;	// cost of help in survival
+const double Xsh    = 3;	// cost of help in survival
 const double Xsn    = 1;	// benefit of group size in survival
 
 
@@ -687,7 +687,7 @@ void Statistics(vector<Group>vgroups) {
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
 
-	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / population - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
+	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / populationHelpers - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
 }
 
 
