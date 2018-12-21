@@ -102,20 +102,22 @@ SD_Dispersal<-do_SD_LG(GA$meanDispersal)
 SD_Relatedness<-do_SD_LG(GA$Relatedness)
 SDcorr_Help_Disp<-do_SD_LG(GA$corr_Help_Disp)
 
+corr_Help_Relat<-(sum(GA$meanHelp[GA$Generation==100000]*GA$Relatedness[GA$Generation==100000]) / 20 - meanHelp * meanRelatedness) / (SD_Help*SD_Relatedness)
+corr_Disp_Relat<-(sum(GA$meanDispersal[GA$Generation==100000]*GA$Relatedness[GA$Generation==100000]) / 20 - meanDispersal * meanRelatedness) / (SD_Dispersal*SD_Relatedness)
 
 library(formattable)
 
 descriptives <- data.frame(Variable=c("alpha", "alphaAge", "alphaAge2",
                                       "beta", "betaAge", "age", 
-                                      "Help","Dispersal", "Relatedness","Help_Disp"),
-                           Sign=c("=","=","=","=","=","=","=","=","=","="),
+                                      "Help","Dispersal", "Relatedness","Help_Disp","Help_Relat","Disp_Relat"),
+                           Sign=c("=","=","=","=","=","=","=","=","=","=","=","="),
                            Mean=c(meanAlpha, meanAlphaAge, meanAlphaAge2,
                                   meanBeta, meanBetaAge, meanAge,
-                                  meanHelp,meanDispersal,meanRelatedness,meanCorr_Help_Disp),
-                           Sign=c("±","±","±","±","±","±","±","±","±","±"),
+                                  meanHelp,meanDispersal,meanRelatedness,meanCorr_Help_Disp,corr_Help_Relat,corr_Disp_Relat),
+                           Sign=c("±","±","±","±","±","±","±","±","±","±"," "," "),
                            SD=c(SD_Alpha,SD_AlphaAge,SD_AlphaAge2,
                                 SD_Beta,SD_BetaAge,SD_Age,
-                                SD_Help,SD_Dispersal,SD_Relatedness,SDcorr_Help_Disp))
+                                SD_Help,SD_Dispersal,SD_Relatedness,SDcorr_Help_Disp," "," "))
 
 descriptives
 
