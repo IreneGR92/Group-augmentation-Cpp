@@ -1,12 +1,13 @@
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
-.idea
+.idea*
 
-Group_augmentation_RN
 
 # CMake
 cmake-build-*/
+
+Andrés_R_files/*
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
@@ -20,11 +21,6 @@ out/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Cursive Clojure plugin
-.idea/replstate.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
@@ -32,20 +28,10 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-# Editor-based Rest Client
-.idea/httpRequests
-
-# Android studio 3.1+ serialized cache file
-.idea/caches/build_file_checksums.ser
-
-
 .gradle
 
 *.exe
 *.o
-*.exe
-*.o
-*.json
 *.sln
 *.pdb
 *.ilk
@@ -75,7 +61,6 @@ fabric.properties
 *.ipdb
 *.pdb
 *.exe
-*.txt
 *.tlog
 *.log
 *.obj
@@ -84,7 +69,6 @@ fabric.properties
 *.iobj
 *.ipdb
 *.pdb
-*.txt
 *.db
 *.pdb
 *.iobj
@@ -93,26 +77,5 @@ fabric.properties
 *.lastbuildstate
 *.tlog
 *.db
-Group_augmentation_RN/.vs/Group_augmentation_RN/v15/.suo
-Group_augmentation_RN/.vs/Group_augmentation_RN/v15/.suo
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/CL.write.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.command.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.command.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.read.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/Group_augmentation_RN.lastbuildstate
-Group_augmentation_RN/.vs/Group_augmentation_RN/v15/.suo
-Group_augmentation_RN/.vs/Group_augmentation_RN/v15/Browse.VC.db
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/CL.command.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/CL.read.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/Group_augmentation_RN.lastbuildstate
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/Group_augmentation_RN.write.1u.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.command.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.read.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_au.CEC33DAF.tlog/link.write.1.tlog
-Group_augmentation_RN/Group_augmentation_RN/Release/Group_augmentation_RN.log
-Group_augmentation_RN/Group_augmentation_RN/Release/main.obj
-Group_augmentation_RN/Group_augmentation_RN/Release/vc141.pdb
-Group_augmentation_RN/Release/Group_augmentation_RN.exe
-Group_augmentation_RN/Release/Group_augmentation_RN.iobj
-Group_augmentation_RN/Release/Group_augmentation_RN.ipdb
-Group_augmentation_RN/Release/Group_augmentation_RN.pdb
+Group_augmentation_RN/*
+

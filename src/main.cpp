@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_init.txt");     
-ofstream fout2("group_augmentation_last_generation_init.txt");
+ofstream fout("group_augmentation_Xsn=3.txt");     
+ofstream fout2("group_augmentation_last_generation_Xsn=3.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -53,7 +53,7 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 1;	// cost of help in survival
+const double Xsh    = 3;	// cost of help in survival
 const double Xsn    = 1;	// benefit of group size in survival
 
 
