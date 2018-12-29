@@ -21,8 +21,8 @@
 using namespace std;
 
 // Output file
-ofstream fout("group_augmentation_Xsn=3.txt");     
-ofstream fout2("group_augmentation_last_generation_Xsn=3.txt");
+ofstream fout("group_augmentation_init.txt");
+ofstream fout2("group_augmentation_last_generation_init.txt");
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -40,7 +40,7 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
 const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
-const int MAX_COLONIES	  = 1000;     // max number of groups or colonies --> breeding spots. 
+const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 200000;
 const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
@@ -53,7 +53,7 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 3;	// cost of help in survival
+const double Xsh    = 1;	// cost of help in survival
 const double Xsn    = 1;	// benefit of group size in survival
 
 
