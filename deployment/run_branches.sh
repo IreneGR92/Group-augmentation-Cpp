@@ -10,14 +10,19 @@ for i in "${arr[@]}"
 do
     echo deleting folder $i
     rm -rf $i
+    pwd
     echo cloning "$i"
+    pwd
     git clone git@github.com:IreneGR92/Group-augmentation-RN.git $i
     cd $i
+    pwd
     git checkout $i
     echo running "$i"
     cd deployment
-    screen -d -S "$i" -m build.sh
+    pwd
+    screen -d -S "$i" -m ./build.sh
     cd ../..
+    pwd
 done
 
 screen -list
