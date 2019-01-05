@@ -13,7 +13,7 @@ do
     pwd
     echo cloning "$i"
     pwd
-    git clone git@github.com:IreneGR92/Group-augmentation-RN.git $i
+    git clone -b $i --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git $i
     cd $i
     pwd
     git checkout $i
