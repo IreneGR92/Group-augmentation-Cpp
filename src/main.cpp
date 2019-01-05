@@ -806,11 +806,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< endl;
 }
-void wait_for_return()
-{
-	std::cout << "Hit <Enter> to continue\n";
-	getchar();
-}
+
 
 /* MAIN PROGRAM */
 int main() {
@@ -862,9 +858,7 @@ int main() {
 		{
 			//cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
 
-			//if (gen == 60550) {
-			//	wait_for_return();
-			//}
+
 
 			deaths = 0; // to keep track of how many individuals die each generation
 			population = 0; //total of ind in the whole simulation for the expecific generation
@@ -967,7 +961,6 @@ int main() {
 
 	}
 
-	//wait_for_return();
 
 	return 0;
 }
