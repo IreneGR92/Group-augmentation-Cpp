@@ -54,7 +54,7 @@ const int    INIT_NUM_HELPERS = 3;
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
 const double Xsh    = 1;	// cost of help in survival
-const double Xsn    = 1 ;	// benefit of group size in survival
+const double Xsn    = 1;	// benefit of group size in survival
 
 
 //Genetic values
@@ -967,7 +967,7 @@ int main() {
 
 	}
 
-	wait_for_return();
+	//wait_for_return();
 
 	return 0;
 }
