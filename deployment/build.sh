@@ -12,7 +12,8 @@ echo "running software"
 
 
 echo "copy results"
-cp group_augmentation*.txt ../../results/results/
+mv group_augmentation*.txt ../../results/results/last_generation
+mv group_augmentation*.txt ../../results/results/main
 cd ../../results/
 echo "git stuff"
 git add .
