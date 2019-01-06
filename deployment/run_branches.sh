@@ -30,6 +30,7 @@ do
     git checkout $i
     echo running "$i"
     cd deployment
+    chmod +x build.sh
     pwd
     screen -d -S "$i" -m ./build.sh
     cd ../..
