@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 
-declare -a arr=("supercomputer_config_NRN_m015"
-                "supercomputer_config_m=015"
-                "supercomputer_config_m015_bias1"
+declare -a arr=(
 		        "supercomputer_config_m015_Xsh05"
 		        "supercomputer_config_m015_Xsh05_Xsn07"
                 )
