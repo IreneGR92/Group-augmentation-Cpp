@@ -41,7 +41,7 @@ const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of he
 const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
-const int NUM_GENERATIONS = 200000;
+const int NUM_GENERATIONS = 100000;
 const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
@@ -53,8 +53,8 @@ const int    INIT_NUM_HELPERS = 3;
 // Modifiers
 const double K0     = 1;	// min fecundity, fecundity when no help provided.
 const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 1;	// cost of help in survival
-const double Xsn    = 1;	// benefit of group size in survival
+const double Xsh    = 4;	// cost of help in survival
+const double Xsn    = 0.7;	// benefit of group size in survival
 
 
 //Genetic values
@@ -67,7 +67,7 @@ const double INIT_ALPHA_AGE2	= 0.0;			//quadratic term for age, positive: higher
 const double MUTATION_ALPHA		= 0.05;			// mutation rate in alpha for level of help
 const double MUTATION_ALPHA_AGE = 0.05;
 const double MUTATION_ALPHA_AGE2= 0.05;			
-const double STEP_ALPHA			= 0.01;			// mutation step size in alpha for level of help
+const double STEP_ALPHA			= 0.04;			// mutation step size in alpha for level of help
     
 
 	//For dispersal
@@ -76,12 +76,12 @@ const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersa
 
 const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
 const double MUTATION_BETA_AGE	= 0.05;    
-const double STEP_BETA			= 0.01;			// mutation step size for the propensity to disperse
+const double STEP_BETA			= 0.04;			// mutation step size for the propensity to disperse
 
 
 	//For relatedness
 const double MUTATION_DRIFT		= 0.05;			// mutation rate in the neutral selected value to track level of relatedness
-const double STEP_DRIFT			= 0.01;			// mutation step size in the neutral genetic value to track level of relatedness
+const double STEP_DRIFT			= 0.04;			// mutation step size in the neutral genetic value to track level of relatedness
 
 
 enum classes { BREEDER, HELPER, FLOATER };
@@ -89,7 +89,8 @@ enum classes { BREEDER, HELPER, FLOATER };
 const int NO_VALUE = -1;
 
 //Population parameters and Statistics
-int replica, gen, population, populationBeforeSurv, deaths, floatersgenerated, driftGroupSize, maxGroupSize, populationHelpers;
+int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers;
+int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper; //counters
 double relatedness; 
 double  meanGroupsize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
 meanAge, stdevAge, sumAge, sumsqAge, varAge,
@@ -171,7 +172,7 @@ struct Group // define group traits
 	void Dispersal(vector<Individual> &vfloaters);
 	void Help();
 	void SurvivalGroup(int &deaths);
-	void NewBreeder(vector<Individual> &vfloaters);
+	void NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper);
 	void IncreaseAge();
 	double TotalPopulation();
 	void Fecundity();
@@ -355,7 +356,7 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
 
 /* BECOME BREEDER */
 
-void Group::NewBreeder(vector<Individual> &vfloaters)
+void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper)
 {
 	//    Select a random sample from the floaters
 	int i = 0;
@@ -430,11 +431,13 @@ void Group::NewBreeder(vector<Individual> &vfloaters)
 			{
 				**age3It = vfloaters[vfloaters.size() - 1];
 				vfloaters.pop_back();
+				newbreederFloater++;
 			}
 			else
 			{
 				**age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
 				vhelpers.pop_back();
+				newbreederHelper++;
 			}
 
 			vbreeder.fishType = BREEDER; //modify the class
@@ -499,8 +502,6 @@ double Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-	//fecundity = K0 + K1 * cumhelp;
-	//fecundity = K0 + K1 * log(cumhelp+1);
 	fecundity = K0 + K1 * cumhelp / (1 + cumhelp * K1);
 
 	poisson_distribution<int> PoissonFec(fecundity);
@@ -659,13 +660,6 @@ void Statistics(vector<Group>vgroups) {
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
 	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 2; } //prevent to divide by 0
 
-	/*if (gen == 60500)
-	{
-		cout << "meanDriftB= " << meanDriftB << '/t' << "meanDriftH= " << meanDriftH << '/t' << "meanDriftBH= " << meanDriftBH << '/t' << "meanDriftBB= " << meanDriftBB << endl;
-		cout << "numerator=" << meanDriftBH - meanDriftB * meanDriftH << '/t' << "denominator= " << meanDriftBB - meanDriftB * meanDriftB << endl;
-		cout << "relatedness= " << relatedness << endl;
-	}*/
-
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupsize * meanGroupsize;
 	varAge = sumsqAge / population - meanAge * meanAge;
 	varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
@@ -688,6 +682,7 @@ void Statistics(vector<Group>vgroups) {
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
 
 	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / populationHelpers - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
+		
 }
 
 
@@ -775,7 +770,7 @@ void WriteMeans()
 		<< setw(9) << setprecision(4) << meanAlphaAge2
 		<< setw(9) << setprecision(4) << meanBeta
 		<< setw(9) << setprecision(4) << meanBetaAge
-		<< setw(9) << setprecision(4) << relatedness
+		<< setw(9) << setprecision(2) << relatedness
 		<< endl;
 
 
@@ -784,7 +779,8 @@ void WriteMeans()
 		<< gen
 		<< "\t" << population
 		<< "\t" << deaths
-		<< "\t" << setprecision(2) << meanGroupsize
+		<< "\t" << floatersgenerated
+		<< "\t" << setprecision(4) << meanGroupsize
 		<< "\t" << setprecision(4) << meanAge
 		<< "\t" << setprecision(4) << meanAlpha
 		<< "\t" << setprecision(4) << meanAlphaAge
@@ -794,8 +790,8 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << meanHelp
 		<< "\t" << setprecision(4) << meanDispersal
 		<< "\t" << setprecision(4) << relatedness
-		<< "\t" << setprecision(2) << stdevGroupSize
-		<< "\t" << setprecision(2) << stdevAge
+		<< "\t" << setprecision(4) << stdevGroupSize
+		<< "\t" << setprecision(4) << stdevAge
 		<< "\t" << setprecision(4) << stdevAlpha
 		<< "\t" << setprecision(4) << stdevAlphaAge
 		<< "\t" << setprecision(4) << stdevAlphaAge2
@@ -804,6 +800,8 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << stdevHelp
 		<< "\t" << setprecision(4) << stdevDispersal
 		<< "\t" << setprecision(4) << corr_HelpDispersal
+		<< "\t" << setprecision(4) << newbreederFloater
+		<< "\t" << setprecision(4) << newbreederHelper
 		<< endl;
 }
 
@@ -814,11 +812,11 @@ int main() {
 	Printparams();
 	
 	// column headings in output file 1
-	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t"
+	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t" 
 		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "meanHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
 		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp" << endl;
+		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp"  << "\t" << "newbreederFloater" << "\t" << "newbreederHelper" << endl;
 
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
@@ -834,6 +832,7 @@ int main() {
 		population = 0; //total of ind in the whole simulation for the expecific generation
 		populationBeforeSurv = 0;
 		floatersgenerated = 0;
+		newbreederFloater = 0, newbreederHelper = 0; //to know if the new breeder was a helper or a floater
 
 		// column headings on screen
 		cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9)
@@ -847,8 +846,8 @@ int main() {
 
 		InitGroup(vgroups);
 
-		for (vector<Group>::iterator relatednessIt = vgroups.begin(); relatednessIt < vgroups.end(); ++relatednessIt) {
-			population += relatednessIt->TotalPopulation(); //calculate number of ind in the whole population
+		for (vector<Group>::iterator itPopulation = vgroups.begin(); itPopulation < vgroups.end(); ++itPopulation) {
+			population += itPopulation->TotalPopulation(); //calculate number of ind in the whole population
 		}
 
 		Statistics(vgroups);
@@ -864,6 +863,7 @@ int main() {
 			population = 0; //total of ind in the whole simulation for the expecific generation
 			populationBeforeSurv = 0;
 			floatersgenerated = 0;
+			newbreederFloater = 0, newbreederHelper = 0;
 
 			//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
 			for (vector<Group>::iterator itDispersal = vgroups.begin(); itDispersal < vgroups.end(); ++itDispersal)
@@ -888,7 +888,7 @@ int main() {
 				if (itBreeder->breederalive == 0)
 				{
 					//cout << vgroups.begin() - breederIt << endl;
-					itBreeder->NewBreeder(vfloaters);
+					itBreeder->NewBreeder(vfloaters, newbreederFloater, newbreederHelper);
 				}
 			}
 
@@ -897,11 +897,11 @@ int main() {
 				cout << "Not all floaters were reassigned!" << endl;
 			}
 
-			for (vector<Group>::iterator itAgeRelatedness = vgroups.begin(); itAgeRelatedness < vgroups.end(); ++itAgeRelatedness)
+			for (vector<Group>::iterator itAge = vgroups.begin(); itAge < vgroups.end(); ++itAge)
 			{
-				itAgeRelatedness->IncreaseAge(); //add 1 rank or age to all individuals alive
+				itAge->IncreaseAge(); //add 1 rank or age to all individuals alive
 
-				population += itAgeRelatedness->TotalPopulation(); //calculate number of ind in the whole population
+				population += itAge->TotalPopulation(); //calculate number of ind in the whole population
 			}
 
 			if (gen%SKIP == 0) {   // write output every 'skip' generations
