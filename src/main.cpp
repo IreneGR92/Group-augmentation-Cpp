@@ -90,7 +90,7 @@ const int NO_VALUE = -1;
 
 //Population parameters and Statistics
 int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers;
-int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper; //counters
+int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper, inheritance; //counters
 double relatedness; 
 double  meanGroupsize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
 meanAge, stdevAge, sumAge, sumsqAge, varAge,
@@ -116,6 +116,7 @@ struct Individual // define individual traits
 		dispersal, help, survival;									// phenotypic values
 	classes fishType;												// possible classes: breeder, helper, floater
 	int age;
+	bool inherit;													//did the new breeder inherit the territory or did it disperse?
 
 	//Functions inside Individual
 	double calcDispersal();
@@ -135,6 +136,7 @@ Individual::Individual(double alpha_, double alphaAge_, double alphaAge2_, doubl
 	Mutate();
 	fishType = fishType_;
 	age = 1;
+	inherit = 1;
 	survival = NO_VALUE;
 	help = 0;
 	dispersal = 0;
@@ -149,6 +151,7 @@ Individual::Individual(const Individual &copy) {
 	drift = copy.drift;
 	fishType = copy.fishType;
 	age = copy.age;
+	inherit = copy.inherit;
 	survival = copy.survival;
 	help = copy.help;
 	dispersal = copy.dispersal;
@@ -172,7 +175,7 @@ struct Group // define group traits
 	void Dispersal(vector<Individual> &vfloaters);
 	void Help();
 	void SurvivalGroup(int &deaths);
-	void NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper);
+	void NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper, int &inheritance);
 	void IncreaseAge();
 	double TotalPopulation();
 	void Fecundity();
@@ -243,6 +246,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 
 		if (Uniform(generator) < dispersalIt->dispersal)
 		{
+			dispersalIt->inherit = 0; //the location of the individual is not the natal territory
 			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
 			vfloaters[vfloaters.size() - 1].fishType = FLOATER;
 			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
@@ -356,7 +360,7 @@ void SurvivalFloaters(vector<Individual> &vfloaters, int &deaths) //Calculate th
 
 /* BECOME BREEDER */
 
-void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper)
+void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, int &newbreederHelper, int &inheritance)
 {
 	//    Select a random sample from the floaters
 	int i = 0;
@@ -364,7 +368,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 	double currentposition = 0; //age of the previous ind taken from Candidates
 	int UniformFloatNum;
 	double RandP = Uniform(generator);
-	int proportFloaters = round(vfloaters.size() * BIAS_FLOAT_BREEDER / MAX_COLONIES); ///justify the 10 multiplier
+	int proportFloaters = round(vfloaters.size() * BIAS_FLOAT_BREEDER / MAX_COLONIES); 
 
 	vector<Individual*> Candidates;
 	vector<double>position; //vector of age to choose with higher likelihood the ind with higher age
@@ -432,12 +436,18 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 				**age3It = vfloaters[vfloaters.size() - 1];
 				vfloaters.pop_back();
 				newbreederFloater++;
+				if ((*age3It)->inherit == 1) {
+					cout << "error in inheritance" << endl;
+				}
 			}
 			else
 			{
 				**age3It = vhelpers[vhelpers.size() - 1]; //delete the ind from the vector helpers
 				vhelpers.pop_back();
 				newbreederHelper++;
+				if ((*age3It)->inherit == 1) {
+					inheritance++;					//calculates how many individuals that become breeders are natal to the territory
+				}
 			}
 
 			vbreeder.fishType = BREEDER; //modify the class
@@ -802,6 +812,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< "\t" << setprecision(4) << newbreederFloater
 		<< "\t" << setprecision(4) << newbreederHelper
+		<< "\t" << setprecision(4) << inheritance
 		<< endl;
 }
 
@@ -816,7 +827,7 @@ int main() {
 		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
 		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "meanHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
 		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp"  << "\t" << "newbreederFloater" << "\t" << "newbreederHelper" << endl;
+		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp"  << "\t" << "newbreederFloater" << "\t" << "newbreederHelper" << "\t" << "inheritance" << endl;
 
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
@@ -832,7 +843,7 @@ int main() {
 		population = 0; //total of ind in the whole simulation for the expecific generation
 		populationBeforeSurv = 0;
 		floatersgenerated = 0;
-		newbreederFloater = 0, newbreederHelper = 0; //to know if the new breeder was a helper or a floater
+		newbreederFloater = 0, newbreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 		// column headings on screen
 		cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9)
@@ -863,7 +874,7 @@ int main() {
 			population = 0; //total of ind in the whole simulation for the expecific generation
 			populationBeforeSurv = 0;
 			floatersgenerated = 0;
-			newbreederFloater = 0, newbreederHelper = 0;
+			newbreederFloater = 0, newbreederHelper = 0, inheritance = 0;
 
 			//cout << "Floaters before dispersal: " << vfloaters.size() << endl;
 			for (vector<Group>::iterator itDispersal = vgroups.begin(); itDispersal < vgroups.end(); ++itDispersal)
@@ -888,7 +899,7 @@ int main() {
 				if (itBreeder->breederalive == 0)
 				{
 					//cout << vgroups.begin() - breederIt << endl;
-					itBreeder->NewBreeder(vfloaters, newbreederFloater, newbreederHelper);
+					itBreeder->NewBreeder(vfloaters, newbreederFloater, newbreederHelper, inheritance);
 				}
 			}
 
