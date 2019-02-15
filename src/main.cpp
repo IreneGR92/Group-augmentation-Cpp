@@ -100,6 +100,7 @@ meanAlphaAge2, stdevAlphaAge2, sumAlphaAge2, sumsqAlphaAge2, varAlphaAge2,
 meanBeta, stdevBeta, sumBeta, sumsqBeta, varBeta,
 meanBetaAge, stdevBetaAge, sumBetaAge, sumsqBetaAge, varBetaAge,
 meanHelp, stdevHelp, sumHelp, sumsqHelp, varHelp,
+meanCumHelp, stdevCumHelp, sumCumHelp, sumsqCumHelp, varCumHelp,
 meanDispersal, stdevDispersal, sumDispersal, sumsqDispersal, varDispersal,
 meanDriftB, sumDriftB, meanDriftH, sumDriftH,											//relatedness
 meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,
@@ -583,6 +584,7 @@ void Statistics(vector<Group>vgroups) {
 		meanBeta = 0.0, stdevBeta = 0.0, sumBeta = 0.0, sumsqBeta = 0.0, varBeta = 0.0,
 		meanBetaAge = 0.0, stdevBetaAge = 0.0, sumBetaAge = 0.0, sumsqBetaAge = 0.0, varBetaAge = 0.0,
 		meanHelp = 0.0, stdevHelp = 0.0, sumHelp = 0.0, sumsqHelp = 0.0, varHelp = 0.0,
+		meanCumHelp = 0.0, stdevCumHelp = 0.0, sumCumHelp = 0.0, sumsqCumHelp = 0.0, varCumHelp = 0.0,
 		meanDispersal = 0.0, stdevDispersal = 0.0, sumDispersal = 0.0, sumsqDispersal = 0.0, varDispersal = 0.0,
 		meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
 		meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0, 
@@ -651,6 +653,8 @@ void Statistics(vector<Group>vgroups) {
 		if (groupStatsIt->breederalive == 1) sumBetaAge += groupStatsIt->vbreeder.betaAge;
 		if (groupStatsIt->breederalive == 1) sumsqBetaAge += groupStatsIt->vbreeder.betaAge*groupStatsIt->vbreeder.betaAge;
 
+		sumCumHelp += groupStatsIt->cumhelp;
+		sumsqCumHelp += groupStatsIt->cumhelp*groupStatsIt->cumhelp;
 	}
 
 	meanGroupsize = sumGroupSize / MAX_COLONIES;
@@ -665,6 +669,7 @@ void Statistics(vector<Group>vgroups) {
 	meanDriftBH = sumDriftBH / driftGroupSize;
 	meanDriftBB = sumDriftBB / driftGroupSize;
 	meanHelp = sumHelp / populationHelpers;
+	meanCumHelp = sumCumHelp / MAX_COLONIES;
 	meanDispersal = sumDispersal / populationHelpers;
 
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
@@ -678,6 +683,7 @@ void Statistics(vector<Group>vgroups) {
 	varBeta = sumsqBeta / population - meanBeta * meanBeta;
 	varBetaAge = sumsqBetaAge / population - meanBetaAge * meanBetaAge;
 	varHelp = sumsqHelp / populationHelpers - meanHelp * meanHelp;
+	varCumHelp = sumsqCumHelp / MAX_COLONIES - meanCumHelp * meanCumHelp;
 	varDispersal = sumsqDispersal / populationHelpers - meanDispersal * meanDispersal;
 
 	// to know if there is a problem (variance cannot be negative)
@@ -689,6 +695,7 @@ void Statistics(vector<Group>vgroups) {
 	varBeta > 0 ? stdevBeta = sqrt(varBeta) : stdevBeta = 0;
 	varBetaAge > 0 ? stdevBetaAge = sqrt(varBetaAge) : stdevBetaAge = 0;
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
+	varCumHelp > 0 ? stdevHelp = sqrt(varCumHelp) : stdevCumHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
 
 	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / populationHelpers - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
@@ -798,6 +805,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << meanBeta
 		<< "\t" << setprecision(4) << meanBetaAge
 		<< "\t" << setprecision(4) << meanHelp
+		<< "\t" << setprecision(4) << meanCumHelp
 		<< "\t" << setprecision(4) << meanDispersal
 		<< "\t" << setprecision(4) << relatedness
 		<< "\t" << setprecision(4) << stdevGroupSize
@@ -808,6 +816,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << stdevBeta
 		<< "\t" << setprecision(4) << stdevBetaAge
 		<< "\t" << setprecision(4) << stdevHelp
+		<< "\t" << setprecision(4) << stdevCumHelp
 		<< "\t" << setprecision(4) << stdevDispersal
 		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< "\t" << setprecision(4) << newbreederFloater
@@ -824,10 +833,10 @@ int main() {
 	
 	// column headings in output file 1
 	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t" 
-		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t"
-		<< "meanBeta" << "\t" << "meanBetaAge" << "\t" << "meanHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
-		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"
-		<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" << "SD_Help" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp"  << "\t" << "newbreederFloater" << "\t" << "newbreederHelper" << "\t" << "inheritance" << endl;
+		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t" << "meanBeta" << "\t" << "meanBetaAge" << "\t" 
+		<< "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
+		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" 
+		<< "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp"  << "\t" << "newbreederFloater" << "\t" << "newbreederHelper" << "\t" << "inheritance" << endl;
 
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
