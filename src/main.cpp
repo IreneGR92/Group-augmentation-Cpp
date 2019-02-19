@@ -46,15 +46,18 @@ const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double PREDATION = 0.1;
 const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
-// Modifiers
-const double K0     = 1;	// min fecundity, fecundity when no help provided.
-const double K1     = 1;	// benefit of cumhelp in the fecundity
-const double Xsh    = 4;	// cost of help in survival
-const double Xsn    = 0.7;	// benefit of group size in survival
+// Modifiers in survival. X0 + Xsh - Xsn =< 1
+const double X0	 = 0.7; //base survival without the effect of help or group size
+const double Xsh = 0.3;	// cost of help in survival
+const double Xsn = 0.3;	// benefit of group size in survival
+
+//Modifiers in fecundity
+const double K0  = 1;	// min fecundity, fecundity when no help provided.
+const double K1  = 1;	// benefit of cumhelp in the fecundity
+
 
 
 //Genetic values
@@ -294,7 +297,14 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+	//survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+
+	survival = X0 + Xsn / (1 + exp(totalHelpers + 1)) - Xsh / (1 + exp(help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+
+	if (survival > 1) { 
+		survival = 1; 
+		cout << "survival greater than 1" << endl;
+	}
 
 	return survival;
 }
@@ -709,61 +719,62 @@ void Printparams()
 {
 	fout << "PARAMETER VALUES" << endl
 
-		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
+		<< "Reaction norm help: " << "\t" << REACTION_NORM_HELP << endl
 		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
 		<< "Number replicates: " << "\t" << MAX_NUM_REPLICATES << endl
-		<< "Predation: " << "\t"		<< PREDATION << endl
-		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
-		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
-		<< "initAlphaAge: " << "\t"		<< INIT_ALPHA_AGE << endl
-		<< "initAlphaAge2: " << "\t"	<< INIT_ALPHA_AGE2 << endl
-		<< "initBeta: " << "\t"			<< INIT_BETA << endl
-		<< "initBetaAge: " << "\t"		<< INIT_BETA_AGE << endl
-		<< "mutAlpha: " << "\t"			<< MUTATION_ALPHA << endl
-		<< "mutAlphaAge: " << "\t"		<< MUTATION_ALPHA_AGE << endl
-		<< "mutAlphaAge2: " << "\t"		<< MUTATION_ALPHA_AGE2 << endl
-		<< "mutBeta: " << "\t"			<< MUTATION_BETA << endl
-		<< "mutBetaAge: " << "\t"		<< MUTATION_BETA_AGE << endl
-		<< "mutDrift: " << "\t"			<< MUTATION_DRIFT << endl
-		<< "stepAlpha: " << "\t"		<< STEP_ALPHA << endl
-		<< "stepBeta: " << "\t"			<< STEP_BETA << endl
-		<< "stepDrift: " << "\t"		<< STEP_DRIFT << endl
-		<< "K0: " << "\t"	<< K0 << endl
-		<< "K1: " << "\t"	<< K1 << endl
-		<< "Xsh: " << "\t"	<< Xsh << endl
-		<< "Xsn: " << "\t"	<< Xsn << endl << endl;
+		<< "Bias float breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
+		<< "Base survival: " << "\t" << X0 << endl
+		<< "Cost help: " << "\t" << Xsh << endl
+		<< "Benefit group size: " << "\t" << Xsn << endl << endl
+		<< "K0: " << "\t" << K0 << endl
+		<< "K1: " << "\t" << K1 << endl
+		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
+		<< "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
+		<< "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
+		<< "initBeta: " << "\t" << INIT_BETA << endl
+		<< "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
+		<< "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
+		<< "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
+		<< "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
+		<< "mutBeta: " << "\t" << MUTATION_BETA << endl
+		<< "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
+		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
+		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
+		<< "stepBeta: " << "\t" << STEP_BETA << endl
+		<< "stepDrift: " << "\t" << STEP_DRIFT << endl;
+
 
 	fout2 << "PARAMETER VALUES" << endl
 
-		<< "Reaction norm help: "	   << "\t" << REACTION_NORM_HELP << endl
+		<< "Reaction norm help: " << "\t" << REACTION_NORM_HELP << endl
 		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
 		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
 		<< "Number replicates: " << "\t" << MAX_NUM_REPLICATES << endl
-		<< "Predation: " << "\t"		<< PREDATION << endl
-		<< "Bias float breeder: "<<"\t" << BIAS_FLOAT_BREEDER << endl
-		<< "initAlpha: " << "\t"		<< INIT_ALPHA << endl
-		<< "initAlphaAge: " << "\t"		<< INIT_ALPHA_AGE << endl
-		<< "initAlphaAge2: " << "\t"	<< INIT_ALPHA_AGE2 << endl
-		<< "initBeta: " << "\t"			<< INIT_BETA << endl
-		<< "initBetaAge: " << "\t"		<< INIT_BETA_AGE << endl
-		<< "mutAlpha: " << "\t"			<< MUTATION_ALPHA << endl
-		<< "mutAlphaAge: " << "\t"		<< MUTATION_ALPHA_AGE << endl
-		<< "mutAlphaAge2: " << "\t"		<< MUTATION_ALPHA_AGE2 << endl
-		<< "mutBeta: " << "\t"			<< MUTATION_BETA << endl
-		<< "mutBetaAge: " << "\t"		<< MUTATION_BETA_AGE << endl
-		<< "mutDrift: " << "\t"			<< MUTATION_DRIFT << endl
-		<< "stepAlpha: " << "\t"		<< STEP_ALPHA << endl
-		<< "stepBeta: " << "\t"			<< STEP_BETA << endl
-		<< "stepDrift: " << "\t"		<< STEP_DRIFT << endl
-		<< "K0: " << "\t"	<< K0 << endl
-		<< "K1: " << "\t"	<< K1 << endl
-		<< "Xsh: " << "\t"	<< Xsh << endl
-		<< "Xsn: " << "\t"	<< Xsn << endl << endl;
+		<< "Bias float breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
+		<< "Base survival: " << "\t" << X0 << endl
+		<< "Cost help: " << "\t" << Xsh << endl
+		<< "Benefit group size: " << "\t" << Xsn << endl << endl
+		<< "K0: " << "\t" << K0 << endl
+		<< "K1: " << "\t" << K1 << endl
+		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
+		<< "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
+		<< "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
+		<< "initBeta: " << "\t" << INIT_BETA << endl
+		<< "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
+		<< "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
+		<< "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
+		<< "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
+		<< "mutBeta: " << "\t" << MUTATION_BETA << endl
+		<< "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
+		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
+		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
+		<< "stepBeta: " << "\t" << STEP_BETA << endl
+		<< "stepDrift: " << "\t" << STEP_DRIFT << endl;
 
 }
 
@@ -975,9 +986,6 @@ int main() {
 			}
 
 		}
-
-		//fout << endl << endl << endl;
-		//fout2 << endl << endl << endl;
 
 	}
 
