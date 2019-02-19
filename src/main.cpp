@@ -49,7 +49,7 @@ const int SKIP = 50;   // interval between print-outs
 const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
-// Modifiers in survival. X0 + Xsh - Xsn =< 1
+// Modifiers in survival. X0 + Xsn - Xsh =< 1
 const double X0	 = 0.7; //base survival without the effect of help or group size
 const double Xsh = 0.4;	// cost of help in survival
 const double Xsn = 0.4;	// benefit of group size in survival
