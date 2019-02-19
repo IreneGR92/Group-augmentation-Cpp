@@ -51,8 +51,8 @@ const int    INIT_NUM_HELPERS = 3;
 
 // Modifiers in survival. X0 + Xsh - Xsn =< 1
 const double X0	 = 0.7; //base survival without the effect of help or group size
-const double Xsh = 0.3;	// cost of help in survival
-const double Xsn = 0.3;	// benefit of group size in survival
+const double Xsh = 0.4;	// cost of help in survival
+const double Xsn = 0.4;	// benefit of group size in survival
 
 //Modifiers in fecundity
 const double K0  = 1;	// min fecundity, fecundity when no help provided.
@@ -299,10 +299,10 @@ double Individual::calcSurvival(int totalHelpers)
 {
 	//survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
 
-	survival = X0 + Xsn / (1 + exp(totalHelpers + 1)) - Xsh / (1 + exp(help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+	survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
-	if (survival > 1) { 
-		survival = 1; 
+	if (survival > 0.95) { 
+		survival = 0.95; 
 		cout << "survival greater than 1" << endl;
 	}
 
@@ -728,7 +728,7 @@ void Printparams()
 		<< "Bias float breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
 		<< "Base survival: " << "\t" << X0 << endl
 		<< "Cost help: " << "\t" << Xsh << endl
-		<< "Benefit group size: " << "\t" << Xsn << endl << endl
+		<< "Benefit group size: " << "\t" << Xsn << endl 
 		<< "K0: " << "\t" << K0 << endl
 		<< "K1: " << "\t" << K1 << endl
 		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
@@ -744,7 +744,7 @@ void Printparams()
 		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
 		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
 		<< "stepBeta: " << "\t" << STEP_BETA << endl
-		<< "stepDrift: " << "\t" << STEP_DRIFT << endl;
+		<< "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
 
 
 	fout2 << "PARAMETER VALUES" << endl
@@ -758,7 +758,7 @@ void Printparams()
 		<< "Bias float breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
 		<< "Base survival: " << "\t" << X0 << endl
 		<< "Cost help: " << "\t" << Xsh << endl
-		<< "Benefit group size: " << "\t" << Xsn << endl << endl
+		<< "Benefit group size: " << "\t" << Xsn << endl 
 		<< "K0: " << "\t" << K0 << endl
 		<< "K1: " << "\t" << K1 << endl
 		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
@@ -774,7 +774,7 @@ void Printparams()
 		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
 		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
 		<< "stepBeta: " << "\t" << STEP_BETA << endl
-		<< "stepDrift: " << "\t" << STEP_DRIFT << endl;
+		<< "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
 
 }
 
