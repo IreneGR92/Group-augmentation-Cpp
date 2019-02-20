@@ -12,7 +12,8 @@ declare -a arr=("supercomputer_init"
                 "supercomputer_K1-2_X0-0.5"
                 "supercomputer_K1-0.5"
                 "supercomputer_dispersal1"
-                "supercomputer_dispersal0")
+                "supercomputer_dispersal0"
+		"supercomputer_low_relatedness")
 cd ../../
 for i in "${arr[@]}"
 do
