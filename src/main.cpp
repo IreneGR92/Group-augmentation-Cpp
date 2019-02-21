@@ -42,7 +42,7 @@ const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispers
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
-const int MAX_NUM_REPLICATES  = 20;
+const int MAX_NUM_REPLICATES  = 1;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -50,13 +50,13 @@ const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
-const double X0	 = 0.7; //base survival without the effect of help or group size
-const double Xsh = 0.4;	// cost of help in survival
-const double Xsn = 0.4;	// benefit of group size in survival
+const double X0	 = 0.5; //base survival without the effect of help or group size
+const double Xsh = 0.2;	// cost of help in survival
+const double Xsn = 0.6;	// benefit of group size in survival
 
 //Modifiers in fecundity
 const double K0  = 1;	// min fecundity, fecundity when no help provided.
-const double K1  = 1;	// benefit of cumhelp in the fecundity
+const double K1  = 3;	// benefit of cumhelp in the fecundity
 
 
 
@@ -143,7 +143,7 @@ Individual::Individual(double alpha_, double alphaAge_, double alphaAge2_, doubl
 	inherit = 1;
 	survival = NO_VALUE;
 	help = 0;
-	dispersal = 0;
+	dispersal = 1;
 }
 
 Individual::Individual(const Individual &copy) {
@@ -299,7 +299,7 @@ double Individual::calcSurvival(int totalHelpers)
 {
 	//survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
 
-	survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+	survival = X0 + Xsn / (1 + exp(-0.1*(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
 	if (survival > 0.95) { 
 		survival = 0.95; 
@@ -793,11 +793,13 @@ void WriteMeans()
 		<< setw(9) << setprecision(2) << meanGroupsize
 		<< setw(9) << maxGroupSize
 		<< setw(9) << setprecision(2) << meanAge
-		<< setw(9) << setprecision(4) << meanAlpha
-		<< setw(9) << setprecision(4) << meanAlphaAge
-		<< setw(9) << setprecision(4) << meanAlphaAge2
-		<< setw(9) << setprecision(4) << meanBeta
-		<< setw(9) << setprecision(4) << meanBetaAge
+		//<< setw(9) << setprecision(4) << meanAlpha
+		//<< setw(9) << setprecision(4) << meanAlphaAge
+		//<< setw(9) << setprecision(4) << meanAlphaAge2
+		//<< setw(9) << setprecision(4) << meanBeta
+		//<< setw(9) << setprecision(4) << meanBetaAge
+		<< setw(9) << setprecision(4) << meanHelp
+		<< setw(9) << setprecision(4) << meanDispersal
 		<< setw(9) << setprecision(2) << relatedness
 		<< endl;
 
@@ -868,8 +870,9 @@ int main() {
 		// column headings on screen
 		cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9)
 			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9) << "age" << setw(9) 
-			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
-			<< "beta" << setw(9) << "betaAge" << setw(9) << "relat" << endl;
+			/*<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
+			<< "beta" << setw(9) << "betaAge" << setw(9) */
+			<< "help" << setw(9) << "disper" << setw(9) << "relat" << endl;
 
 
 		vector<Individual> vfloaters;
