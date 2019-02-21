@@ -42,7 +42,7 @@ const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispers
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
-const int MAX_NUM_REPLICATES  = 1;
+const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -605,7 +605,7 @@ void Statistics(vector<Group>vgroups) {
 		for (vector<Individual>::iterator indStatsIt = groupStatsIt->vhelpers.begin(); indStatsIt < groupStatsIt->vhelpers.end(); ++indStatsIt) {
 
 			sumAge += indStatsIt->age;
-			sumsqAge += indStatsIt->alpha*indStatsIt->age;
+			sumsqAge += indStatsIt->age*indStatsIt->age;
 			
 			sumAlpha += indStatsIt->alpha;
 			sumsqAlpha += indStatsIt->alpha*indStatsIt->alpha;
@@ -705,7 +705,7 @@ void Statistics(vector<Group>vgroups) {
 	varBeta > 0 ? stdevBeta = sqrt(varBeta) : stdevBeta = 0;
 	varBetaAge > 0 ? stdevBetaAge = sqrt(varBetaAge) : stdevBetaAge = 0;
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
-	varCumHelp > 0 ? stdevHelp = sqrt(varCumHelp) : stdevCumHelp = 0;
+	varCumHelp > 0 ? stdevCumHelp = sqrt(varCumHelp) : stdevCumHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
 
 	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / populationHelpers - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
