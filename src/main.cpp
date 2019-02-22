@@ -50,13 +50,13 @@ const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
-const double X0	 = 0.5; //base survival without the effect of help or group size
-const double Xsh = 0.2;	// cost of help in survival
-const double Xsn = 0.6;	// benefit of group size in survival
+const double X0	 = 0.7; //base survival without the effect of help or group size
+const double Xsh = 0.4;	// cost of help in survival
+const double Xsn = 0.4;	// benefit of group size in survival
 
 //Modifiers in fecundity
 const double K0  = 1;	// min fecundity, fecundity when no help provided.
-const double K1  = 3;	// benefit of cumhelp in the fecundity
+const double K1  = 1;	// benefit of cumhelp in the fecundity
 
 
 
@@ -299,7 +299,7 @@ double Individual::calcSurvival(int totalHelpers)
 {
 	//survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
 
-	survival = X0 + Xsn / (1 + exp(-0.1*(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+	survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
 	if (survival > 0.95) { 
 		survival = 0.95; 
