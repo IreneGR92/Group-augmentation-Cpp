@@ -1,19 +1,11 @@
 #!/usr/bin/env bash
 
 
-declare -a arr=("supercomputer_init"
-                "supercomputer_X0-0.6_Xsh-0.5_Xsn-0.5"
-                "supercomputer_X0-0.5_Xsh-0.5_Xsn-0.5"
-                "supercomputer_X0-0.7_Xsh-0.5_Xsn-0.3"
-                "supercomputer_X0-0.5_Xsh-0.3_Xsn-0.5"
-                "supercomputer_X0-0.7_Xsh-0.1_Xsn-0"
-                "supercomputer_bias10"
-                "supercomputer_K1-2"
-                "supercomputer_K1-2_X0-0.5"
-                "supercomputer_K1-0.5"
-                "supercomputer_dispersal1"
-                "supercomputer_dispersal0"
-		"supercomputer_low_relatedness")
+declare -a arr=("supercomputer_X07_Xh02_Xn0"
+                "supercomputer_X07_Xh04_Xn02"
+                "supercomputer_X06_Xh02_Xn04
+                "supercomputer_X06
+                "supercomputer_X05")
 cd ../../
 for i in "${arr[@]}"
 do
