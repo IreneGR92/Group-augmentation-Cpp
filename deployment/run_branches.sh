@@ -3,8 +3,8 @@
 
 declare -a arr=("supercomputer_X07_Xh02_Xn0"
                 "supercomputer_X07_Xh04_Xn02"
-                "supercomputer_X06_Xh02_Xn04
-                "supercomputer_X06
+                "supercomputer_X06_Xh02_Xn04"
+                "supercomputer_X06"
                 "supercomputer_X05")
 cd ../../
 for i in "${arr[@]}"
