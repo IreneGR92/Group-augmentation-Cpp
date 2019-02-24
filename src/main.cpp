@@ -298,7 +298,7 @@ void Group::Help() //Calculate accumulative help of all individuals inside of ea
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	//survival = (1 - PREDATION) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+	//survival = (1 - X0) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
 
 	survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
@@ -799,11 +799,11 @@ void WriteMeans()
 		<< setw(9) << setprecision(2) << meanGroupSize
 		<< setw(9) << maxGroupSize
 		<< setw(9) << setprecision(2) << meanAge
-		//<< setw(9) << setprecision(4) << meanAlpha
-		//<< setw(9) << setprecision(4) << meanAlphaAge
-		//<< setw(9) << setprecision(4) << meanAlphaAge2
-		//<< setw(9) << setprecision(4) << meanBeta
-		//<< setw(9) << setprecision(4) << meanBetaAge
+		<< setw(9) << setprecision(4) << meanAlpha
+		<< setw(9) << setprecision(4) << meanAlphaAge
+		<< setw(9) << setprecision(4) << meanAlphaAge2
+		<< setw(9) << setprecision(4) << meanBeta
+		<< setw(9) << setprecision(4) << meanBetaAge
 		<< setw(9) << setprecision(4) << meanHelp
 		<< setw(9) << setprecision(4) << meanDispersal
 		<< setw(9) << setprecision(2) << relatedness
@@ -878,8 +878,8 @@ int main() {
 		// column headings on screen
 		cout << setw(6) << "gen" << setw(9) << "pop" << setw(9) << "deaths" << setw(9)
 			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9) << "age" << setw(9) 
-			/*<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
-			<< "beta" << setw(9) << "betaAge" << setw(9) */
+			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
+			<< "beta" << setw(9) << "betaAge" << setw(9) 
 			<< "help" << setw(9) << "disper" << setw(9) << "relat" << endl;
 
 
