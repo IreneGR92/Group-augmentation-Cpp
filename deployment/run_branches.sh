@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
 
-declare -a arr=("supercomputer_X05_Xh02_Xn04"
-                "supercomputer_X05_bias10"
-                "supercomputer_K05_X05_Xh02_bias10"
-                "supercomputer_K05_X05_Xh02"
-                "supercomputer_K05_X05")
+declare -a arr=("supercomputer__X05_Xh02_Xn04_longer")
 cd ../../
 for i in "${arr[@]}"
 do
