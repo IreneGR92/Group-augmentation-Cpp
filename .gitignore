@@ -6,6 +6,7 @@
 
 # CMake
 cmake-build-*/
+build
 
 Andrés_R_files/*
 

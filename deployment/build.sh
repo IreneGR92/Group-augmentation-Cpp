@@ -17,6 +17,7 @@ mv group_augmentation_last_generation*.txt ../../results/results/last_generation
 mv group_augmentation*.txt ../../results/results/main
 cd ../../results/
 echo "git stuff"
+git pull
 git add .
 git commit -m "autocommit results"
 git push
