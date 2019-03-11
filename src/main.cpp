@@ -876,7 +876,8 @@ int main() {
 	// column headings in output file 2
 	fout2 << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t" 
 		<< "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2"<< "\t" 
-		<< "beta" << "\t" << "betaAge" << "\t" << "drift"  << endl;
+		<< "beta" << "\t" << "betaAge" << "\t" << "drift" 
+		<< "\t" << "help" << "\t" << "dispersal" << "\t" << "survival" << endl;
 
 
 
@@ -983,6 +984,9 @@ int main() {
 						<< "\t" << setprecision(4) << itGroups->vbreeder.beta
 						<< "\t" << setprecision(4) << itGroups->vbreeder.betaAge
 						<< "\t" << setprecision(4) << itGroups->vbreeder.drift
+						<< "\t" << setprecision(4) << "NA"
+						<< "\t" << setprecision(4) << "NA"
+						<< "\t" << setprecision(4) << itGroups->vbreeder.survival
 						<< endl;
 
 					for (vector<Individual>::iterator itHelpers = itGroups->vhelpers.begin(); itHelpers < itGroups->vhelpers.end(); ++itHelpers) {
@@ -997,6 +1001,9 @@ int main() {
 							<< "\t" << setprecision(4) << itHelpers->beta
 							<< "\t" << setprecision(4) << itHelpers->betaAge
 							<< "\t" << setprecision(4) << itHelpers->drift
+							<< "\t" << setprecision(4) << itHelpers->help
+							<< "\t" << setprecision(4) << itHelpers->dispersal
+							<< "\t" << setprecision(4) << itHelpers->survival
 							<< endl;
 					}
 
