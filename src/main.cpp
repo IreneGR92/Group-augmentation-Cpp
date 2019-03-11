@@ -46,8 +46,8 @@ const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const double BIAS_FLOAT_BREEDER = 2;
 const int    INIT_NUM_HELPERS = 3;
+const double BIAS_FLOAT_BREEDER = 2;
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
 const double X0	 = 0.7; //base survival without the effect of help or group size
@@ -105,6 +105,7 @@ meanBetaAge, stdevBetaAge, sumBetaAge, sumsqBetaAge, varBetaAge,
 meanHelp, stdevHelp, sumHelp, sumsqHelp, varHelp,
 meanCumHelp, stdevCumHelp, sumCumHelp, sumsqCumHelp, varCumHelp,
 meanDispersal, stdevDispersal, sumDispersal, sumsqDispersal, varDispersal,
+meanSurvival, stdevSurvival, sumSurvival, sumsqSurvival, varSurvival,
 meanDriftB, sumDriftB, meanDriftH, sumDriftH,											//relatedness
 meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,
 corr_HelpDispersal, sumprodHelpDispersal,
@@ -597,6 +598,7 @@ void Statistics(vector<Group>vgroups) {
 		meanHelp = 0.0, stdevHelp = 0.0, sumHelp = 0.0, sumsqHelp = 0.0, varHelp = 0.0,
 		meanCumHelp = 0.0, stdevCumHelp = 0.0, sumCumHelp = 0.0, sumsqCumHelp = 0.0, varCumHelp = 0.0,
 		meanDispersal = 0.0, stdevDispersal = 0.0, sumDispersal = 0.0, sumsqDispersal = 0.0, varDispersal = 0.0,
+		meanSurvival = 0.0, stdevSurvival = 0.0, sumSurvival = 0.0, sumsqSurvival = 0.0, varSurvival = 0.0,
 		meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
 		meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0, 
 		corr_HelpDispersal = 0.0, sumprodHelpDispersal = 0.0,
@@ -629,6 +631,9 @@ void Statistics(vector<Group>vgroups) {
 
 			sumDispersal += indStatsIt->dispersal;
 			sumsqDispersal += indStatsIt->dispersal*indStatsIt->dispersal;
+
+			sumSurvival += indStatsIt->survival;
+			sumsqSurvival += indStatsIt->survival*indStatsIt->survival;
 
 			sumprodHelpDispersal += indStatsIt->help*indStatsIt->dispersal;
 
@@ -665,6 +670,9 @@ void Statistics(vector<Group>vgroups) {
 		if (groupStatsIt->breederalive == 1) sumBetaAge += groupStatsIt->vbreeder.betaAge;
 		if (groupStatsIt->breederalive == 1) sumsqBetaAge += groupStatsIt->vbreeder.betaAge*groupStatsIt->vbreeder.betaAge;
 
+		if (groupStatsIt->breederalive == 1) sumSurvival += groupStatsIt->vbreeder.survival;
+		if (groupStatsIt->breederalive == 1) sumsqSurvival += groupStatsIt->vbreeder.survival*groupStatsIt->vbreeder.survival;
+
 		sumCumHelp += groupStatsIt->cumhelp;
 		sumsqCumHelp += groupStatsIt->cumhelp*groupStatsIt->cumhelp;
 
@@ -685,6 +693,7 @@ void Statistics(vector<Group>vgroups) {
 	meanHelp = sumHelp / populationHelpers;
 	meanCumHelp = sumCumHelp / MAX_COLONIES;
 	meanDispersal = sumDispersal / populationHelpers;
+	meanSurvival = sumSurvival / population;
 
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
 	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 2; } //prevent to divide by 0
@@ -699,6 +708,7 @@ void Statistics(vector<Group>vgroups) {
 	varHelp = sumsqHelp / populationHelpers - meanHelp * meanHelp;
 	varCumHelp = sumsqCumHelp / MAX_COLONIES - meanCumHelp * meanCumHelp;
 	varDispersal = sumsqDispersal / populationHelpers - meanDispersal * meanDispersal;
+	varSurvival = sumsqSurvival / population - meanSurvival * meanSurvival;
 
 	// to know if there is a problem (variance cannot be negative)
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
@@ -711,6 +721,7 @@ void Statistics(vector<Group>vgroups) {
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
 	varCumHelp > 0 ? stdevCumHelp = sqrt(varCumHelp) : stdevCumHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
+	varSurvival > 0 ? stdevSurvival = sqrt(varBeta) : stdevSurvival = 0;
 
 	//Correlations
 	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / populationHelpers - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
@@ -806,6 +817,7 @@ void WriteMeans()
 		<< setw(9) << setprecision(4) << meanBetaAge
 		<< setw(9) << setprecision(4) << meanHelp
 		<< setw(9) << setprecision(4) << meanDispersal
+		<< setw(9) << setprecision(2) << meanSurvival
 		<< setw(9) << setprecision(2) << relatedness
 		<< endl;
 
@@ -826,6 +838,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << meanHelp
 		<< "\t" << setprecision(4) << meanCumHelp
 		<< "\t" << setprecision(4) << meanDispersal
+		<< "\t" << setprecision(4) << meanSurvival
 		<< "\t" << setprecision(4) << relatedness
 		<< "\t" << setprecision(4) << stdevGroupSize
 		<< "\t" << setprecision(4) << stdevAge
@@ -837,6 +850,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << stdevHelp
 		<< "\t" << setprecision(4) << stdevCumHelp
 		<< "\t" << setprecision(4) << stdevDispersal
+		<< "\t" << setprecision(4) << stdevSurvival
 		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< "\t" << setprecision(4) << corr_HelpGroup
 		<< "\t" << setprecision(4) << newbreederFloater
@@ -854,9 +868,9 @@ int main() {
 	// column headings in output file 1
 	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t" 
 		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t" << "meanBeta" << "\t" << "meanBetaAge" << "\t" 
-		<< "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t" << "Relatedness" << "\t"
+		<< "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t" << "meanSurvival" << "\t" << "Relatedness" << "\t"
 		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" 
-		<< "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t" << "corr_Help_Disp" << "\t" << "corr_Help_Group" << "\t" 
+		<< "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t" << "SD_Survival" << "\t" << "corr_Help_Disp" << "\t" << "corr_Help_Group" << "\t"
 		<< "newbreederFloater" << "\t" << "newbreederHelper" << "\t" << "inheritance" << endl;
 
 	// column headings in output file 2
@@ -880,7 +894,7 @@ int main() {
 			<< "float" << setw(9) << "group" << setw(9) << "maxGroup" << setw(9) << "age" << setw(9) 
 			<< "alpha" << setw(9) << "alphaAge" << setw(9) << "alphaAge2" << setw(9)
 			<< "beta" << setw(9) << "betaAge" << setw(9) 
-			<< "help" << setw(9) << "disper" << setw(9) << "relat" << endl;
+			<< "help" << setw(9) << "disper" << setw(9) << "surv" << setw(9) << "relat" << endl;
 
 
 		vector<Individual> vfloaters;
