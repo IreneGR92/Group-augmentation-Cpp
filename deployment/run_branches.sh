@@ -1,23 +1,30 @@
 #!/usr/bin/env bash
 
 
-declare -a arr=("supercomputer_dispersal1_NRN"
-		"supercomputer_X05_Xh02_Xn04_NRN"
-		"supercomputer_X05_Xh03_Xn05"
-"supercomputer_low_relatedness_NRN"
-"supercomputer_low_relatedness2"
-"supercomputer_X06_Xh02_Xn04_NRN"
-"supercomputer_bias10_NRN"
-"supercomputer_K05_NRN"
-"supercomputer_X05_K2_NRN"
-"supercomputer_dispersal005_NRN"
-"supercomputer_K2_NRN"
-"supercomputer_X07_Xh02_Xn0_NRN"
-"supercomputer_X_Xh_Xn_NRN"
-"supercomputer_init"
-"supercomputer_X5_bias10_NRN"
-"supercomputer_X05_K05_NRN"
-"supercomputer_supercomputer_X07_Xh04_Xn02_NRN")
+declare -a arr=("sc_dispersal1_RN-F2"
+		"sc_dispersal0_RN-F2"
+		"sc_dispersal0_NRN-F2"
+		¨sc_dispersal1_NRN-F2¨
+		¨sc_helpRN_dispersal1-F2¨
+		¨sc_helpRN_dispersal065-F2¨
+		¨sc_helpRN_dispersal035-F2¨
+		¨sc_helpRN_dispersal0-F2¨
+		¨sc_helpNRN_dispersal0-F2¨
+		¨sc_helpNRN_dispersal035-F2¨
+		¨helpNRN_dispersal065-F2¨
+		¨sc_helpNRN_dispersal1-F2¨
+		¨sc_helpRN_dispersal1-F1¨
+		¨sc_helpRN_dispersal065-F1¨
+		¨sc_helpRN_dispersal035-F1¨
+		¨sc_helpRN_dispersal0-F1¨
+		¨sc_helpNRN_dispersal0-F1¨
+		¨sc_helpNRN_dispersal035-F1¨
+		¨sc_helpNRN_dispersal1-F1¨
+		¨sc_helpNRN_dispersal065-F1¨
+		¨sc_dispersion1RN-F1¨
+		¨sc_dispersion0RN-F1¨
+		¨sc_dispersion0NRN-F1¨
+		¨sc_dispersion1NRN-F1¨)
 
 cd ../../
 for i in "${arr[@]}"
