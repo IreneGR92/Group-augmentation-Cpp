@@ -408,7 +408,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 		}
 	}
 
-	else { ///When less floaters available than the sample size, takes all of them. Change to a proportion 
+	else if (vfloaters.size() > 0 && vfloaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion 
 		for (vector<Individual>::iterator floatIt = vfloaters.begin(); floatIt < vfloaters.end(); ++floatIt)
 		{
 			Candidates.push_back(&(*floatIt));
@@ -435,6 +435,8 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 		position.push_back(static_cast<double>((*age2It)->age) / static_cast<double>(sumage) + currentposition); //creates a vector with proportional segments to the age of each individual
 		currentposition = position[position.size() - 1];
 	}
+
+	if (vfloaters.size()==0 && Candidates.size() != vhelpers.size()){ cout << "Error assigning empty floaters to Breeder" << endl; }
 
 	vector<Individual*>::iterator age3It = Candidates.begin();
 	int counting = 0;
