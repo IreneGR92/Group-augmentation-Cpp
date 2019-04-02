@@ -768,16 +768,16 @@ void Printparams()
 
 	fout2 << "PARAMETER VALUES" << endl
 
-		<< "Reaction norm help: " << "\t" << REACTION_NORM_HELP << endl
-		<< "Reaction norm dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
-		<< "Initial population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
-		<< "Number of colonies: " << "\t" << MAX_COLONIES << endl
-		<< "Number generations: " << "\t" << NUM_GENERATIONS << endl
-		<< "Number replicates: " << "\t" << MAX_NUM_REPLICATES << endl
-		<< "Bias float breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
-		<< "Base survival: " << "\t" << X0 << endl
-		<< "Cost help: " << "\t" << Xsh << endl
-		<< "Benefit group size: " << "\t" << Xsn << endl 
+		<< "Reaction_norm_help: " << "\t" << REACTION_NORM_HELP << endl
+		<< "Reaction_norm_dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
+		<< "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
+		<< "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
+		<< "Number_generations: " << "\t" << NUM_GENERATIONS << endl
+		<< "Number_replicates: " << "\t" << MAX_NUM_REPLICATES << endl
+		<< "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
+		<< "Base_survival: " << "\t" << X0 << endl
+		<< "Cost_help: " << "\t" << Xsh << endl
+		<< "Benefit_group_size: " << "\t" << Xsn << endl 
 		<< "K0: " << "\t" << K0 << endl
 		<< "K1: " << "\t" << K1 << endl
 		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
