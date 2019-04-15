@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 
 
-declare -a arr=("sc_dispersal1_RN-F2"
-		"sc_dispersal0_RN-F2"
-		"sc_dispersal0_NRN-F2"
-		¨sc_dispersal1_NRN-F2¨
-		¨sc_helpRN_dispersal1-F2¨
-		¨sc_helpRN_dispersal065-F2¨
-		¨sc_helpRN_dispersal035-F2¨
-		¨sc_helpRN_dispersal0-F2¨
-		¨sc_helpNRN_dispersal0-F2¨
-		¨sc_helpNRN_dispersal035-F2¨
-		¨helpNRN_dispersal065-F2¨
-		¨sc_helpNRN_dispersal1-F2¨
-		¨sc_helpRN_dispersal1-F1¨
-		¨sc_helpRN_dispersal065-F1¨
-		¨sc_helpRN_dispersal035-F1¨
-		¨sc_helpRN_dispersal0-F1¨
-		¨sc_helpNRN_dispersal0-F1¨
-		¨sc_helpNRN_dispersal035-F1¨
-		¨sc_helpNRN_dispersal1-F1¨
-		¨sc_helpNRN_dispersal065-F1¨
-		¨sc_dispersion1RN-F1¨
-		¨sc_dispersion0RN-F1¨
-		¨sc_dispersion0NRN-F1¨
-		¨sc_dispersion1NRN-F1¨)
+declare -a arr=("sc-init"
+		"sc-X07-Xh04-Xn02"
+		"sc-X07-Xh02-Xn02"
+		"sc-X07-Xh02-Xn0"
+		"sc-X05-Xh04-Xn04"
+		"sc-X05-Xh02-Xn04"
+		"sc-K2"
+		"sc-K2-Xn02"
+		"sc-K2-Xh02-Xn02"
+		"sc-K2-Xh02-Xn0"
+		"sc-K2-X05"
+		"sc-K2-X05-Xh02"
+		"sc-bias10"
+		"sc-bias10-Xn02"
+		"sc-bias10-Xh02-Xn02"
+		"sc-bias10-Xh02-Xn0"
+		"sc-bias10-X05"
+		"sc-bias10-X05-Xh02"
+		"sc-bias10-X05-Xh02-Xn02"
+		"sc-bias10-K2"
+		"sc-bias10-K2-Xn02"
+		"sc-bias10-K2-Xh02-Xn02"
+		"sc-bias10-K2-Xh02-Xn0"
+		"sc-bias10-K2-X05"
+		"sc-bias10-K2-X05-Xh02"
+		"sc-bias10-K2-X05-Xh02-Xn02")
 
 cd ../../
 for i in "${arr[@]}"
