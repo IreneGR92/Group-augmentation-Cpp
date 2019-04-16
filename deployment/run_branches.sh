@@ -64,10 +64,10 @@ folder_name="auto_$i"
     pwd
     echo cloning "${folder_name}"
     pwd
-    git clone -b ${folder_name} --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git ${folder_name}
+    git clone -b ${i} --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git ${folder_name}
     cd ${folder_name}
     pwd
-    git checkout ${folder_name}
+    git checkout ${i}
     echo running "${folder_name}"
     cd deployment
     chmod +x build.sh
