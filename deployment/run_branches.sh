@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-project_root="~/git/main/"
-git_root="~/git/"
+project_root=~/git/main/
+git_root=~/git/
 
 declare -a arr=("sc-init"
 		"sc-X07-Xh04-Xn02"
