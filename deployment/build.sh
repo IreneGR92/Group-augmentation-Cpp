@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+
+root=$(pwd)
+
+cd ..
+name=${PWD##*/}
+cd ${root}
+
+
 git pull
 module load CMake
 echo "cleaning up build folder"
@@ -19,7 +27,7 @@ cd ../../results/
 echo "git stuff"
 git pull
 git add .
-git commit -m "autocommit results"
+git commit -m "autocommit results for ${name}"
 git push
 
 echo "done"
