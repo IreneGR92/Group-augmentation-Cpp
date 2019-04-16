@@ -35,11 +35,12 @@ echo "setup folders for results"
 cd ${git_root}
 
 git clone -b results --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git results
-cd cd ${git_root}/results/
+cd ${git_root}/results/
 git checkout results
 mkdir results
 cd results
 mkdir main
+cd main
 touch .gitkeep
 cd ..
 mkdir last_generation
