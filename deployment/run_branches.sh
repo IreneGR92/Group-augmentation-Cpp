@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-project_root="~/git/main"
-git_root="~/git"
+project_root="~/git/main/"
+git_root="~/git/"
 
 declare -a arr=("sc-init"
 		"sc-X07-Xh04-Xn02"
@@ -34,7 +34,7 @@ echo "setup folders for results"
 cd ${git_root}
 
 git clone -b results --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git results
-cd cd ${git_root}/results
+cd cd ${git_root}/results/
 git checkout results
 mkdir results
 cd results
