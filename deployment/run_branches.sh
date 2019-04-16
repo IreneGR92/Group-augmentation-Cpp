@@ -22,6 +22,7 @@ echo "deleting results branch"
 
 cd ${project_root}
 git checkout master
+git pull
 git branch -D results
 git push origin --delete results
 
