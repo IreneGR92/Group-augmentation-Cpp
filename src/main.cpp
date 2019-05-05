@@ -37,8 +37,8 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM_HELP = 1;		//Apply reaction norm to age for level of help? 
-const bool REACTION_NORM_DISPERSAL = 1;	//Apply reaction norm to age for dispersal? 
+const bool REACTION_NORM_HELP = 0;  	//Apply reaction norm to age for level of help?
+const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal?
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
@@ -387,19 +387,19 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 	vector<double>position; //vector of age to choose with higher likelihood the ind with higher age
 	vector<int>TemporaryCandidates; // to prevent taking the same ind several times in the sample
 
-	if (vfloaters.size() > 0 && vfloaters.size() > proportFloaters) {
+	if (!vfloaters.empty() && vfloaters.size() > proportFloaters) {
 		while (i < proportFloaters)
 		{
 			uniform_int_distribution<int> UniformFloat(0, vfloaters.size() - 1); //random floater ID taken in the sample
 			UniformFloatNum = UniformFloat(generator);
 			TemporaryCandidates.push_back(UniformFloatNum); //add references of the floaters sampled to a vector
-			sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector 
+			sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
 			i++;
 		}
 
 		int temp = 0;
 		for (vector<int>::iterator itTempCandidates = TemporaryCandidates.begin(); itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates)
-		{ 
+		{
 			if (!(*itTempCandidates == temp)) //to make sure the same ind is not taken more than ones
 			{
 				Candidates.push_back(&vfloaters[UniformFloatNum]);
@@ -408,7 +408,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 		}
 	}
 
-	else if (vfloaters.size() > 0 && vfloaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion 
+	else if (!vfloaters.empty() && vfloaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion
 		for (vector<Individual>::iterator floatIt = vfloaters.begin(); floatIt < vfloaters.end(); ++floatIt)
 		{
 			Candidates.push_back(&(*floatIt));
@@ -436,7 +436,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 		currentposition = position[position.size() - 1];
 	}
 
-	if (vfloaters.size()==0 && Candidates.size() != vhelpers.size()){ cout << "Error assigning empty floaters to Breeder" << endl; }
+	if (vfloaters.empty() && Candidates.size() != vhelpers.size()){ cout << "Error assigning empty floaters to Breeder" << endl; }
 
 	vector<Individual*>::iterator age3It = Candidates.begin();
 	int counting = 0;
@@ -915,8 +915,6 @@ int main() {
 		for (gen = 1; gen <= NUM_GENERATIONS; gen++)
 		{
 			//cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
-
-
 
 			deaths = 0; // to keep track of how many individuals die each generation
 			population = 0; //total of ind in the whole simulation for the expecific generation
