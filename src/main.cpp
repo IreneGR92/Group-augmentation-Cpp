@@ -1,7 +1,19 @@
 /***********************************************
  GROUP AUGMENTATION MODEL
+ - Passive group augmentation: individuals help in order to increase group size which in turn increases survival
+ - Active group augmentation or delayed reciprocity: if inherit the breeding possition, individuals benefit of the help given by the recruits in the group.
 
- Level of help and dispersal with genetic bases. Inclusion of reaction norms.
+
+ Stochastic individual based model.
+ Limited breeding spots, unlimited population size; one breeder per group.
+ Population overlap, turn over when breeder dies. 
+ Older/more dominant individual higher probability of becoming new breeder.
+ Evolution of level of help and dispersal. Inclusion of reaction norm to age.
+ Dispersal produces temporal dispersers/floaters that can reproduce in another group or join as helpers. 
+ Survival dependent on group size, level of help and predation/environment.
+ Fecundity dependent on cummulative level of help within group.
+ Relatedness as an emergent property.
+
 ***********************************************/
 
 /*HEADER FILES*/
@@ -46,8 +58,8 @@ const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
-const int    INIT_NUM_HELPERS = 3;
-const double BIAS_FLOAT_BREEDER = 2;
+const int    INIT_NUM_HELPERS = 3;	 //initial number of helpers per group
+const double BIAS_FLOAT_BREEDER = 2; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
 const double X0	 = 0.7; //base survival without the effect of help or group size
@@ -106,8 +118,8 @@ meanHelp, stdevHelp, sumHelp, sumsqHelp, varHelp,
 meanCumHelp, stdevCumHelp, sumCumHelp, sumsqCumHelp, varCumHelp,
 meanDispersal, stdevDispersal, sumDispersal, sumsqDispersal, varDispersal,
 meanSurvival, stdevSurvival, sumSurvival, sumsqSurvival, varSurvival,
-meanDriftB, sumDriftB, meanDriftH, sumDriftH,											//relatedness
-meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,
+meanDriftB, sumDriftB, meanDriftH, sumDriftH,			//relatedness related
+meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,		//relatedness related
 corr_HelpDispersal, sumprodHelpDispersal,
 corr_HelpGroup, sumprodHelpGroup;
 
@@ -408,7 +420,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 		}
 	}
 
-	else if (!vfloaters.empty() && vfloaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion
+	else if (!vfloaters.empty() && vfloaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion?
 		for (vector<Individual>::iterator floatIt = vfloaters.begin(); floatIt < vfloaters.end(); ++floatIt)
 		{
 			Candidates.push_back(&(*floatIt));
@@ -424,7 +436,7 @@ void Group::NewBreeder(vector<Individual> &vfloaters, int &newbreederFloater, in
 	}
 
 
-//     Choose breeder with higher likelihood for the highest
+//     Choose breeder with higher likelihood for the highest age
 	for (vector<Individual*>::iterator ageIt = Candidates.begin(); ageIt < Candidates.end(); ++ageIt) //ageIt creates a vector of pointers to an individual
 	{
 		sumage += (*ageIt)->age; //add all the age from the vector Candidates
@@ -527,10 +539,10 @@ double Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-	fecundity = K0 + K1 * cumhelp / (1 + cumhelp * K1);
+	fecundity = K0 + K1 * cumhelp / (1 + cumhelp * K1); //fecundity function of cummulative help in the group
 
 	poisson_distribution<int> PoissonFec(fecundity);
-	realfecundity = PoissonFec(generator);
+	realfecundity = PoissonFec(generator); //integer number
 }
 
 void Group::Reproduction() // populate offspring generation
@@ -697,7 +709,7 @@ void Statistics(vector<Group>vgroups) {
 	meanDispersal = sumDispersal / populationHelpers;
 	meanSurvival = sumSurvival / population;
 
-	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB);
+	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
 	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 2; } //prevent to divide by 0
 
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupSize * meanGroupSize;
