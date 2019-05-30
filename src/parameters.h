@@ -9,9 +9,9 @@
 const bool REACTION_NORM_HELP = 0;    //Apply reaction norm to age for level of help?
 const bool REACTION_NORM_DISPERSAL = 0;    //Apply reaction norm to age for dispersal?
 
-const int MAX_COLONIES = 5000;     // max number of groups or colonies --> breeding spots.
+const int MAX_COLONIES = 5;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
-const int MAX_NUM_REPLICATES = 20;
+const int MAX_NUM_REPLICATES = 2;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values
