@@ -52,9 +52,9 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM_HELP = 0;  	//Apply reaction norm to age for level of help?
 const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal?
 
-const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
-const int NUM_GENERATIONS = 100000;
-const int MAX_NUM_REPLICATES  = 20;
+const int MAX_COLONIES	  = 5;     // max number of groups or colonies --> breeding spots.
+const int NUM_GENERATIONS = 100;
+const int MAX_NUM_REPLICATES  = 2;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -139,7 +139,7 @@ struct Individual // define individual traits
 
 	//Functions inside Individual
 	double calcDispersal();
-	double calcHelp();
+	void calcHelp();
 	double calcSurvival(int totalHelpers);
 	void Mutate();
 };
@@ -268,6 +268,7 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 		if (Uniform(generator) < dispersalIt->dispersal)
 		{
 			dispersalIt->inherit = false; //the location of the individual is not the natal territory
+            dispersalIt->expressedHelp = false;
 			vfloaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
 			vfloaters[vfloaters.size() - 1].fishType = FLOATER;
 			*dispersalIt = vhelpers[vhelpers.size() - 1]; // this and next line removes the individual from the helpers vector
@@ -282,25 +283,17 @@ void Group::Dispersal(vector<Individual> &vfloaters)
 
 
 /*DISPLAY LEVEL OF HELP*/
-double Individual::calcHelp()
-{
-	if (fishType == HELPER) {
-		if (!REACTION_NORM_HELP) {
-			help = alpha;
-		}
-		else {
-			help = alpha + alphaAge * age + alphaAge2 * age*age;
-			if (help < 0) { help = 0; }
-		}
-		expressedHelp = true;
-	}
-	else {
-		expressedHelp = false;
-		help = NULL; ///problematic?
-	}
+void Individual::calcHelp() {
 
-
-	return help;
+    if (fishType == HELPER) {
+        if (!REACTION_NORM_HELP) {
+            help = alpha;
+        } else {
+            help = alpha + alphaAge * age + alphaAge2 * age * age;
+            if (help < 0) { help = 0; }
+        }
+        expressedHelp = true;
+    }
 }
 
 
@@ -507,7 +500,7 @@ void Reassign(vector<Individual> &vfloaters, vector<Group> &vgroups)
 	while (!vfloaters.empty())
 	{
 		indIt = vfloaters.end() - 1;
-		indIt->expressedHelp == false;
+		indIt->help=0;
 		selectGroup = UniformMaxCol(generator);
 		indIt->fishType = HELPER; //modify the class
 		vgroups[selectGroup].vhelpers.push_back(*indIt); //add the floater to the helper vector in a randomly selected group
@@ -519,16 +512,29 @@ void Reassign(vector<Individual> &vfloaters, vector<Group> &vgroups)
 /* INCREASE AGE*/
 void Group::IncreaseAge()
 {
+    int counter=0;
 	for (vector<Individual>::iterator ageIt = vhelpers.begin(); ageIt < vhelpers.end(); ++ageIt)
 	{
 		ageIt->age++;
+
+		if (ageIt->expressedHelp==false && ageIt->help==0.5){
+		   cout<<"expressed help false when true"<<endl;
+		}
+
+		if (ageIt->expressedHelp==true && ageIt->help==0){
+		   cout<<"expressed help true when false"<<endl;
+		}
 	}
+
+
 	if (breederalive) {
 		vbreeder.age++;
 	}
 	else {
 		vbreeder.age = NO_VALUE; //to check for dead breeders still existing in print last generation 
 	}
+
+
 }
 
 
@@ -657,6 +663,8 @@ void Statistics(vector<Group>vgroups) {
 				sumsqHelp += indStatsIt->help*indStatsIt->help;
 				countExpressedHelp++;
 			}
+            //cout<<countExpressedHelp<<endl;
+
 			sumHelp += indStatsIt->help;
 			sumsqHelp += indStatsIt->help*indStatsIt->help;
 
