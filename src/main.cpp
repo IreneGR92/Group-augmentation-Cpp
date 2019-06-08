@@ -52,9 +52,9 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM_HELP = 0;  	//Apply reaction norm to age for level of help?
 const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal?
 
-const int MAX_COLONIES	  = 5;     // max number of groups or colonies --> breeding spots.
-const int NUM_GENERATIONS = 100;
-const int MAX_NUM_REPLICATES  = 2;
+const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
+const int NUM_GENERATIONS = 100000;
+const int MAX_NUM_REPLICATES  = 20;
 const int SKIP = 50;   // interval between print-outs
 
 //Fix values 
@@ -75,21 +75,21 @@ const double K1  = 1;	// benefit of cumhelp in the fecundity
 //Genetic values
 
 	//For help
-const double INIT_ALPHA			= 0.5;			// bigger values higher level of help
+const double INIT_ALPHA			= 0.0;			// bigger values higher level of help
 const double INIT_ALPHA_AGE		= 0.0;			//linear term for age, positive: higher help with age
 const double INIT_ALPHA_AGE2	= 0.0;			//quadratic term for age, positive: higher help with age
 
-const double MUTATION_ALPHA		= 0.0;			// mutation rate in alpha for level of help
+const double MUTATION_ALPHA		= 0.05;			// mutation rate in alpha for level of help
 const double MUTATION_ALPHA_AGE = 0.05;
 const double MUTATION_ALPHA_AGE2= 0.05;			
 const double STEP_ALPHA			= 0.04;			// mutation step size in alpha for level of help
     
 
 	//For dispersal
-const double INIT_BETA			= 0.5;			// bigger values higher dispersal
+const double INIT_BETA			= 1.0;			// bigger values higher dispersal
 const double INIT_BETA_AGE		= 0.0;			// 0: age has no effect, positive: dispersal decreases with age
 
-const double MUTATION_BETA		= 0.0;			// mutation rate for the propensity to disperse
+const double MUTATION_BETA		= 0.05;			// mutation rate for the propensity to disperse
 const double MUTATION_BETA_AGE	= 0.05;    
 const double STEP_BETA			= 0.04;			// mutation step size for the propensity to disperse
 
@@ -516,16 +516,7 @@ void Group::IncreaseAge()
 	for (vector<Individual>::iterator ageIt = vhelpers.begin(); ageIt < vhelpers.end(); ++ageIt)
 	{
 		ageIt->age++;
-
-		if (ageIt->expressedHelp==false && ageIt->help==0.5){
-		   cout<<"expressed help false when true"<<endl;
-		}
-
-		if (ageIt->expressedHelp==true && ageIt->help==0){
-		   cout<<"expressed help true when false"<<endl;
-		}
 	}
-
 
 	if (breederalive) {
 		vbreeder.age++;
@@ -663,9 +654,7 @@ void Statistics(vector<Group>vgroups) {
 				sumsqHelp += indStatsIt->help*indStatsIt->help;
 				countExpressedHelp++;
 			}
-            //cout<<countExpressedHelp<<endl;
 
-			sumHelp += indStatsIt->help;
 			sumsqHelp += indStatsIt->help*indStatsIt->help;
 
 			sumDispersal += indStatsIt->dispersal;
