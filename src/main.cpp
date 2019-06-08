@@ -64,8 +64,8 @@ const int    INIT_NUM_HELPERS = 3;	 //initial number of helpers per group
 const double BIAS_FLOAT_BREEDER = 2; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
-const double X0	 = 0.7; //base survival without the effect of help or group size
-const double Xsh = 0.4;	// cost of help in survival
+const double X0	 = 0.5; //base survival without the effect of help or group size
+const double Xsh = 0.2;	// cost of help in survival
 const double Xsn = 0.4;	// benefit of group size in survival
 
 //Modifiers in fecundity
@@ -532,19 +532,18 @@ void Reassign(vector<Individual> &floaters, vector<Group> &groups)
 
         vector<double> position; //vector of cumHelp to choose with higher likelihood the ind with higher age
 
-        vector<Group, std::allocator<Group>>::iterator cumHelpIt;
-        for (cumHelpIt = groups.begin(); cumHelpIt < groups.end(); ++cumHelpIt) {
-            sumcumHelp += cumHelpIt->cumHelp; //add all the cumHelp from the vector Groups
-            if (cumHelpIt->cumHelp != 0) { allNoHelp++; } //to check if all groups display cumhelp 0
+        vector<Group, std::allocator<Group>>::iterator groupIt;
+        for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+            sumcumHelp += 1+groupIt->cumHelp; //add all the cumHelp from the vector Groups
+            if (groupIt->cumHelp != MAX_COLONIES) { allNoHelp++; } //to check if all groups display cumhelp 0
 
             //if (sumcumHelp != 0) { cout << "sumcumHelp =" << sumcumHelp << '\t' << "allNoHelp =" << allNoHelp << endl; } //track
         }
 
         if (allNoHelp != 0) {
 
-            vector<Group, std::allocator<Group>>::iterator cumHelpIt2;
-            for (cumHelpIt2 = groups.begin(); cumHelpIt2 < groups.end(); ++cumHelpIt2) {
-                position.push_back(static_cast<double>((cumHelpIt2)->cumHelp) / static_cast<double>(sumcumHelp) +
+            for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+                position.push_back(static_cast<double>(1+(groupIt)->cumHelp) / static_cast<double>(sumcumHelp) +
                                    currentposition); //creates a vector with proportional segments to the cumHelp of each group
                 currentposition = position[position.size() - 1];
 
@@ -573,13 +572,12 @@ void Reassign(vector<Individual> &floaters, vector<Group> &groups)
         } else {
             uniform_int_distribution<int> UniformMaxCol(0, MAX_COLONIES - 1);
             int selectGroup;
-            vector<Individual>::iterator indIt;
+            vector<Individual>::iterator floatIt;
             while (!floaters.empty()) {
-                indIt = floaters.end() - 1;
+                floatIt = floaters.end() - 1;
                 selectGroup = UniformMaxCol(generator);
-                indIt->fishType = HELPER; //modify the class
-                groups[selectGroup].helpers.push_back(
-                        *indIt); //add the floater to the helper vector in a randomly selected group
+                floatIt->fishType = HELPER; //modify the class
+                groups[selectGroup].helpers.push_back(*floatIt); //add the floater to the helper vector in a randomly selected group
                 floaters.pop_back(); //remove the floater from its vector
             }
         }
@@ -852,16 +850,17 @@ void Printparams()
 
 		<< "Reaction_norm_help: " << "\t" << REACTION_NORM_HELP << endl
 		<< "Reaction_norm_dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
+		<< "No_effect_relatedness: " << "\t" << NO_RELATEDNESS << endl
 		<< "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
 		<< "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
 		<< "Number_generations: " << "\t" << NUM_GENERATIONS << endl
 		<< "Number_replicates: " << "\t" << MAX_NUM_REPLICATES << endl
 		<< "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
-		<< "Base_survival: " << "\t" << X0 << endl
-		<< "Cost_help: " << "\t" << Xsh << endl
-		<< "Benefit_group_size: " << "\t" << Xsn << endl
-		<< "K0: " << "\t" << K0 << endl
-		<< "K1: " << "\t" << K1 << endl
+		<< "Base_survival(X0): " << "\t" << X0 << endl
+		<< "Cost_help_survival(Xh): " << "\t" << Xsh << endl
+		<< "Benefit_group_size_survival(Xn): " << "\t" << Xsn << endl
+		<< "Base_fecundity(K0): " << "\t" << K0 << endl
+		<< "Benefit_help_fecundity(K1): " << "\t" << K1 << endl
 		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
 		<< "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
 		<< "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
@@ -880,32 +879,33 @@ void Printparams()
 
 	fout2 << "PARAMETER VALUES" << endl
 
-		<< "Reaction_norm_help: " << "\t" << REACTION_NORM_HELP << endl
-		<< "Reaction_norm_dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
-		<< "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
-		<< "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
-		<< "Number_generations: " << "\t" << NUM_GENERATIONS << endl
-		<< "Number_replicates: " << "\t" << MAX_NUM_REPLICATES << endl
-		<< "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
-		<< "Base_survival: " << "\t" << X0 << endl
-		<< "Cost_help: " << "\t" << Xsh << endl
-		<< "Benefit_group_size: " << "\t" << Xsn << endl 
-		<< "K0: " << "\t" << K0 << endl
-		<< "K1: " << "\t" << K1 << endl
-		<< "initAlpha: " << "\t" << INIT_ALPHA << endl
-		<< "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
-		<< "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
-		<< "initBeta: " << "\t" << INIT_BETA << endl
-		<< "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
-		<< "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
-		<< "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
-		<< "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
-		<< "mutBeta: " << "\t" << MUTATION_BETA << endl
-		<< "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
-		<< "mutDrift: " << "\t" << MUTATION_DRIFT << endl
-		<< "stepAlpha: " << "\t" << STEP_ALPHA << endl
-		<< "stepBeta: " << "\t" << STEP_BETA << endl
-		<< "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
+	    << "Reaction_norm_help: " << "\t" << REACTION_NORM_HELP << endl
+        << "Reaction_norm_dispersal: " << "\t" << REACTION_NORM_DISPERSAL << endl
+        << "No_effect_relatedness: " << "\t" << NO_RELATEDNESS << endl
+        << "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
+        << "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
+        << "Number_generations: " << "\t" << NUM_GENERATIONS << endl
+        << "Number_replicates: " << "\t" << MAX_NUM_REPLICATES << endl
+        << "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
+        << "Base_survival(X0): " << "\t" << X0 << endl
+        << "Cost_help_survival(Xh): " << "\t" << Xsh << endl
+        << "Benefit_group_size_survival(Xn): " << "\t" << Xsn << endl
+        << "Base_fecundity(K0): " << "\t" << K0 << endl
+        << "Benefit_help_fecundity(K1): " << "\t" << K1 << endl
+        << "initAlpha: " << "\t" << INIT_ALPHA << endl
+        << "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
+        << "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
+        << "initBeta: " << "\t" << INIT_BETA << endl
+        << "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
+        << "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
+        << "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
+        << "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
+        << "mutBeta: " << "\t" << MUTATION_BETA << endl
+        << "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
+        << "mutDrift: " << "\t" << MUTATION_DRIFT << endl
+        << "stepAlpha: " << "\t" << STEP_ALPHA << endl
+        << "stepBeta: " << "\t" << STEP_BETA << endl
+        << "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
 
 }
 
