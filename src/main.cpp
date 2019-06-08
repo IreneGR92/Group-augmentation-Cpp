@@ -52,6 +52,8 @@ uniform_real_distribution<double> Uniform(0, 1);
 const bool REACTION_NORM_HELP = 0;  	//Apply reaction norm to age for level of help?
 const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal?
 
+const bool NO_RELATEDNESS = true;       //Apply implementation to remove the effect of relatedness?
+
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
 const int MAX_NUM_REPLICATES  = 20;
@@ -505,18 +507,83 @@ void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
 void Reassign(vector<Individual> &floaters, vector<Group> &groups)
 {
-	uniform_int_distribution<int> UniformMaxCol(0, MAX_COLONIES - 1);
-	int selectGroup;
-	vector<Individual>::iterator indIt;
-	while (!floaters.empty())
-	{
-		indIt = floaters.end() - 1;
-		indIt->help=0;
-		selectGroup = UniformMaxCol(generator);
-		indIt->fishType = HELPER; //modify the class
-		groups[selectGroup].helpers.push_back(*indIt); //add the floater to the helper vector in a randomly selected group
-		floaters.pop_back(); //remove the floater from its vector
-	}
+    if (!NO_RELATEDNESS) {
+        uniform_int_distribution<int> UniformMaxCol(0, MAX_COLONIES - 1);
+        int selectGroup;
+        vector<Individual>::iterator indIt;
+        while (!floaters.empty()) {
+            indIt = floaters.end() - 1;
+            indIt->help = 0;
+            selectGroup = UniformMaxCol(generator);
+            indIt->fishType = HELPER; //modify the class
+            groups[selectGroup].helpers.push_back(
+                    *indIt); //add the floater to the helper vector in a randomly selected group
+            floaters.pop_back(); //remove the floater from its vector
+        }
+    }
+
+
+    else{
+
+        double sumcumHelp = 0;
+        double currentposition = 0;
+        double RandP = Uniform(generator);
+        int allNoHelp = 0;
+
+        vector<double> position; //vector of cumHelp to choose with higher likelihood the ind with higher age
+
+        vector<Group, std::allocator<Group>>::iterator cumHelpIt;
+        for (cumHelpIt = groups.begin(); cumHelpIt < groups.end(); ++cumHelpIt) {
+            sumcumHelp += cumHelpIt->cumHelp; //add all the cumHelp from the vector Groups
+            if (cumHelpIt->cumHelp != 0) { allNoHelp++; } //to check if all groups display cumhelp 0
+
+            //if (sumcumHelp != 0) { cout << "sumcumHelp =" << sumcumHelp << '\t' << "allNoHelp =" << allNoHelp << endl; } //track
+        }
+
+        if (allNoHelp != 0) {
+
+            vector<Group, std::allocator<Group>>::iterator cumHelpIt2;
+            for (cumHelpIt2 = groups.begin(); cumHelpIt2 < groups.end(); ++cumHelpIt2) {
+                position.push_back(static_cast<double>((cumHelpIt2)->cumHelp) / static_cast<double>(sumcumHelp) +
+                                   currentposition); //creates a vector with proportional segments to the cumHelp of each group
+                currentposition = position[position.size() - 1];
+
+                //cout << "position size =" << position.size() << '\t' <<"position = " << currentposition << endl;
+            }
+
+            vector<Individual, std::allocator<Individual>>::iterator floatIt;
+            for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
+                floatIt->fishType = HELPER; //all floaters pass to be helpers
+            }
+
+            while (!floaters.empty()) {
+                for (int i = 0; i < groups.size(); i++) {
+                    if (!floaters.empty()) {
+                        if (RandP < position[i]) //to access the same ind in the candidates vector
+                        {
+                            groups[i].helpers.push_back(floaters[floaters.size() -
+                                                                 1]); //add the floater to the helper vector in a randomly selected group
+                            floaters.pop_back();
+                            //cout << "floater size =" << floaters.size() << endl;
+                        }
+                    }
+                    //cout << "after go to all groups =" << floaters.size() << endl;
+                }
+            }
+        } else {
+            uniform_int_distribution<int> UniformMaxCol(0, MAX_COLONIES - 1);
+            int selectGroup;
+            vector<Individual>::iterator indIt;
+            while (!floaters.empty()) {
+                indIt = floaters.end() - 1;
+                selectGroup = UniformMaxCol(generator);
+                indIt->fishType = HELPER; //modify the class
+                groups[selectGroup].helpers.push_back(
+                        *indIt); //add the floater to the helper vector in a randomly selected group
+                floaters.pop_back(); //remove the floater from its vector
+            }
+        }
+    }
 }
 
 
@@ -557,7 +624,12 @@ double Group::TotalPopulation()
 
 void Group::Fecundity()
 {
-	fecundity = K0 + K1 * cumHelp / (1 + cumHelp * K1); //fecundity function of cummulative help in the group
+	if (!NO_RELATEDNESS){
+        fecundity = K0 + K1 * cumHelp / (1 + cumHelp * K1); //fecundity function of cummulative help in the group
+	}else{
+        fecundity = K0;
+    }
+
 
 	poisson_distribution<int> PoissonFec(fecundity);
 	realFecundity = PoissonFec(generator); //integer number
