@@ -49,12 +49,12 @@ uniform_real_distribution<double> Uniform(0, 1);
 
 
 //Run parameters
-const bool REACTION_NORM_HELP = 0;  	//Apply reaction norm to age for level of help?
-const bool REACTION_NORM_DISPERSAL = 0;	//Apply reaction norm to age for dispersal?
+const bool REACTION_NORM_HELP = false;  	//Apply reaction norm to age for level of help?
+const bool REACTION_NORM_DISPERSAL = false;	//Apply reaction norm to age for dispersal?
 
-const bool NO_RELATEDNESS = true;       //Apply implementation to remove the effect of relatedness?
+const bool NO_RELATEDNESS = false;       //Apply implementation to remove the effect of relatedness?
 
-const bool EVOLUTION_HELP_AFTER_DISPERSAL = true; // help evolves only after the evolution of dispersal?
+const bool EVOLUTION_HELP_AFTER_DISPERSAL = false; // help evolves only after the evolution of dispersal?
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
@@ -66,8 +66,8 @@ const int    INIT_NUM_HELPERS = 3;	 //initial number of helpers per group
 const double BIAS_FLOAT_BREEDER = 2; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
-const double X0	 = 0.5; //base survival without the effect of help or group size
-const double Xsh = 0.2;	// cost of help in survival
+const double X0	 = 0.7; //base survival without the effect of help or group size
+const double Xsh = 0.4;	// cost of help in survival
 const double Xsn = 0.4;	// benefit of group size in survival
 
 //Modifiers in fecundity
