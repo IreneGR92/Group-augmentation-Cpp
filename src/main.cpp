@@ -33,8 +33,6 @@
 
 using namespace std;
 
-string name = "test";
-
 // Output file
 ofstream fout("group_augmentation_" + name + ".txt");
 ofstream fout2("group_augmentation_last_generation_" + name + ".txt");
