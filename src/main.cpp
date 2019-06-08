@@ -934,9 +934,9 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << stdevSurvival
 		<< "\t" << setprecision(4) << corr_HelpDispersal
 		<< "\t" << setprecision(4) << corr_HelpGroup
-		<< "\t" << setprecision(4) << newbreederFloater
-		<< "\t" << setprecision(4) << newbreederHelper
-		<< "\t" << setprecision(4) << inheritance
+		<< "\t" << newbreederFloater
+		<< "\t" << newbreederHelper
+		<< "\t" << inheritance
 		<< endl;
 }
 
