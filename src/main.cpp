@@ -51,10 +51,9 @@ uniform_real_distribution<double> Uniform(0, 1);
 //Run parameters
 const bool REACTION_NORM_HELP = false;  	//Apply reaction norm to age for level of help?
 const bool REACTION_NORM_DISPERSAL = false;	//Apply reaction norm to age for dispersal?
-
 const bool NO_RELATEDNESS = false;       //Apply implementation to remove the effect of relatedness?
-
 const bool EVOLUTION_HELP_AFTER_DISPERSAL = false; // help evolves only after the evolution of dispersal?
+const bool OLD_SURVIVAL_FORMULA = false;
 
 const int MAX_COLONIES	  = 5000;     // max number of groups or colonies --> breeding spots.
 const int NUM_GENERATIONS = 100000;
@@ -321,14 +320,16 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 
 double Individual::calcSurvival(int totalHelpers)
 {
-	//survival = (1 - X0) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+    if (OLD_SURVIVAL_FORMULA){
+        survival = (1 - X0) / (1 + exp(Xsh*help - Xsn * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+    }else{
+        survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
-	survival = X0 + Xsn / (1 + exp(-(totalHelpers + 1))) - Xsh / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
-
-	if (survival > 0.95) { 
-		survival = 0.95; 
-		cout << "survival greater than 1" << endl;
-	}
+        if (survival > 0.95) {
+            survival = 0.95;
+            cout << "survival greater than 1" << endl;
+        }
+    }
 
 	return survival;
 }
@@ -867,6 +868,7 @@ void Printparams()
         << "Reaction_norm_dispersal?: " << "\t" << REACTION_NORM_DISPERSAL << endl
         << "No_effect_relatedness?: " << "\t" << NO_RELATEDNESS << endl
         << "Evolution_help_after_dispersal?: " << "\t" << EVOLUTION_HELP_AFTER_DISPERSAL << endl
+        << "Old_formula_survival?: " << "\t" <<OLD_SURVIVAL_FORMULA << endl
         << "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
         << "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
         << "Number_generations: " << "\t" << NUM_GENERATIONS << endl
@@ -899,6 +901,7 @@ void Printparams()
         << "Reaction_norm_dispersal?: " << "\t" << REACTION_NORM_DISPERSAL << endl
         << "No_effect_relatedness?: " << "\t" << NO_RELATEDNESS << endl
         << "Evolution_help_after_dispersal?: " << "\t" << EVOLUTION_HELP_AFTER_DISPERSAL << endl
+        << "Old_formula_survival?: " << "\t" <<OLD_SURVIVAL_FORMULA << endl
         << "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
         << "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
         << "Number_generations: " << "\t" << NUM_GENERATIONS << endl
