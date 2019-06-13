@@ -56,7 +56,7 @@ const int NO_VALUE = -1;
 //Population parameters and Statistics
 int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers, countExpressedHelp;
 int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper, inheritance; //counters
-double relatedness; 
+double relatedness;
 double  meanGroupSize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
 meanAge, stdevAge, sumAge, sumsqAge, varAge,
 meanAlpha, stdevAlpha, sumAlpha, sumsqAlpha, varAlpha,
@@ -80,7 +80,7 @@ struct Individual // define individual traits
 {
 	explicit Individual(double alpha_ = 0, double alphaAge_ = 0, double alphaAge2_ = 0, double beta_ = 0, double betaAge_ = 0, double drift_ = 0, classes fishType_ = HELPER);
 	Individual(const Individual &mother);
-	double alpha, alphaAge, alphaAge2, beta, betaAge, drift, 		// genetic values                      
+	double alpha, alphaAge, alphaAge2, beta, betaAge, drift, 		// genetic values
 		dispersal, help, survival;									// phenotypic values
 	classes fishType;												// possible classes: breeder, helper, floater
 	int age;
@@ -143,7 +143,7 @@ struct Group // define group traits
 	vector<Individual> helpers; // create a vector of helpers inside each group
 
 //Functions inside Group
-	void Dispersal(vector<Individual> &floaters);
+	void Disperse(vector<Individual> &floaters);
 	void CumHelp();
 	void SurvivalGroup(int &deaths);
 	void NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
@@ -188,21 +188,20 @@ double Individual::calcDispersal()
 	if (!REACTION_NORM_DISPERSAL) {
 
 		dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
-
-		if (dispersal < 0 || dispersal > 1) {
-			cout << "error in dispersal: " << dispersal << endl;
-		}
-
 	}
 	else {
 		dispersal = 1 / (1 + exp(betaAge*age - beta));
 	}
 
+    if (dispersal < 0 || dispersal > 1) {
+        cout << "error in dispersal: " << dispersal << endl;
+    }
+
 	return dispersal;
 }
 
 
-void Group::Dispersal(vector<Individual> &floaters)
+void Group::Disperse(vector<Individual> &floaters)
 {
     vector<Individual, std::allocator<Individual>>::iterator dispersalIt;
     dispersalIt = helpers.begin();
@@ -212,9 +211,6 @@ void Group::Dispersal(vector<Individual> &floaters)
 	while (!helpers.empty() && sizevec > counting)
 	{
 		dispersalIt->calcDispersal();
-		if (dispersalIt->dispersal < 0) {
-			cout << "error in dispersal: " << dispersalIt->dispersal << endl;
-		}
 
 		if (Uniform(generator) < dispersalIt->dispersal)
 		{
@@ -382,7 +378,7 @@ void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 		}
 	}
 
-	else if (!floaters.empty() && floaters.size() < proportFloaters) { ///When less floaters available than the sample size, takes all of them. Change to a proportion?
+	else if (!floaters.empty() && floaters.size() < proportFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
         vector<Individual, std::allocator<Individual>>::iterator floatIt;
         for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt)
 		{
@@ -471,7 +467,6 @@ void Reassign(vector<Individual> &floaters, vector<Group> &groups)
             floaters.pop_back(); //remove the floater from its vector
         }
     }
-
 
     else{
 
@@ -597,7 +592,7 @@ void Group::Reproduction() // populate offspring generation
 
 void Individual::Mutate() // mutate genome of offspring 
 {
-	normal_distribution <double> NormalA(0, STEP_ALPHA); ///could be simplified if I decide to have all the steps size with the same magnitude
+	normal_distribution <double> NormalA(0, STEP_ALPHA); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
 	normal_distribution <double> NormalB(0, STEP_BETA);
 	normal_distribution <double> NormalD(0, STEP_DRIFT);
 
@@ -714,8 +709,8 @@ void Statistics(vector<Group>groups) {
 			if (groupStatsIt->breederAlive) {
 				sumDriftB += groupStatsIt->breeder.drift;
 				sumDriftH += indStatsIt->drift;
-				sumDriftBH += indStatsIt->drift*groupStatsIt->breeder.drift;
-				sumDriftBB += groupStatsIt->breeder.drift*groupStatsIt->breeder.drift;
+                sumDriftBH += indStatsIt->drift * groupStatsIt->breeder.drift;
+				sumDriftBB += groupStatsIt->breeder.drift * groupStatsIt->breeder.drift;
 				++driftGroupSize;
 			}
 
@@ -756,7 +751,7 @@ void Statistics(vector<Group>groups) {
 
 	meanGroupSize = sumGroupSize / MAX_COLONIES;
 	meanAge = sumAge / population;
-	meanAlpha = sumAlpha / population; ///population=sumGroupSize so simplify!
+	meanAlpha = sumAlpha / population; //TODO: population=sumGroupSize so simplify!
 	meanAlphaAge = sumAlphaAge / population;
 	meanAlphaAge2 = sumAlphaAge2 / population;
 	meanBeta = sumBeta / population;
@@ -1007,7 +1002,7 @@ int main() {
             for (itDispersal = groups.begin(); itDispersal < groups.end(); ++itDispersal)
 			{
 				populationBeforeSurv += itDispersal->TotalPopulation();
-				itDispersal->Dispersal(floaters);
+                itDispersal->Disperse(floaters);
 				floatersgenerated = floaters.size();
 				//    cout << "Floaters after dispersal: " << floaters.size() << endl;
 			}

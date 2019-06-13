@@ -2,7 +2,7 @@
 #ifndef GROUP_AUGMENTATION_PARAMETERS_H
 #define GROUP_AUGMENTATION_PARAMETERS_H
 
-std::string name = "test";
+std::string name = "default";
 
 ///Run parameters
 const bool REACTION_NORM_HELP = false;  	//Apply reaction norm to age for level of help?
