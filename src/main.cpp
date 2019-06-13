@@ -818,7 +818,7 @@ void Printparams()
         << "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
         << "X0(Base_survival): " << "\t" << X0 << endl
         << "Xh(Cost_help_survival): " << "\t" << Xsh << endl
-        << "Xn(Benefit_group_size_survival(Xn): " << "\t" << Xsn << endl
+        << "Xn(Benefit_group_size_survival): " << "\t" << Xsn << endl
         << "K0(Base_fecundity): " << "\t" << K0 << endl
         << "K1(Benefit_help_fecundity): " << "\t" << K1 << endl
         << "initAlpha: " << "\t" << INIT_ALPHA << endl
@@ -851,7 +851,7 @@ void Printparams()
         << "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
         << "X0(Base_survival): " << "\t" << X0 << endl
         << "Xh(Cost_help_survival): " << "\t" << Xsh << endl
-        << "Xn(Benefit_group_size_survival(Xn): " << "\t" << Xsn << endl
+        << "Xn(Benefit_group_size_survival): " << "\t" << Xsn << endl
         << "K0(Base_fecundity): " << "\t" << K0 << endl
         << "K1(Benefit_help_fecundity): " << "\t" << K1 << endl
         << "initAlpha: " << "\t" << INIT_ALPHA << endl
