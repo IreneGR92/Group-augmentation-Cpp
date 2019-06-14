@@ -17,7 +17,7 @@ cd ../build
 cmake ..
 make
 echo "running software"
-./app
+./App
 
 
 echo "copy results"
