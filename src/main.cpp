@@ -634,7 +634,7 @@ void Individual::Mutate() // mutate genome of offspring
 	}
 	if (REACTION_NORM_DISPERSAL) {
 		if (Uniform(generator) < MUTATION_BETA_AGE) {
-			betaAge += NormalD(generator);
+			betaAge += NormalB(generator);
 		}
 	}
 
