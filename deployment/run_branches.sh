@@ -22,7 +22,10 @@ declare -a arr=("sc-init"
 		"sc-bias10-K2-Xh02-Xn0"
 		"sc-bias10-K2-X05"
 		"sc-bias10-K2-X05-Xh02"
-		"sc-bias10-K2-X05-Xh02-Xn02")
+		"sc-bias10-K2-X05-Xh02-Xn02"
+		"sc-No__relatedness-RN"
+		"sc-RN"
+		"sc-No_relatedness")
 
 
 cd ${git_root}
