@@ -4,10 +4,16 @@ project_root=~/git/main/
 git_root=~/git/
 
 declare -a arr=("sc-init"
+		"sc-X07-Xh04-Xn02"
 		"sc-X07-Xh02-Xn02"
+		"sc-X07-Xh02-Xn0"
+		"sc-X05-Xh04-Xn04"
 		"sc-X05-Xh02-Xn04"
 		"sc-K2"
+		"sc-K2-Xn02"
 		"sc-K2-Xh02-Xn02"
+		"sc-K2-Xh02-Xn0"
+		"sc-K2-X05"
 		"sc-K2-X05-Xh02"
 		"sc-bias10"
 		"sc-bias10-Xn02"
@@ -22,10 +28,7 @@ declare -a arr=("sc-init"
 		"sc-bias10-K2-Xh02-Xn0"
 		"sc-bias10-K2-X05"
 		"sc-bias10-K2-X05-Xh02"
-		"sc-bias10-K2-X05-Xh02-Xn02"
-		"sc-No__relatedness-RN"
-		"sc-RN"
-		"sc-No_relatedness")
+		"sc-bias10-K2-X05-Xh02-Xn02")
 
 
 cd ${git_root}
