@@ -54,7 +54,7 @@ enum classes { BREEDER, HELPER, FLOATER };
 const int NO_VALUE = -1;
 
 //Population parameters and Statistics
-int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers, countExpressedHelp;
+int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers, countExpressedHelp, countGroupWithHelpers;
 int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper, inheritance; //counters
 double relatedness;
 double  meanGroupSize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
@@ -135,6 +135,7 @@ struct Group // define group traits
 	double cumHelp;
 	int totalHelpers;
 	bool breederAlive;                                     // for the breeder: 1 alive, 0 dead
+    bool helpersPresent;                                   //helpers present in group before reassign?
 	int groupSize;
 	double fecundity;
 	int realFecundity;
@@ -158,6 +159,7 @@ Group::Group(double alpha_ = INIT_ALPHA, double alphaAge_ = INIT_ALPHA_AGE, doub
 {
 	breeder = Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), BREEDER);
 	breederAlive = true;
+    helpersPresent = false;
 	fecundity = NO_VALUE;
 	realFecundity = NO_VALUE;
 
@@ -240,6 +242,9 @@ void Individual::calcHelp() {
             if (help < 0) { help = 0; }
         }
         expressedHelp = true;
+    }else{
+        help = NAN;
+        cout << "no helpers get a help"<< endl;
     }
 }
 
@@ -247,6 +252,12 @@ void Individual::calcHelp() {
 void Group::CumHelp() //Calculate accumulative help of all individuals inside of each group.
 {
 	cumHelp = 0;
+
+    helpersPresent = false;
+    if (helpers.size()>0){
+        helpersPresent = true;
+    }
+
 	//Level of help for helpers
     vector<Individual, std::allocator<Individual>>::iterator helpIt;
     for (helpIt = helpers.begin(); helpIt < helpers.end(); ++helpIt)
@@ -273,7 +284,6 @@ double Individual::calcSurvival(int totalHelpers)
             cout << "survival greater than 1" << endl;
         }
     }
-
 	return survival;
 }
 
@@ -310,7 +320,6 @@ void Group::SurvivalGroup(int &deaths)
 	if (Uniform(generator) > breeder.survival)
 	{
 		breederAlive = false;
-		breeder.age = NO_VALUE;
 		deaths++;
 	}
 }
@@ -613,7 +622,7 @@ void Individual::Mutate() // mutate genome of offspring
 		alpha += NormalA(generator);
 		if (!REACTION_NORM_HELP) {
 			if (alpha < 0) { alpha = 0; }
-			else if (alpha > 4) { alpha = 4; } //else camuflaged to selection
+			else if (alpha > 4) { alpha = 4; } //else camouflaged to selection
 		}
 	}
 	if (REACTION_NORM_HELP) {
@@ -648,7 +657,7 @@ void Individual::Mutate() // mutate genome of offspring
 /* CALCULATE STATISTICS */
 void Statistics(vector<Group>groups) {
 
-	relatedness = 0.0, driftGroupSize = 0, populationHelpers = 0, countExpressedHelp = 0,
+	relatedness = 0.0, driftGroupSize = 0, populationHelpers = 0, countExpressedHelp = 0, countGroupWithHelpers = 0,
 		meanGroupSize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
 		meanAge = 0.0, stdevAge = 0.0, sumAge = 0.0, sumsqAge = 0.0, varAge = 0.0,
 		meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
@@ -671,9 +680,8 @@ void Statistics(vector<Group>groups) {
         vector<Individual, std::allocator<Individual>>::iterator indStatsIt;
         for (indStatsIt = groupStatsIt->helpers.begin(); indStatsIt < groupStatsIt->helpers.end(); ++indStatsIt) {
 
-			sumAge += indStatsIt->age;
-			sumsqAge += indStatsIt->age*indStatsIt->age;
-			
+            // Genes
+
 			sumAlpha += indStatsIt->alpha;
 			sumsqAlpha += indStatsIt->alpha*indStatsIt->alpha;
 
@@ -689,13 +697,26 @@ void Statistics(vector<Group>groups) {
 			sumBetaAge += indStatsIt->betaAge;
 			sumsqBetaAge += indStatsIt->betaAge*indStatsIt->betaAge;
 
+			//Relatedness
+
+            if (groupStatsIt->breederAlive) {
+                sumDriftB += groupStatsIt->breeder.drift;
+                sumDriftH += indStatsIt->drift;
+                sumDriftBH += indStatsIt->drift * groupStatsIt->breeder.drift;
+                sumDriftBB += groupStatsIt->breeder.drift * groupStatsIt->breeder.drift;
+                ++driftGroupSize;
+            }
+
+			//Phenotypes
+
+            sumAge += indStatsIt->age;
+            sumsqAge += indStatsIt->age*indStatsIt->age;
+
 			if (indStatsIt->expressedHelp) {
 				sumHelp += indStatsIt->help;
 				sumsqHelp += indStatsIt->help*indStatsIt->help;
 				countExpressedHelp++;
 			}
-
-			sumsqHelp += indStatsIt->help*indStatsIt->help;
 
 			sumDispersal += indStatsIt->dispersal;
 			sumsqDispersal += indStatsIt->dispersal*indStatsIt->dispersal;
@@ -707,14 +728,6 @@ void Statistics(vector<Group>groups) {
 				sumprodHelpDispersal += indStatsIt->help*indStatsIt->dispersal;
 			}
 
-			if (groupStatsIt->breederAlive) {
-				sumDriftB += groupStatsIt->breeder.drift;
-				sumDriftH += indStatsIt->drift;
-                sumDriftBH += indStatsIt->drift * groupStatsIt->breeder.drift;
-				sumDriftBB += groupStatsIt->breeder.drift * groupStatsIt->breeder.drift;
-				++driftGroupSize;
-			}
-
 		}
 
 		populationHelpers += groupStatsIt->helpers.size();
@@ -723,8 +736,7 @@ void Statistics(vector<Group>groups) {
 		sumsqGroupSize += groupStatsIt->groupSize*groupStatsIt->groupSize;
 		if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
 
-		if (groupStatsIt->breederAlive) sumAge += groupStatsIt->breeder.age;
-		if (groupStatsIt->breederAlive) sumsqAge += groupStatsIt->breeder.age*groupStatsIt->breeder.age;
+		//Genes
 
 		if (groupStatsIt->breederAlive) sumAlpha += groupStatsIt->breeder.alpha;
 		if (groupStatsIt->breederAlive) sumsqAlpha += groupStatsIt->breeder.alpha*groupStatsIt->breeder.alpha;
@@ -741,17 +753,28 @@ void Statistics(vector<Group>groups) {
 		if (groupStatsIt->breederAlive) sumBetaAge += groupStatsIt->breeder.betaAge;
 		if (groupStatsIt->breederAlive) sumsqBetaAge += groupStatsIt->breeder.betaAge*groupStatsIt->breeder.betaAge;
 
-		if (groupStatsIt->breederAlive) sumSurvival += groupStatsIt->breeder.survival;
-		if (groupStatsIt->breederAlive) sumsqSurvival += groupStatsIt->breeder.survival*groupStatsIt->breeder.survival;
 
-		sumCumHelp += groupStatsIt->cumHelp;
-		sumsqCumHelp += groupStatsIt->cumHelp*groupStatsIt->cumHelp;
+		//Phenotypes
 
-		sumprodHelpGroup += groupStatsIt->cumHelp*groupStatsIt->groupSize;
+        if (groupStatsIt->breederAlive) sumAge += groupStatsIt->breeder.age;
+        if (groupStatsIt->breederAlive) sumsqAge += groupStatsIt->breeder.age*groupStatsIt->breeder.age;
+
+		if(groupStatsIt->helpersPresent){
+            sumCumHelp += groupStatsIt->cumHelp;
+            sumsqCumHelp += groupStatsIt->cumHelp*groupStatsIt->cumHelp;
+            sumprodHelpGroup += groupStatsIt->cumHelp*groupStatsIt->groupSize;
+
+            countGroupWithHelpers++;
+		}
+
+        if (groupStatsIt->breederAlive) sumSurvival += groupStatsIt->breeder.survival;
+        if (groupStatsIt->breederAlive) sumsqSurvival += groupStatsIt->breeder.survival*groupStatsIt->breeder.survival;
+
+
 	}
-
+    //Means
 	meanGroupSize = sumGroupSize / MAX_COLONIES;
-	meanAge = sumAge / population;
+
 	meanAlpha = sumAlpha / population; //TODO: population=sumGroupSize so simplify!
 	meanAlphaAge = sumAlphaAge / population;
 	meanAlphaAge2 = sumAlphaAge2 / population;
@@ -761,34 +784,42 @@ void Statistics(vector<Group>groups) {
 	meanDriftH = sumDriftH / driftGroupSize;
 	meanDriftBH = sumDriftBH / driftGroupSize;
 	meanDriftBB = sumDriftBB / driftGroupSize;
+
+    meanAge = sumAge / population;
 	meanHelp = sumHelp / countExpressedHelp;
-	meanCumHelp = sumCumHelp / MAX_COLONIES;
+	meanCumHelp = sumCumHelp / countGroupWithHelpers;
 	meanDispersal = sumDispersal / populationHelpers;
 	meanSurvival = sumSurvival / population;
 
 	relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
 	if ((meanDriftBB - meanDriftB * meanDriftB) == 0) { relatedness = 2; } //prevent to divide by 0
 
+
+	//Variance
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupSize * meanGroupSize;
-	varAge = sumsqAge / population - meanAge * meanAge;
+
 	varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
 	varAlphaAge = sumsqAlphaAge / population - meanAlphaAge * meanAlphaAge;
 	varAlphaAge2 = sumsqAlphaAge2 / population - meanAlphaAge2 * meanAlphaAge2;
 	varBeta = sumsqBeta / population - meanBeta * meanBeta;
 	varBetaAge = sumsqBetaAge / population - meanBetaAge * meanBetaAge;
+
+    varAge = sumsqAge / population - meanAge * meanAge;
 	varHelp = sumsqHelp / countExpressedHelp - meanHelp * meanHelp;
-	varCumHelp = sumsqCumHelp / MAX_COLONIES - meanCumHelp * meanCumHelp;
+	varCumHelp = sumsqCumHelp / countGroupWithHelpers - meanCumHelp * meanCumHelp;
 	varDispersal = sumsqDispersal / populationHelpers - meanDispersal * meanDispersal;
 	varSurvival = sumsqSurvival / population - meanSurvival * meanSurvival;
 
-	// to know if there is a problem (variance cannot be negative)
+	// SD
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
-	varAge > 0 ? stdevAge = sqrt(varAge) : stdevAge = 0;
+
 	varAlpha > 0 ? stdevAlpha = sqrt(varAlpha) : stdevAlpha = 0;
 	varAlphaAge > 0 ? stdevAlphaAge = sqrt(varAlphaAge) : stdevAlphaAge = 0;
 	varAlphaAge2 > 0 ? stdevAlphaAge2 = sqrt(varAlphaAge2) : stdevAlphaAge2 = 0;
 	varBeta > 0 ? stdevBeta = sqrt(varBeta) : stdevBeta = 0;
 	varBetaAge > 0 ? stdevBetaAge = sqrt(varBetaAge) : stdevBetaAge = 0;
+
+    varAge > 0 ? stdevAge = sqrt(varAge) : stdevAge = 0;
 	varHelp > 0 ? stdevHelp = sqrt(varHelp) : stdevHelp = 0;
 	varCumHelp > 0 ? stdevCumHelp = sqrt(varCumHelp) : stdevCumHelp = 0;
 	varDispersal > 0 ? stdevDispersal = sqrt(varDispersal) : stdevDispersal = 0;
@@ -796,7 +827,7 @@ void Statistics(vector<Group>groups) {
 
 	//Correlations
 	(stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / countExpressedHelp - meanHelp * meanDispersal) / (stdevHelp*stdevDispersal) : corr_HelpDispersal = 0;
-	(stdevCumHelp > 0 && stdevGroupSize > 0) ? corr_HelpGroup = (sumprodHelpGroup / MAX_COLONIES - meanCumHelp * meanGroupSize) / (stdevCumHelp*stdevGroupSize) : corr_HelpGroup = 0;
+	(stdevCumHelp > 0 && stdevGroupSize > 0) ? corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSize) / (stdevCumHelp*stdevGroupSize) : corr_HelpGroup = 0;
 
 }
 
