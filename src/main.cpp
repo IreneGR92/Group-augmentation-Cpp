@@ -568,7 +568,7 @@ double Group::TotalPopulation()
 void Group::Fecundity()
 {
 	if (!NO_RELATEDNESS){
-        fecundity = K0 + K1 * cumHelp / (1 + cumHelp * K1); //fecundity function of cummulative help in the group
+        fecundity = K0 + K1 * cumHelp / (1 + cumHelp * K1); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
 	}else{
         fecundity = K0;
     }
@@ -613,6 +613,7 @@ void Individual::Mutate() // mutate genome of offspring
 		alpha += NormalA(generator);
 		if (!REACTION_NORM_HELP) {
 			if (alpha < 0) { alpha = 0; }
+			else if (alpha > 4) { alpha = 4; } //else camuflaged to selection
 		}
 	}
 	if (REACTION_NORM_HELP) {
@@ -629,7 +630,7 @@ void Individual::Mutate() // mutate genome of offspring
 		beta += NormalB(generator);
 		if (!REACTION_NORM_DISPERSAL) {
 			if (beta < 0) { beta = 0; }
-			if (beta > 1) { beta = 1; }
+			else if (beta > 1) { beta = 1; }
 		}
 	}
 	if (REACTION_NORM_DISPERSAL) {
