@@ -790,8 +790,8 @@ void Statistics(vector<Group>groups) {
 	meanDriftBB = sumDriftBB / driftGroupSize;
 
     meanAge = sumAge / population;
-	meanHelp = sumHelp / countExpressedHelp;
-	meanCumHelp = sumCumHelp / countGroupWithHelpers;
+	countExpressedHelp==0? meanHelp = 0 : meanHelp = sumHelp / countExpressedHelp;
+    countGroupWithHelpers==0? meanCumHelp = 0 : meanCumHelp = sumCumHelp / countGroupWithHelpers;
 	meanDispersal = sumDispersal / populationHelpers;
 	meanSurvival = sumSurvival / population;
 
@@ -815,11 +815,9 @@ void Statistics(vector<Group>groups) {
 	varSurvival = sumsqSurvival / population - meanSurvival * meanSurvival;
 
 	// SD	
-	if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 || varDispersal < 0 ) {
+	if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 || varDispersal < 0 | varHelp < 0|| varCumHelp < 0|| varSurvival < 0) {
 		cout << "error variance negative" << endl;
 	}
-
-	//Problem: || varHelp < 0|| varCumHelp < 0|| varSurvival < 0
 
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
 
