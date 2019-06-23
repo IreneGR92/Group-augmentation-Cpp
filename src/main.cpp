@@ -59,6 +59,7 @@ int replica, gen, population, driftGroupSize, maxGroupSize, populationHelpers, c
 int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper, inheritance; //counters
 double relatedness;
 double  meanGroupSize, stdevGroupSize,  sumGroupSize, sumsqGroupSize, varGroupSize,
+meanTotalHelpers, stdevTotalHelpers, sumTotalHelpers, sumsqTotalHelpers, varTotalHelpers,
 meanAge, stdevAge, sumAge, sumsqAge, varAge,
 meanAlpha, stdevAlpha, sumAlpha, sumsqAlpha, varAlpha,
 meanAlphaAge, stdevAlphaAge, sumAlphaAge, sumsqAlphaAge, varAlphaAge,
@@ -159,6 +160,7 @@ struct Group // define group traits
 Group::Group(double alpha_ = INIT_ALPHA, double alphaAge_ = INIT_ALPHA_AGE, double alphaAge2_ = INIT_ALPHA_AGE2, double beta_ = INIT_BETA, double betaAge_ = INIT_BETA_AGE, int numhelp_ = INIT_NUM_HELPERS)
 {
 	breeder = Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), BREEDER);
+    totalHelpers = INIT_NUM_HELPERS;
 	breederAlive = true;
     helpersPresent = false;
 	fecundity = NO_VALUE;
@@ -660,6 +662,7 @@ void Statistics(vector<Group>groups) {
 
 	relatedness = 0.0, driftGroupSize = 0, populationHelpers = 0, countExpressedHelp = 0, countGroupWithHelpers = 0,
 		meanGroupSize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+		meanTotalHelpers = 0.0, stdevTotalHelpers = 0.0, sumTotalHelpers = 0.0, sumsqTotalHelpers = 0.0, varTotalHelpers = 0.0,
 		meanAge = 0.0, stdevAge = 0.0, sumAge = 0.0, sumsqAge = 0.0, varAge = 0.0,
 		meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
 		meanAlphaAge = 0.0, stdevAlphaAge = 0.0, sumAlphaAge = 0.0, sumsqAlphaAge = 0.0, varAlphaAge = 0.0,
@@ -740,6 +743,10 @@ void Statistics(vector<Group>groups) {
 		sumsqGroupSize += groupStatsIt->groupSize*groupStatsIt->groupSize;
 		if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
 
+        sumTotalHelpers += groupStatsIt->totalHelpers;
+        sumsqTotalHelpers += groupStatsIt->totalHelpers*groupStatsIt->totalHelpers;
+
+
 		//Genes
 
 		if (groupStatsIt->breederAlive) sumAlpha += groupStatsIt->breeder.alpha;
@@ -778,6 +785,7 @@ void Statistics(vector<Group>groups) {
 	}
     //Means
 	meanGroupSize = sumGroupSize / MAX_COLONIES;
+    meanTotalHelpers = sumTotalHelpers / MAX_COLONIES;
 
 	meanAlpha = sumAlpha / population; //TODO: population=sumGroupSize so simplify!
 	meanAlphaAge = sumAlphaAge / population;
@@ -801,6 +809,7 @@ void Statistics(vector<Group>groups) {
 
 	//Variance
 	varGroupSize = sumsqGroupSize / MAX_COLONIES - meanGroupSize * meanGroupSize;
+    varTotalHelpers = sumsqTotalHelpers / MAX_COLONIES - meanTotalHelpers * meanTotalHelpers;
 
 	varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
 	varAlphaAge = sumsqAlphaAge / population - meanAlphaAge * meanAlphaAge;
@@ -815,11 +824,12 @@ void Statistics(vector<Group>groups) {
 	varSurvival = sumsqSurvival / population - meanSurvival * meanSurvival;
 
 	// SD	
-	if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 || varDispersal < 0 | varHelp < 0|| varCumHelp < 0|| varSurvival < 0) {
+	if (varGroupSize < 0 || varTotalHelpers < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 || varDispersal < 0 | varHelp < 0|| varCumHelp < 0|| varSurvival < 0) {
 		cout << "error variance negative" << endl;
 	}
 
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
+    varTotalHelpers > 0 ? stdevTotalHelpers = sqrt(varTotalHelpers) : varTotalHelpers = 0;
 
 	varAlpha > 0 ? stdevAlpha = sqrt(varAlpha) : stdevAlpha = 0;
 	varAlphaAge > 0 ? stdevAlphaAge = sqrt(varAlphaAge) : stdevAlphaAge = 0;
@@ -945,6 +955,7 @@ void WriteMeans()
 		<< "\t" << deaths
 		<< "\t" << floatersgenerated
 		<< "\t" << setprecision(4) << meanGroupSize
+		<< "\t" << setprecision(4) << meanTotalHelpers
 		<< "\t" << setprecision(4) << meanAge
 		<< "\t" << setprecision(4) << meanAlpha
 		<< "\t" << setprecision(4) << meanAlphaAge
@@ -957,6 +968,7 @@ void WriteMeans()
 		<< "\t" << setprecision(4) << meanSurvival
 		<< "\t" << setprecision(4) << relatedness
 		<< "\t" << setprecision(4) << stdevGroupSize
+		<< "\t" << setprecision(4) << stdevTotalHelpers
 		<< "\t" << setprecision(4) << stdevAge
 		<< "\t" << setprecision(4) << stdevAlpha
 		<< "\t" << setprecision(4) << stdevAlphaAge
@@ -983,9 +995,9 @@ int main() {
 	
 	// column headings in output file 1
 	fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t" 
-		<< "Group_size" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t" << "meanBeta" << "\t" << "meanBetaAge" << "\t" 
+		<< "Group_size" << "\t" << "Num_helpers" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanAlphaAge2" << "\t" << "meanBeta" << "\t" << "meanBetaAge" << "\t"
 		<< "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t" << "meanSurvival" << "\t" << "Relatedness" << "\t"
-		<< "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t" 
+		<< "SD_GroupSize" << "\t" << "SD_numHelpers" << "\t" << "SD_Age" << "\t" << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_AlphaAge2" << "\t"<< "SD_Beta" << "\t" << "SD_BetaAge" << "\t"
 		<< "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t" << "SD_Survival" << "\t" << "corr_Help_Disp" << "\t" << "corr_Help_Group" << "\t"
 		<< "newBreederFloater" << "\t" << "newBreederHelper" << "\t" << "inheritance" << endl;
 
