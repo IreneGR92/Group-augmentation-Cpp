@@ -25,6 +25,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <math.h>
 #include <algorithm>
 #include <vector>
 #include <random>
@@ -712,22 +713,25 @@ void Statistics(vector<Group>groups) {
             sumAge += indStatsIt->age;
             sumsqAge += indStatsIt->age*indStatsIt->age;
 
-			if (indStatsIt->expressedHelp) {
+			if (indStatsIt->expressedHelp && !isnan(indStatsIt->help)) {
 				sumHelp += indStatsIt->help;
 				sumsqHelp += indStatsIt->help*indStatsIt->help;
 				countExpressedHelp++;
 			}
 
-			sumDispersal += indStatsIt->dispersal;
-			sumsqDispersal += indStatsIt->dispersal*indStatsIt->dispersal;
-
-			sumSurvival += indStatsIt->survival;
-			sumsqSurvival += indStatsIt->survival*indStatsIt->survival;
-
-			if (indStatsIt->expressedHelp) {
-				sumprodHelpDispersal += indStatsIt->help*indStatsIt->dispersal;
+			if (!isnan(indStatsIt->dispersal)) {
+				sumDispersal += indStatsIt->dispersal;
+				sumsqDispersal += indStatsIt->dispersal*indStatsIt->dispersal;
 			}
 
+			if (!isnan(indStatsIt->dispersal)) {
+				sumSurvival += indStatsIt->survival;
+				sumsqSurvival += indStatsIt->survival*indStatsIt->survival;
+			}
+
+			if (indStatsIt->expressedHelp && !isnan(indStatsIt->help)) {
+				sumprodHelpDispersal += indStatsIt->help*indStatsIt->dispersal;
+			}
 		}
 
 		populationHelpers += groupStatsIt->helpers.size();
@@ -810,7 +814,13 @@ void Statistics(vector<Group>groups) {
 	varDispersal = sumsqDispersal / populationHelpers - meanDispersal * meanDispersal;
 	varSurvival = sumsqSurvival / population - meanSurvival * meanSurvival;
 
-	// SD
+	// SD	
+	if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 || varDispersal < 0 ) {
+		cout << "error variance negative" << endl;
+	}
+
+	//Problem: || varHelp < 0|| varCumHelp < 0|| varSurvival < 0
+
 	varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
 
 	varAlpha > 0 ? stdevAlpha = sqrt(varAlpha) : stdevAlpha = 0;
