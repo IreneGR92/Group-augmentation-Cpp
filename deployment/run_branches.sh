@@ -37,44 +37,44 @@ echo "cleaning up old folders"
 
 rm -rf -r auto_*
 
-echo "deleting old results.."
-
-rm -rf -r ~/git/results
-
-
-echo "deleting results branch"
-
-cd ${project_root}
-git checkout master
-git pull
-git branch -D results
-git push origin --delete results
-
-echo "recreating results branch"
-
-git branch results
-git push --set-upstream origin results
-
-echo "setup folders for results"
-cd ${git_root}
-
-git clone -b results --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git results
-cd ${git_root}/results/
-git checkout results
-mkdir results
-cd results
-mkdir main
-cd main
-touch .gitkeep
-cd ..
-mkdir last_generation
-cd last_generation
-touch .gitkeep
-
-git add .
-
-git commit -m "initial results folder structure"
-git push
+#echo "deleting old results.."
+#
+#rm -rf -r ~/git/results
+#
+#
+#echo "deleting results branch"
+#
+#cd ${project_root}
+#git checkout master
+#git pull
+#git branch -D results
+#git push origin --delete results
+#
+#echo "recreating results branch"
+#
+#git branch results
+#git push --set-upstream origin results
+#
+#echo "setup folders for results"
+#cd ${git_root}
+#
+#git clone -b results --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git results
+#cd ${git_root}/results/
+#git checkout results
+#mkdir results
+#cd results
+#mkdir main
+#cd main
+#touch .gitkeep
+#cd ..
+#mkdir last_generation
+#cd last_generation
+#touch .gitkeep
+#
+#git add .
+#
+#git commit -m "initial results folder structure"
+#git push
 
 cd ${git_root}
 
