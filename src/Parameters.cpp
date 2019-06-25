@@ -11,7 +11,7 @@
 using namespace std;
 
 Parameters::Parameters() {
-    
+
 }
 
 Parameters::Parameters(string url) {
@@ -55,6 +55,7 @@ Parameters::Parameters(string url) {
     this->STEP_BETA = config["STEP_BETA"].as<double>();
     this->MUTATION_DRIFT = config["MUTATION_DRIFT"].as<double>();
     this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
+
 
 
 }

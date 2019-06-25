@@ -35,9 +35,7 @@
 using namespace std;
 
 Parameters parameters;
-// Output file
-ofstream fout("group_augmentation_" + parameters.getName() + ".txt");
-ofstream fout2("group_augmentation_last_generation_" + parameters.getName() + ".txt");
+
 
 
 /*CONSTANTS AND STRUCTURES*/
@@ -861,8 +859,19 @@ void Statistics(vector<Group> groups) {
 }
 
 
-/* WRITE PARAMETER SETTINGS TO OUTPUT FILE */
-void Printparams() {
+/* MAIN PROGRAM */
+int main(int count, char **argv) {
+
+    cout << "reading file " << argv[1] << "\n";
+
+    parameters = Parameters(argv[1]);
+
+
+    // Output file
+    ofstream fout("main_" + parameters.getName() + ".txt");
+    ofstream fout2("last_generation_" + parameters.getName() + ".txt");
+
+
     fout << "PARAMETER VALUES" << endl
 
          << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
@@ -929,82 +938,6 @@ void Printparams() {
           << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
           << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
-}
-
-
-/* WRITE GENETIC TRAIT VALUES TO OUTPUT FILE */
-void WriteMeans() {
-
-    // show values on screen
-    cout << fixed << showpoint
-         << setw(6) << gen
-         << setw(9) << population
-         << setw(9) << deaths
-         << setw(9) << floatersgenerated
-         << setw(9) << setprecision(2) << meanGroupSize
-         << setw(9) << maxGroupSize
-         << setw(9) << setprecision(2) << meanAge
-         << setw(9) << setprecision(4) << meanAlpha
-         << setw(9) << setprecision(4) << meanAlphaAge
-         << setw(9) << setprecision(4) << meanAlphaAge2
-         << setw(9) << setprecision(4) << meanBeta
-         << setw(9) << setprecision(4) << meanBetaAge
-         << setw(9) << setprecision(4) << meanHelp
-         << setw(9) << setprecision(4) << meanDispersal
-         << setw(9) << setprecision(2) << meanSurvival
-         << setw(9) << setprecision(2) << relatedness
-         << endl;
-
-
-    // write values to output file
-    fout << fixed << showpoint
-         << gen
-         << "\t" << population
-         << "\t" << deaths
-         << "\t" << floatersgenerated
-         << "\t" << setprecision(4) << meanGroupSize
-         << "\t" << setprecision(4) << meanTotalHelpers
-         << "\t" << setprecision(4) << meanAge
-         << "\t" << setprecision(4) << meanAlpha
-         << "\t" << setprecision(4) << meanAlphaAge
-         << "\t" << setprecision(4) << meanAlphaAge2
-         << "\t" << setprecision(4) << meanBeta
-         << "\t" << setprecision(4) << meanBetaAge
-         << "\t" << setprecision(4) << meanHelp
-         << "\t" << setprecision(4) << meanCumHelp
-         << "\t" << setprecision(4) << meanDispersal
-         << "\t" << setprecision(4) << meanSurvival
-         << "\t" << setprecision(4) << relatedness
-         << "\t" << setprecision(4) << stdevGroupSize
-         << "\t" << setprecision(4) << stdevTotalHelpers
-         << "\t" << setprecision(4) << stdevAge
-         << "\t" << setprecision(4) << stdevAlpha
-         << "\t" << setprecision(4) << stdevAlphaAge
-         << "\t" << setprecision(4) << stdevAlphaAge2
-         << "\t" << setprecision(4) << stdevBeta
-         << "\t" << setprecision(4) << stdevBetaAge
-         << "\t" << setprecision(4) << stdevHelp
-         << "\t" << setprecision(4) << stdevCumHelp
-         << "\t" << setprecision(4) << stdevDispersal
-         << "\t" << setprecision(4) << stdevSurvival
-         << "\t" << setprecision(4) << corr_HelpDispersal
-         << "\t" << setprecision(4) << corr_HelpGroup
-         << "\t" << newbreederFloater
-         << "\t" << newbreederHelper
-         << "\t" << inheritance
-         << endl;
-}
-
-
-/* MAIN PROGRAM */
-int main(int count, char **argv) {
-
-    cout << "reading file " << argv[1] << "\n";
-
-    parameters = Parameters(argv[1]);
-
-    Printparams();
-
     // column headings in output file 1
     fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t"
          << "Group_size" << "\t" << "Num_helpers" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge"
@@ -1052,7 +985,64 @@ int main(int count, char **argv) {
         }
 
         Statistics(groups);
-        WriteMeans();
+        // show values on screen
+        cout << fixed << showpoint
+             << setw(6) << gen
+             << setw(9) << population
+             << setw(9) << deaths
+             << setw(9) << floatersgenerated
+             << setw(9) << setprecision(2) << meanGroupSize
+             << setw(9) << maxGroupSize
+             << setw(9) << setprecision(2) << meanAge
+             << setw(9) << setprecision(4) << meanAlpha
+             << setw(9) << setprecision(4) << meanAlphaAge
+             << setw(9) << setprecision(4) << meanAlphaAge2
+             << setw(9) << setprecision(4) << meanBeta
+             << setw(9) << setprecision(4) << meanBetaAge
+             << setw(9) << setprecision(4) << meanHelp
+             << setw(9) << setprecision(4) << meanDispersal
+             << setw(9) << setprecision(2) << meanSurvival
+             << setw(9) << setprecision(2) << relatedness
+             << endl;
+
+
+        // write values to output file
+        fout << fixed << showpoint
+             << gen
+             << "\t" << population
+             << "\t" << deaths
+             << "\t" << floatersgenerated
+             << "\t" << setprecision(4) << meanGroupSize
+             << "\t" << setprecision(4) << meanTotalHelpers
+             << "\t" << setprecision(4) << meanAge
+             << "\t" << setprecision(4) << meanAlpha
+             << "\t" << setprecision(4) << meanAlphaAge
+             << "\t" << setprecision(4) << meanAlphaAge2
+             << "\t" << setprecision(4) << meanBeta
+             << "\t" << setprecision(4) << meanBetaAge
+             << "\t" << setprecision(4) << meanHelp
+             << "\t" << setprecision(4) << meanCumHelp
+             << "\t" << setprecision(4) << meanDispersal
+             << "\t" << setprecision(4) << meanSurvival
+             << "\t" << setprecision(4) << relatedness
+             << "\t" << setprecision(4) << stdevGroupSize
+             << "\t" << setprecision(4) << stdevTotalHelpers
+             << "\t" << setprecision(4) << stdevAge
+             << "\t" << setprecision(4) << stdevAlpha
+             << "\t" << setprecision(4) << stdevAlphaAge
+             << "\t" << setprecision(4) << stdevAlphaAge2
+             << "\t" << setprecision(4) << stdevBeta
+             << "\t" << setprecision(4) << stdevBetaAge
+             << "\t" << setprecision(4) << stdevHelp
+             << "\t" << setprecision(4) << stdevCumHelp
+             << "\t" << setprecision(4) << stdevDispersal
+             << "\t" << setprecision(4) << stdevSurvival
+             << "\t" << setprecision(4) << corr_HelpDispersal
+             << "\t" << setprecision(4) << corr_HelpGroup
+             << "\t" << newbreederFloater
+             << "\t" << newbreederHelper
+             << "\t" << inheritance
+             << endl;
 
         for (gen = 1; gen <= parameters.getNumGenerations(); gen++) {
             //cout << "\t" << "\t" << "\t" << "\t" << "\t" << "GENERATION "<<gen<< " STARTS NOW!!!" <<endl;
@@ -1103,7 +1093,64 @@ int main(int count, char **argv) {
 
             if (gen % parameters.getSkip() == 0) {   // write output every 'skip' generations
                 Statistics(groups);
-                WriteMeans();
+                // show values on screen
+                cout << fixed << showpoint
+                     << setw(6) << gen
+                     << setw(9) << population
+                     << setw(9) << deaths
+                     << setw(9) << floatersgenerated
+                     << setw(9) << setprecision(2) << meanGroupSize
+                     << setw(9) << maxGroupSize
+                     << setw(9) << setprecision(2) << meanAge
+                     << setw(9) << setprecision(4) << meanAlpha
+                     << setw(9) << setprecision(4) << meanAlphaAge
+                     << setw(9) << setprecision(4) << meanAlphaAge2
+                     << setw(9) << setprecision(4) << meanBeta
+                     << setw(9) << setprecision(4) << meanBetaAge
+                     << setw(9) << setprecision(4) << meanHelp
+                     << setw(9) << setprecision(4) << meanDispersal
+                     << setw(9) << setprecision(2) << meanSurvival
+                     << setw(9) << setprecision(2) << relatedness
+                     << endl;
+
+
+                // write values to output file
+                fout << fixed << showpoint
+                     << gen
+                     << "\t" << population
+                     << "\t" << deaths
+                     << "\t" << floatersgenerated
+                     << "\t" << setprecision(4) << meanGroupSize
+                     << "\t" << setprecision(4) << meanTotalHelpers
+                     << "\t" << setprecision(4) << meanAge
+                     << "\t" << setprecision(4) << meanAlpha
+                     << "\t" << setprecision(4) << meanAlphaAge
+                     << "\t" << setprecision(4) << meanAlphaAge2
+                     << "\t" << setprecision(4) << meanBeta
+                     << "\t" << setprecision(4) << meanBetaAge
+                     << "\t" << setprecision(4) << meanHelp
+                     << "\t" << setprecision(4) << meanCumHelp
+                     << "\t" << setprecision(4) << meanDispersal
+                     << "\t" << setprecision(4) << meanSurvival
+                     << "\t" << setprecision(4) << relatedness
+                     << "\t" << setprecision(4) << stdevGroupSize
+                     << "\t" << setprecision(4) << stdevTotalHelpers
+                     << "\t" << setprecision(4) << stdevAge
+                     << "\t" << setprecision(4) << stdevAlpha
+                     << "\t" << setprecision(4) << stdevAlphaAge
+                     << "\t" << setprecision(4) << stdevAlphaAge2
+                     << "\t" << setprecision(4) << stdevBeta
+                     << "\t" << setprecision(4) << stdevBetaAge
+                     << "\t" << setprecision(4) << stdevHelp
+                     << "\t" << setprecision(4) << stdevCumHelp
+                     << "\t" << setprecision(4) << stdevDispersal
+                     << "\t" << setprecision(4) << stdevSurvival
+                     << "\t" << setprecision(4) << corr_HelpDispersal
+                     << "\t" << setprecision(4) << corr_HelpGroup
+                     << "\t" << newbreederFloater
+                     << "\t" << newbreederHelper
+                     << "\t" << inheritance
+                     << endl;
             }
 
 

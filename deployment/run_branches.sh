@@ -137,22 +137,7 @@ for i in "${arr[@]}"
 do
 folder_name="auto_$i"
 
-    echo deleting folder ${folder_name}
-    rm -rf ${folder_name}
-    pwd
-    echo cloning "${folder_name}"
-    pwd
-    git clone -b ${i} --single-branch git@github.com:IreneGR92/Group-augmentation-RN.git ${folder_name}
-    cd ${folder_name}
-    pwd
-    git checkout ${i}
-    echo running "${folder_name}"
-    cd deployment
-    chmod +x build.sh
-    pwd
-    screen -d -S "${folder_name}" -m ./build.sh
-    cd ../..
-    pwd
+srun ./App
 done
 
 screen -list

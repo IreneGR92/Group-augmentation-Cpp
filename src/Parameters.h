@@ -4,6 +4,7 @@
 
 
 #include <string>
+#include <fstream>
 
 class Parameters {
 
@@ -63,7 +64,10 @@ class Parameters {
     double STEP_DRIFT;            // mutation step size in the neutral genetic value to track level of relatedness
 
 
+
+
 public:
+
     Parameters();
 
     Parameters(std::string url);
