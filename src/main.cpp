@@ -873,52 +873,52 @@ void Printparams() {
          << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
          << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
          << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
-         << "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
-         << "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
-         << "initBeta: " << "\t" << INIT_BETA << endl
-         << "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
-         << "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
-         << "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
-         << "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
-         << "mutBeta: " << "\t" << MUTATION_BETA << endl
-         << "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
-         << "mutDrift: " << "\t" << MUTATION_DRIFT << endl
-         << "stepAlpha: " << "\t" << STEP_ALPHA << endl
-         << "stepBeta: " << "\t" << STEP_BETA << endl
-         << "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
+         << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
+         << "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+         << "initBeta: " << "\t" << parameters.getInitBeta() << endl
+         << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+         << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
+         << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
+         << "mutAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+         << "mutBeta: " << "\t" << parameters.getInitBeta() << endl
+         << "mutBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+         << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
+         << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
+         << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
+         << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
 
     fout2 << "PARAMETER VALUES" << endl
 
-          << "Reaction_norm_help?: " << "\t" << REACTION_NORM_HELP << endl
-          << "Reaction_norm_dispersal?: " << "\t" << REACTION_NORM_DISPERSAL << endl
-          << "No_effect_relatedness?: " << "\t" << NO_RELATEDNESS << endl
-          << "Evolution_help_after_dispersal?: " << "\t" << EVOLUTION_HELP_AFTER_DISPERSAL << endl
-          << "Old_formula_survival?: " << "\t" << OLD_SURVIVAL_FORMULA << endl
-          << "Initial_population: " << "\t" << MAX_COLONIES * (INIT_NUM_HELPERS + 1) << endl
-          << "Number_of_colonies: " << "\t" << MAX_COLONIES << endl
-          << "Number_generations: " << "\t" << NUM_GENERATIONS << endl
-          << "Number_replicates: " << "\t" << MAX_NUM_REPLICATES << endl
-          << "Bias_float_breeder: " << "\t" << BIAS_FLOAT_BREEDER << endl
-          << "X0(Base_survival): " << "\t" << X0 << endl
-          << "Xh(Cost_help_survival): " << "\t" << Xsh << endl
-          << "Xn(Benefit_group_size_survival): " << "\t" << Xsn << endl
-          << "K0(Base_fecundity): " << "\t" << K0 << endl
-          << "K1(Benefit_help_fecundity): " << "\t" << K1 << endl
-          << "initAlpha: " << "\t" << INIT_ALPHA << endl
-          << "initAlphaAge: " << "\t" << INIT_ALPHA_AGE << endl
-          << "initAlphaAge2: " << "\t" << INIT_ALPHA_AGE2 << endl
-          << "initBeta: " << "\t" << INIT_BETA << endl
-          << "initBetaAge: " << "\t" << INIT_BETA_AGE << endl
-          << "mutAlpha: " << "\t" << MUTATION_ALPHA << endl
-          << "mutAlphaAge: " << "\t" << MUTATION_ALPHA_AGE << endl
-          << "mutAlphaAge2: " << "\t" << MUTATION_ALPHA_AGE2 << endl
-          << "mutBeta: " << "\t" << MUTATION_BETA << endl
-          << "mutBetaAge: " << "\t" << MUTATION_BETA_AGE << endl
-          << "mutDrift: " << "\t" << MUTATION_DRIFT << endl
-          << "stepAlpha: " << "\t" << STEP_ALPHA << endl
-          << "stepBeta: " << "\t" << STEP_BETA << endl
-          << "stepDrift: " << "\t" << STEP_DRIFT << endl << endl;
+            << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
+            << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+            << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+            << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+            << "Old_formula_survival?: " << "\t" << parameters.isOldSurvivalFormula() << endl
+            << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+            << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+            << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+            << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+            << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+            << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
+            << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
+            << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
+            << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
+            << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
+            << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
+            << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
+            << "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+            << "initBeta: " << "\t" << parameters.getInitBeta() << endl
+            << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+            << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
+            << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
+            << "mutAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+            << "mutBeta: " << "\t" << parameters.getInitBeta() << endl
+            << "mutBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+            << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
+            << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
+            << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
+            << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
 }
 
