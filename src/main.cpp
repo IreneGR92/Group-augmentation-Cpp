@@ -990,7 +990,7 @@ void WriteMeans() {
 /* MAIN PROGRAM */
 int main() {
 
-    parameters = Parameters();
+//    parameters = Parameters();
 
 
     Printparams();

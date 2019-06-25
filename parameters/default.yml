@@ -1,4 +1,5 @@
 #Run parameters
+name: default
 REACTION_NORM_HELP: true    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?

@@ -2,9 +2,23 @@
 // Created by odin on 25/06/19.
 //
 
+
+#include <iostream>
+#include <yaml-cpp/yaml.h>
 #include "Parameters.h"
 
-const std::string &Parameters::getName() const {
+using namespace std;
+
+Parameters::Parameters() {
+
+    cout << "hello there";
+    YAML::Node config = YAML::LoadFile("/home/odin/git/cpp/parameters/default.yml");
+ std::cout << "Last logged in: " << config["name"].as<string>() << "\n";
+
+
+}
+
+const string &Parameters::getName() const {
     return name;
 }
 
@@ -139,3 +153,4 @@ void Parameters::setMutationAlphaAge2(double mutationAlphaAge2) {
 bool Parameters::isReactionNormDispersal() const {
     return REACTION_NORM_DISPERSAL;
 }
+

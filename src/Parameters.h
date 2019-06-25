@@ -6,6 +6,8 @@
 #include <string>
 
 class Parameters {
+
+
     std::string name;
 ///Run parameters
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
@@ -62,6 +64,8 @@ class Parameters {
 
 
 public:
+    Parameters(std::string url);
+
     const std::string &getName() const;
 
     bool isReactionNormHelp() const;
@@ -130,6 +134,7 @@ public:
 
     void setMutationAlphaAge2(double mutationAlphaAge2);
 
+    Parameters();
 };
 
 
