@@ -64,6 +64,8 @@ class Parameters {
 
 
 public:
+    Parameters();
+
     Parameters(std::string url);
 
     const std::string &getName() const;
@@ -134,7 +136,6 @@ public:
 
     void setMutationAlphaAge2(double mutationAlphaAge2);
 
-    Parameters();
 };
 
 

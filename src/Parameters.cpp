@@ -11,8 +11,13 @@
 using namespace std;
 
 Parameters::Parameters() {
-    string url = "/home/odin/git/cpp/parameters/default.yml";
-    YAML::Node config = YAML::LoadFile("/home/odin/git/cpp/parameters/NRN/init-NRN.yml");
+    
+}
+
+Parameters::Parameters(string url) {
+
+
+    YAML::Node config = YAML::LoadFile(url);
 
     unsigned first = url.find("parameters/");
     unsigned last = url.find(".yml");

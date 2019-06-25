@@ -34,7 +34,7 @@
 
 using namespace std;
 
-Parameters parameters = Parameters();
+Parameters parameters;
 // Output file
 ofstream fout("group_augmentation_" + parameters.getName() + ".txt");
 ofstream fout2("group_augmentation_last_generation_" + parameters.getName() + ".txt");
@@ -208,7 +208,7 @@ void InitGroup(vector<Group> &groups) {
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
-    if (parameters.isNoRelatedness() && age ==1){
+    if (parameters.isNoRelatedness() && age == 1) {
         dispersal = 1;
 
     } else {
@@ -997,8 +997,11 @@ void WriteMeans() {
 
 
 /* MAIN PROGRAM */
-int main() {
+int main(int count, char **argv) {
 
+    cout << "reading file " << argv[1] << "\n";
+
+    parameters = Parameters(argv[1]);
 
     Printparams();
 
