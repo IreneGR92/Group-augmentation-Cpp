@@ -12,6 +12,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 ./hello.omp
 
 
+
 for i in "${arr[@]}"
 do
 folder_name="auto_$i"
