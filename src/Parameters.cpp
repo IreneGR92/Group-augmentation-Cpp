@@ -33,6 +33,7 @@ Parameters::Parameters() {
     this->BIAS_FLOAT_BREEDER = config["BIAS_FLOAT_BREEDER"].as<double>();
     this->X0 = config["X0"].as<double>();
     this->Xsh = config["Xsh"].as<double>();
+    this->Xsn = config["Xsn"].as<double>();
     this->K0 = config["K0"].as<double>();
     this->K1 = config["K1"].as<double>();
     this->INIT_ALPHA = config["INIT_ALPHA"].as<double>();
