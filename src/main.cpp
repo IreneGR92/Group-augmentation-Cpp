@@ -208,7 +208,7 @@ void InitGroup(vector<Group> &groups) {
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
-    if (!parameters.isReactionNormHelp()) {
+    if (!parameters.isReactionNormDispersal()) {
 
         dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
     } else {
@@ -293,8 +293,8 @@ double Individual::calcSurvival(int totalHelpers) {
         survival = (1 - parameters.getX0()) /
                    (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
     } else {
-        survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) - parameters.getXsh() / (1 +
-                                                                      exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+        survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
+                parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
         if (survival > 0.95) {
             survival = 0.95;
