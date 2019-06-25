@@ -208,15 +208,20 @@ void InitGroup(vector<Group> &groups) {
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
-    if (!parameters.isReactionNormDispersal()) {
+    if (parameters.isNoRelatedness() && age ==1){
+        dispersal = 1;
 
-        dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
     } else {
-        dispersal = 1 / (1 + exp(betaAge * age - beta));
-    }
+        if (!parameters.isReactionNormDispersal()) {
 
-    if (dispersal < 0 || dispersal > 1) {
-        cout << "error in dispersal: " << dispersal << endl;
+            dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
+        } else {
+            dispersal = 1 / (1 + exp(betaAge * age - beta));
+        }
+
+//        if (dispersal < 0 || dispersal > 1) {
+//            cout << "error in dispersal: " << dispersal << endl;
+//        }
     }
 
     return dispersal;
@@ -261,7 +266,7 @@ void Individual::calcHelp() {
         expressedHelp = true;
     } else {
         help = NAN;
-        cout << "no helpers get a help" << endl;
+        //cout << "no helpers get a help" << endl;
     }
 }
 
@@ -298,7 +303,7 @@ double Individual::calcSurvival(int totalHelpers) {
 
         if (survival > 0.95) {
             survival = 0.95;
-            cout << "survival greater than 1" << endl;
+            //cout << "survival greater than 1" << endl;
         }
     }
     return survival;
@@ -425,7 +430,7 @@ void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     }
 
     if (floaters.empty() && Candidates.size() != helpers.size()) {
-        cout << "Error assigning empty floaters to Breeder" << endl;
+        //cout << "Error assigning empty floaters to Breeder" << endl;
     }
 
     vector<Individual *, std::allocator<Individual *>>::iterator age3It;
@@ -442,9 +447,9 @@ void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                 **age3It = floaters[floaters.size() - 1];
                 floaters.pop_back();
                 newBreederFloater++;
-                if ((*age3It)->inherit == 1) {
-                    cout << "error in inheritance" << endl;
-                }
+//                if ((*age3It)->inherit == 1) {
+//                    cout << "error in inheritance" << endl;
+//                }
             } else {
                 **age3It = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
                 helpers.pop_back();
@@ -824,7 +829,7 @@ void Statistics(vector<Group> groups) {
     // SD
     if (varGroupSize < 0 || varTotalHelpers < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 ||
         varDispersal < 0 | varHelp < 0 || varCumHelp < 0 || varSurvival < 0) {
-        cout << "error variance negative" << endl;
+        //cout << "error variance negative" << endl;
     }
 
     varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
