@@ -1,5 +1,4 @@
 #Run parameters
-name: default
 REACTION_NORM_HELP: true    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
@@ -9,7 +8,7 @@ OLD_SURVIVAL_FORMULA: false
 MAX_COLONIES: 5000     # max number of groups or colonies
 NUM_GENERATIONS: 100000
 MAX_NUM_REPLICATES: 20
-SKIP: 50   # interval between print-outs
+SKIP: 1   # interval between print-outs
 
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group

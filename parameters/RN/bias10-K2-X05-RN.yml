@@ -20,8 +20,8 @@ Xsh: 0.4    # cost of help in survival
 Xsn: 0.4    # benefit of group size in survival
 
 #Modifiers in fecundity
-K0: 1    # min fecundity, fecundity when no help provided.
-K1: 2    # benefit of cumHelp in the fecundity
+K0: 1.0    # min fecundity, fecundity when no help provided.
+K1: 2.0    # benefit of cumHelp in the fecundity
 
 
 #Genetic values

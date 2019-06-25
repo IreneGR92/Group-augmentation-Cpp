@@ -5,15 +5,50 @@
 
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <algorithm>
 #include "Parameters.h"
 
 using namespace std;
 
 Parameters::Parameters() {
+    string url = "/home/odin/git/cpp/parameters/default.yml";
+    YAML::Node config = YAML::LoadFile("/home/odin/git/cpp/parameters/NRN/init-NRN.yml");
 
-    cout << "hello there";
-    YAML::Node config = YAML::LoadFile("/home/odin/git/cpp/parameters/default.yml");
- std::cout << "Last logged in: " << config["name"].as<string>() << "\n";
+    unsigned first = url.find("parameters/");
+    unsigned last = url.find(".yml");
+    string name = url.substr(first, last - first);
+    replace(name.begin(), name.end(), '/', '_');
+
+    this->name = name;
+    this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
+    this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
+    this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
+    this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
+    this->OLD_SURVIVAL_FORMULA = config["OLD_SURVIVAL_FORMULA"].as<bool>();
+    this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
+    this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
+    this->MAX_NUM_REPLICATES = config["MAX_NUM_REPLICATES"].as<int>();
+    this->SKIP = config["SKIP"].as<int>();
+    this->INIT_NUM_HELPERS = config["INIT_NUM_HELPERS"].as<int>();
+    this->BIAS_FLOAT_BREEDER = config["BIAS_FLOAT_BREEDER"].as<double>();
+    this->X0 = config["X0"].as<double>();
+    this->Xsh = config["Xsh"].as<double>();
+    this->K0 = config["K0"].as<double>();
+    this->K1 = config["K1"].as<double>();
+    this->INIT_ALPHA = config["INIT_ALPHA"].as<double>();
+    this->INIT_ALPHA_AGE = config["INIT_ALPHA_AGE"].as<double>();
+    this->INIT_ALPHA_AGE2 = config["INIT_ALPHA_AGE2"].as<double>();
+    this->MUTATION_ALPHA = config["MUTATION_ALPHA"].as<double>();
+    this->MUTATION_ALPHA_AGE = config["MUTATION_ALPHA_AGE"].as<double>();
+    this->MUTATION_ALPHA_AGE2 = config["MUTATION_ALPHA_AGE2"].as<double>();
+    this->STEP_ALPHA = config["STEP_ALPHA"].as<double>();
+    this->INIT_BETA = config["INIT_BETA"].as<double>();
+    this->INIT_BETA_AGE = config["INIT_BETA_AGE"].as<double>();
+    this->MUTATION_BETA = config["MUTATION_BETA"].as<double>();
+    this->MUTATION_BETA_AGE = config["MUTATION_BETA_AGE"].as<double>();
+    this->STEP_BETA = config["STEP_BETA"].as<double>();
+    this->MUTATION_DRIFT = config["MUTATION_DRIFT"].as<double>();
+    this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
 
 
 }

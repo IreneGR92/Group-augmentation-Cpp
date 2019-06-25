@@ -34,7 +34,7 @@
 
 using namespace std;
 
-Parameters parameters;
+Parameters parameters = Parameters();
 // Output file
 ofstream fout("group_augmentation_" + parameters.getName() + ".txt");
 ofstream fout2("group_augmentation_last_generation_" + parameters.getName() + ".txt");
@@ -291,10 +291,12 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 double Individual::calcSurvival(int totalHelpers) {
     if (parameters.isOldSurvivalFormula()) {
         survival = (1 - parameters.getX0()) /
-                   (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+                   (1 + exp(parameters.getXsh() * help -
+                            parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
     } else {
         survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
-                parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+                   parameters.getXsh() / (1 +
+                                          exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
         if (survival > 0.95) {
             survival = 0.95;
@@ -490,7 +492,8 @@ void Reassign(vector<Individual> &floaters, vector<Group> &groups) {
         vector<Group, std::allocator<Group>>::iterator groupIt;
         for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
             sumcumHelp += 1 + groupIt->cumHelp; //add all the cumHelp from the vector Groups
-            if (groupIt->cumHelp != parameters.getMaxColonies()) { allNoHelp++; } //to check if all groups display cumhelp 0
+            if (groupIt->cumHelp !=
+                parameters.getMaxColonies()) { allNoHelp++; } //to check if all groups display cumhelp 0
 
             //if (sumcumHelp != 0) { cout << "sumcumHelp =" << sumcumHelp << '\t' << "allNoHelp =" << allNoHelp << endl; } //track
         }
@@ -574,7 +577,7 @@ double Group::TotalPopulation() {
 void Group::Fecundity() {
     if (!parameters.isNoRelatedness()) {
         fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp *
-                                             parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
+                                                                             parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
     } else {
         fecundity = parameters.getK0();
     }
@@ -879,9 +882,9 @@ void Printparams() {
          << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
          << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
          << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
-         << "mutAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
-         << "mutBeta: " << "\t" << parameters.getInitBeta() << endl
-         << "mutBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+         << "mutAlphaAge2: " << "\t" << parameters.getMutationAlphaAge2() << endl
+         << "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
+         << "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
          << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
          << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
          << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
@@ -890,35 +893,36 @@ void Printparams() {
 
     fout2 << "PARAMETER VALUES" << endl
 
-            << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-            << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-            << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-            << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-            << "Old_formula_survival?: " << "\t" << parameters.isOldSurvivalFormula() << endl
-            << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-            << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-            << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-            << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-            << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-            << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
-            << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
-            << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
-            << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
-            << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
-            << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
-            << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
-            << "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
-            << "initBeta: " << "\t" << parameters.getInitBeta() << endl
-            << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
-            << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
-            << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
-            << "mutAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
-            << "mutBeta: " << "\t" << parameters.getInitBeta() << endl
-            << "mutBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
-            << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
-            << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
-            << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
-            << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
+          << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
+          << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+          << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+          << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+          << "Old_formula_survival?: " << "\t" << parameters.isOldSurvivalFormula() << endl
+          << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1)
+          << endl
+          << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+          << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+          << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+          << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+          << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
+          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
+          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
+          << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
+          << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
+          << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
+          << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
+          << "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+          << "initBeta: " << "\t" << parameters.getInitBeta() << endl
+          << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+          << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
+          << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
+          << "mutAlphaAge2: " << "\t" << parameters.getMutationAlphaAge2() << endl
+          << "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
+          << "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
+          << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
+          << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
+          << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
+          << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
 }
 
@@ -989,8 +993,6 @@ void WriteMeans() {
 
 /* MAIN PROGRAM */
 int main() {
-
-//    parameters = Parameters();
 
 
     Printparams();
