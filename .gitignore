@@ -79,5 +79,6 @@ fabric.properties
 *.tlog
 *.db
 Group_augmentation_RN/*
+VS/*
 
 *.Rhistory
