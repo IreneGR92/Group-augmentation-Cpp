@@ -82,3 +82,4 @@ Group_augmentation_RN/*
 VS/*
 
 *.Rhistory
+.vs/*
