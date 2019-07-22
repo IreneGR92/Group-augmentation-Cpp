@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 declare -a arr=(
-        "init-No_relatedness.yml"
+#       "init-No_relatedness.yml"
 #		"07-Xh04-Xn02-No_relatedness.yml"
 #		"X07-Xh02-Xn02-No_relatedness.yml"
 #		"X07-Xh02-Xn0-No_relatedness.yml"
 #		"X05-Xh04-Xn04-No_relatedness.yml"
-		"X05-Xh02-Xn04-No_relatedness.yml"
-		"K2-No_relatedness.yml"
+#		"X05-Xh02-Xn04-No_relatedness.yml"
+#		"K2-No_relatedness.yml"
 #		"K2-Xn02-No_relatedness.yml"
 #		"K2-Xh02-Xn02-No_relatedness.yml"
 #		"K2-Xh02-Xn0-No_relatedness.yml"
@@ -81,6 +81,28 @@ declare -a arr=(
 #		"bias10-K2-X05-RN.yml"
 #		"bias10-K2-X05-Xh02-RN.yml"
 #		"bias10-K2-X05-Xh02-Xn02-RN.yml"
+
+		"init-No_help.yml"
+		"X07-Xh04-Xn02-No_help.yml"
+		"X07-Xh02-Xn02-No_help.yml"
+		"X05-Xh04-Xn04-No_help.yml"
+		"X05-Xh02-Xn04-No_help.yml"
+		"K2-No_help.yml"
+		"K2-Xn02-No_help.yml"
+		"K2-Xh02-Xn02-No_help.yml"
+		"K2-X05-No_help.yml"
+		"K2-X05-Xh02-No_help.yml"
+
+		"init-RN-No_help.yml"
+		"X07-Xh04-Xn02-RN-No_help.yml"
+		"X07-Xh02-Xn02-RN-No_help.yml"
+		"X05-Xh04-Xn04-RN-No_help.yml"
+		"X05-Xh02-Xn04-RN-No_help.yml"
+		"K2-RN-No_help.yml"
+		"K2-Xn02-RN-No_help.yml"
+		"K2-Xh02-Xn02-RN-No_help.yml"
+		"K2-X05-RN-No_help.yml"
+		"K2-X05-Xh02-RN-No_help.yml"
 		)
 
 
