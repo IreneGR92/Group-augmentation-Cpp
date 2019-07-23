@@ -12,11 +12,12 @@ class Parameters {
     std::string name;
 ///Run parameters
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
-    bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
-
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
+
+	bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
 	bool LOW_SURVIVAL_BREEDER;
+	bool NO_GROUP_AUGMENTATION;
     bool OLD_SURVIVAL_FORMULA;
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
@@ -27,6 +28,7 @@ class Parameters {
 //Fix values
     int INIT_NUM_HELPERS;     //initial number of helpers per group
     double BIAS_FLOAT_BREEDER; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
+	int FIXED_GROUP_SIZE;	   //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
     double X0; //base survival without the effect of help or group size
@@ -77,13 +79,15 @@ public:
 
     bool isReactionNormHelp() const;
 
+	bool isReactionNormDispersal() const;
+
     bool isNoRelatedness() const;
 
     bool isEvolutionHelpAfterDispersal() const;
 
 	bool isLowSurvivalBreeder() const;
 
-    bool isReactionNormDispersal() const;
+	bool isNoGroupAugmentation() const;
 
     bool isOldSurvivalFormula() const;
 
@@ -98,6 +102,8 @@ public:
     int getInitNumHelpers() const;
 
     double getBiasFloatBreeder() const;
+
+	int getFixedGroupSize() const;
 
     double getX0() const;
 
