@@ -3,6 +3,7 @@ REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 NO_RELATEDNESS: true     # Apply implementation to remove the effect of relatedness?
 EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolution of dispersal?
+LOW_SURVIVAL_BREEDER: false
 OLD_SURVIVAL_FORMULA: false
 
 MAX_COLONIES: 5000     # max number of groups or colonies
@@ -21,7 +22,7 @@ Xsn: 0.4    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 2    # benefit of cumHelp in the fecundity
+K1: 1    # benefit of cumHelp in the fecundity
 
 
 #Genetic values
