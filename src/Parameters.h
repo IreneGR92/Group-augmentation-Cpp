@@ -16,6 +16,7 @@ class Parameters {
 
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
+	bool LOW_SURVIVAL_BREEDER;
     bool OLD_SURVIVAL_FORMULA;
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
@@ -79,6 +80,8 @@ public:
     bool isNoRelatedness() const;
 
     bool isEvolutionHelpAfterDispersal() const;
+
+	bool isLowSurvivalBreeder() const;
 
     bool isReactionNormDispersal() const;
 

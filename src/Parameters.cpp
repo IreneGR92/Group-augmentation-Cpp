@@ -29,6 +29,7 @@ Parameters::Parameters(string url) {
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
+	this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
     this->OLD_SURVIVAL_FORMULA = config["OLD_SURVIVAL_FORMULA"].as<bool>();
     this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
     this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
@@ -74,6 +75,10 @@ bool Parameters::isNoRelatedness() const {
 
 bool Parameters::isEvolutionHelpAfterDispersal() const {
     return EVOLUTION_HELP_AFTER_DISPERSAL;
+}
+
+bool Parameters::isLowSurvivalBreeder() const {
+	return LOW_SURVIVAL_BREEDER;
 }
 
 bool Parameters::isOldSurvivalFormula() const {
