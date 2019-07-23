@@ -2,7 +2,7 @@
 REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
-EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolution of dispersal?
+EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: false
 OLD_SURVIVAL_FORMULA: false
 
@@ -17,12 +17,12 @@ BIAS_FLOAT_BREEDER: 2  # mean of number of groups a floater can visit to try to 
 
 # Modifiers in survival. X0 + Xsn - Xsh :< 1
 X0: 0.7  # base survival without the effect of help or group size
-Xsh: 0.2    # cost of help in survival
-Xsn: 0.2    # benefit of group size in survival
+Xsh: 0.4    # cost of help in survival
+Xsn: 0.4    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 1    # benefit of cumHelp in the fecundity
+K1: 2    # benefit of cumHelp in the fecundity
 
 
 #Genetic values
