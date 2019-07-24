@@ -972,7 +972,7 @@ int main(int count, char **argv) {
 		<< "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
     // column headings in output file 1
-    fout << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t"
+    fout << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t"
          << "Group_size" << "\t" << "Num_helpers" << "\t" << "Age" << "\t" << "meanAlpha" << "\t" << "meanAlphaAge"
          << "\t" << "meanAlphaAge2" << "\t" << "meanBeta" << "\t" << "meanBetaAge" << "\t"
          << "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t" << "meanSurvival" << "\t"
@@ -1041,7 +1041,8 @@ int main(int count, char **argv) {
 
         // write values to output file
         fout << fixed << showpoint
-             << generation
+			 << replica++
+			 << generation
              << "\t" << population
              << "\t" << deaths
              << "\t" << floatersgenerated
