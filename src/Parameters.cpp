@@ -1,8 +1,3 @@
-//
-// Created by odin on 25/06/19.
-//
-
-
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <algorithm>
