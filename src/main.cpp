@@ -292,39 +292,16 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 /*SURVIVAL*/
 
 double Individual::calcSurvival(int totalHelpers) {
-    
-	if (parameters.isNoGroupAugmentation()) {
-		if (BREEDER || HELPER) {
-			if (parameters.isOldSurvivalFormula()) {
-				survival = (1 - parameters.getX0()) /
-					(1 + exp(parameters.getXsh() * help -
-						parameters.getXsn() * (parameters.getFixedGroupSize()))); // +1 to know group size (1 breeder + helpers)
-			}
-			else {
-				survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(parameters.getFixedGroupSize()))) -
-					parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+    if (parameters.isOldSurvivalFormula()) {
+		survival = (1 - parameters.getX0()) /
+			(1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+	} else {
+		survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
+			parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
-				if (survival > 0.95) {
-					survival = 0.95;
-					//cout << "survival greater than 1" << endl;
-				}
-			}
-		}
-	}
-	else {
-		if (parameters.isOldSurvivalFormula()) {
-			survival = (1 - parameters.getX0()) /
-				(1 + exp(parameters.getXsh() * help -
-					parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-		}
-		else {
-			survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
-				parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
-
-			if (survival > 0.95) {
-				survival = 0.95;
-				//cout << "survival greater than 1" << endl;
-			}
+		if (survival > 0.95) {
+			survival = 0.95;
+			//cout << "survival greater than 1" << endl;
 		}
 	}
 
@@ -914,7 +891,6 @@ int main(int count, char **argv) {
          << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
          << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
          << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-		 << "Fixed_group_size: " << "\t" << parameters.getFixedGroupSize()
          << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
@@ -950,7 +926,6 @@ int main(int count, char **argv) {
 		<< "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
 		<< "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
 		<< "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-		<< "Fixed_group_size: " << "\t" << parameters.getFixedGroupSize()
 		<< "X0(Base_survival): " << "\t" << parameters.getX0() << endl
 		<< "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
 		<< "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
@@ -1041,8 +1016,8 @@ int main(int count, char **argv) {
 
         // write values to output file
         fout << fixed << showpoint
-			 << replica++
-			 << generation
+			 << replica + 1
+			 << "\t" << generation
              << "\t" << population
              << "\t" << deaths
              << "\t" << floatersgenerated
@@ -1150,7 +1125,8 @@ int main(int count, char **argv) {
 
                 // write values to output file
                 fout << fixed << showpoint
-                     << generation
+                     << replica + 1
+                     << "\t" << generation
                      << "\t" << population
                      << "\t" << deaths
                      << "\t" << floatersgenerated
@@ -1250,7 +1226,6 @@ int main(int count, char **argv) {
         }
 
     }
-
 
     return 0;
 }
