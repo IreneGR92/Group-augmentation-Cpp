@@ -775,7 +775,7 @@ void Statistics(vector<Group> groups) {
         //Phenotypes
 
         //if (groupStatsIt->breederAlive) sumAge += groupStatsIt->breeder.age;
-        if (groupStatsIt->breederAlive) sumsqAge += groupStatsIt->breeder.age * groupStatsIt->breeder.age;
+        //if (groupStatsIt->breederAlive) sumsqAge += groupStatsIt->breeder.age * groupStatsIt->breeder.age;
 
         if (groupStatsIt->helpersPresent) {
             sumCumHelp += groupStatsIt->cumHelp;
