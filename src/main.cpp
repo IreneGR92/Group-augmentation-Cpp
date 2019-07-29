@@ -292,18 +292,35 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 /*SURVIVAL*/
 
 double Individual::calcSurvival(int totalHelpers) {
-    if (parameters.isOldSurvivalFormula()) {
-		survival = (1 - parameters.getX0()) /
-			(1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
-	} else {
-		survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
-			parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
 
-		if (survival > 0.95) {
-			survival = 0.95;
-			//cout << "survival greater than 1" << endl;
-		}
-	}
+    if (parameters.isNoGroupAugmentation()){
+        if (parameters.isOldSurvivalFormula()) {
+            survival = (1 - parameters.getX0()) /
+                       (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (parameters.getFixedGroupSize()))); // +1 to know group size (1 breeder + helpers)
+        } else {
+            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(parameters.getFixedGroupSize()))) -
+                       parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+
+            if (survival > 0.95) {
+                survival = 0.95;
+                //cout << "survival greater than 1" << endl;
+            }
+        }
+    } else {
+        if (parameters.isOldSurvivalFormula()) {
+            survival = (1 - parameters.getX0()) /
+                       (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+        } else {
+            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
+                       parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+
+            if (survival > 0.95) {
+                survival = 0.95;
+                //cout << "survival greater than 1" << endl;
+            }
+        }
+    }
+
 
     return survival;
 }

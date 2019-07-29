@@ -33,6 +33,7 @@ Parameters::Parameters(string url) {
     this->SKIP = config["SKIP"].as<int>();
     this->INIT_NUM_HELPERS = config["INIT_NUM_HELPERS"].as<int>();
     this->BIAS_FLOAT_BREEDER = config["BIAS_FLOAT_BREEDER"].as<double>();
+    this->FIXED_GROUP_SIZE = config["FIXED_GROUP_SIZE"].as<double>();
     this->X0 = config["X0"].as<double>();
     this->Xsh = config["Xsh"].as<double>();
     this->Xsn = config["Xsn"].as<double>();
@@ -107,6 +108,10 @@ int Parameters::getInitNumHelpers() const {
 
 double Parameters::getBiasFloatBreeder() const {
     return BIAS_FLOAT_BREEDER;
+}
+
+int Parameters::getFixedGroupSize() const {
+    return FIXED_GROUP_SIZE;
 }
 
 double Parameters::getX0() const {
