@@ -959,7 +959,7 @@ int main(int count, char **argv) {
          << "newBreederFloater" << "\t" << "newBreederHelper" << "\t" << "inheritance" << endl;
 
     // column headings in output file 2
-    fout2 << "generation" << "\t" << "replica" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t"
+    fout2 << "replica" << "\t" << "generation" << "\t" << "groupID" << "\t" << "type" << "\t" << "age" << "\t"
           << "alpha" << "\t" << "alphaAge" << "\t" << "alphaAge2" << "\t"
           << "beta" << "\t" << "betaAge" << "\t" << "drift"
           << "\t" << "help" << "\t" << "dispersal" << "\t" << "survival" << endl;
@@ -1174,8 +1174,8 @@ int main(int count, char **argv) {
                 for (itGroups = groups.begin(); itGroups < groups.end(); ++itGroups) {
 					if (counter < 100) {
 						fout2 << fixed << showpoint
-							<< generation
 							<< replica + 1
+							<< "\t" << generation
 							<< "\t" << groupID
 							<< "\t" << itGroups->breeder.fishType
 							<< "\t" << setprecision(4) << itGroups->breeder.age
@@ -1193,8 +1193,8 @@ int main(int count, char **argv) {
 						for (vector<Individual>::iterator itHelpers = itGroups->helpers.begin();
 							itHelpers < itGroups->helpers.end(); ++itHelpers) {
 							fout2 << fixed << showpoint
-								<< generation
 								<< replica + 1
+								<< "\t" << generation
 								<< "\t" << groupID
 								<< "\t" << itHelpers->fishType
 								<< "\t" << setprecision(4) << itHelpers->age
