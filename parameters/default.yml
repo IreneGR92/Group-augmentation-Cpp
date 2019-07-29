@@ -2,7 +2,7 @@
 REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
-EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolution of dispersal?
+EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: false
 NO_GROUP_AUGMENTATION: false
 OLD_SURVIVAL_FORMULA: false
