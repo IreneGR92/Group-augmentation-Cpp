@@ -83,6 +83,33 @@ declare -a arr=(
 		"No-GA_bias10-K2-Xh02-Xn02-RN.yml"
 		"No-GA_bias10-K2-X05-Xh02-RN.yml"
 
+    "Low-survival-B_init-NRN.yml"
+    "Low-survival-B_X07-Xh04-Xn02-NRN.yml"
+    "Low-survival-B_X07-Xh02-Xn02-NRN.yml"
+    "Low-survival-B_X05-Xh04-Xn04-NRN.yml"
+    "Low-survival-B_X05-Xh02-Xn04-NRN.yml"
+    "Low-survival-B_K2-NRN.yml"
+    "Low-survival-B_K2-Xn02-NRN.yml"
+    "Low-survival-B_K2-Xh02-Xn02-NRN.yml"
+    "Low-survival-B_K2-X05-NRN.yml"
+    "Low-survival-B_K2-X05-Xh02-NRN.yml"
+    "Low-survival-B_init-RN.yml"
+    "Low-survival-B_X07-Xh04-Xn02-RN.yml"
+    "Low-survival-B_X07-Xh02-Xn02-RN.yml"
+    "Low-survival-B_X05-Xh04-Xn04-RN.yml"
+    "Low-survival-B_X05-Xh02-Xn04-RN.yml"
+    "Low-survival-B_K2-RN.yml"
+    "Low-survival-B_K2-Xn02-RN.yml"
+    "Low-survival-B_K2-Xh02-Xn02-RN.yml"
+    "Low-survival-B_K2-X05-RN.yml"
+    "Low-survival-B_K2-X05-Xh02-RN.yml"
+    "Low-survival-B_bias10-RN.yml"
+    "Low-survival-B_bias10-Xn02-RN.yml"
+    "Low-survival-B_bias10-K2-RN.yml"
+    "Low-survival-B_bias10-K2-Xn02-RN.yml"
+    "Low-survival-B_bias10-K2-Xh02-Xn02-RN.yml"
+    "Low-survival-B_bias10-K2-X05-Xh02-RN.yml"
+
 		)
 
 
