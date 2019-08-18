@@ -303,7 +303,7 @@ double Individual::calcSurvival(int totalHelpers) {
 
             if (survival > 0.95) {
                 survival = 0.95;
-                cout << "survival greater than 1" << endl;
+               // cout << "survival greater than 1" << endl;
             }
         }
     } else {

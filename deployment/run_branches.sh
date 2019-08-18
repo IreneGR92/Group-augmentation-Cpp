@@ -136,16 +136,11 @@ declare -a arr=(
 #		"bias10-K2-X05-RN-Dispersal.yml"
 #		"bias10-K2-X05-Xh02-RN-Dispersal.yml"
 #		"bias10-K2-X05-Xh02-Xn02-RN-Dispersal.yml"
-#		"bias1.yml"
-#		"bias3.yml"
-#		"bias5.yml"
-#		"bias7.yml"
+		"bias1-RN.yml"
+		"bias3-RN.yml"
+		"bias4-RN.yml"
+		"bias5-RN.yml"
 
-    "X05-Xh02-Xn04-RN-Help.yml"
-    "X04-Xh02-Xn04-NRN"
-    "X04-Xh02-Xn04-RN"
-    "X06-Xh02-Xn04-NRN"
-    "X06-Xh02-Xn04-RN"
 		)
 
 
