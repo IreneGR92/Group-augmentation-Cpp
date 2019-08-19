@@ -57,7 +57,7 @@ enum classes {
 const int NO_VALUE = -1;
 
 //Population parameters and Statistics
-int replica, generation, population, driftGroupSize, maxGroupSize, populationHelpers, countExpressedHelp, countGroupWithHelpers;
+int replica, generation, population, driftGroupSize, maxTotalHelpers, populationHelpers, countExpressedHelp, countGroupWithHelpers;
 int populationBeforeSurv, deaths, floatersgenerated, newbreederFloater, newbreederHelper, inheritance; //counters
 double relatedness;
 double meanGroupSize, stdevGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
@@ -682,7 +682,7 @@ void Individual::Mutate() // mutate genome of offspring
 void Statistics(vector<Group> groups) {
 
     relatedness = 0.0, driftGroupSize = 0, populationHelpers = 0, countExpressedHelp = 0, countGroupWithHelpers = 0,
-    meanGroupSize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+    meanGroupSize = 0.0, stdevGroupSize = 0.0, maxTotalHelpers = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
     meanTotalHelpers = 0.0, stdevTotalHelpers = 0.0, sumTotalHelpers = 0.0, sumsqTotalHelpers = 0.0, varTotalHelpers = 0.0,
     meanAge = 0.0, stdevAge = 0.0, sumAge = 0.0, sumsqAge = 0.0, varAge = 0.0,
     meanAlpha = 0.0, stdevAlpha = 0.0, sumAlpha = 0.0, sumsqAlpha = 0.0, varAlpha = 0.0,
@@ -762,10 +762,10 @@ void Statistics(vector<Group> groups) {
 
         sumGroupSize += groupStatsIt->groupSize;
         sumsqGroupSize += groupStatsIt->groupSize * groupStatsIt->groupSize;
-        if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
 
         sumTotalHelpers += groupStatsIt->totalHelpers;
         sumsqTotalHelpers += groupStatsIt->totalHelpers * groupStatsIt->totalHelpers;
+        if (groupStatsIt->totalHelpers > maxTotalHelpers) maxTotalHelpers = groupStatsIt->totalHelpers;
 
 
         //Genes
@@ -1015,8 +1015,8 @@ int main(int count, char **argv) {
              << setw(9) << population
              << setw(9) << deaths
              << setw(9) << floatersgenerated
-             << setw(9) << setprecision(2) << meanGroupSize
-             << setw(9) << maxGroupSize
+             << setw(9) << setprecision(2) << meanTotalHelpers
+             << setw(9) << maxTotalHelpers
              << setw(9) << setprecision(2) << meanAge
              << setw(9) << setprecision(4) << meanAlpha
              << setw(9) << setprecision(4) << meanAlphaAge
@@ -1125,7 +1125,7 @@ int main(int count, char **argv) {
                      << setw(9) << deaths
                      << setw(9) << floatersgenerated
                      << setw(9) << setprecision(2) << meanGroupSize
-                     << setw(9) << maxGroupSize
+                     << setw(9) << maxTotalHelpers
                      << setw(9) << setprecision(2) << meanAge
                      << setw(9) << setprecision(4) << meanAlpha
                      << setw(9) << setprecision(4) << meanAlphaAge

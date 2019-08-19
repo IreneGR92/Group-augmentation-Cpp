@@ -1,4 +1,4 @@
-#Run parameters
+Run parameters
 REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
@@ -6,6 +6,7 @@ LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 LOW_SURVIVAL_FLOATER: true  #Survival of the floaters decreased?
 NO_GROUP_AUGMENTATION: false
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
+
 
 MAX_COLONIES: 5000     # max number of groups or colonies
 NUM_GENERATIONS: 100000
@@ -24,7 +25,7 @@ Xsn: 0.4    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 1    # benefit of cumHelp in the fecundity
+K1: 2    # benefit of cumHelp in the fecundity
 
 
 #Genetic values

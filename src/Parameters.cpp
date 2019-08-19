@@ -66,10 +66,6 @@ bool Parameters::isReactionNormHelp() const {
     return REACTION_NORM_HELP;
 }
 
-bool Parameters::isNoRelatedness() const {
-    return NO_RELATEDNESS;
-}
-
 bool Parameters::isEvolutionHelpAfterDispersal() const {
     return EVOLUTION_HELP_AFTER_DISPERSAL;
 }
@@ -78,12 +74,16 @@ bool Parameters::isLowSurvivalBreeder() const {
 	return LOW_SURVIVAL_BREEDER;
 }
 
+bool Parameters::isLowSurvialFloater() const {
+    return LOW_SURVIVAL_FLOATER;
+}
+
 bool Parameters::isNoGroupAugmentation() const {
 	return NO_GROUP_AUGMENTATION;
 }
 
-bool Parameters::isLowSurvialFloater() const {
-    return LOW_SURVIVAL_FLOATER;
+bool Parameters::isNoRelatedness() const {
+    return NO_RELATEDNESS;
 }
 
 int Parameters::getMaxColonies() const {

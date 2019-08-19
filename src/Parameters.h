@@ -13,11 +13,12 @@ class Parameters {
 ///Run parameters
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
-	bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
 	bool LOW_SURVIVAL_BREEDER;
-	bool NO_GROUP_AUGMENTATION;
     bool LOW_SURVIVAL_FLOATER;
+	bool NO_GROUP_AUGMENTATION;
+    bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
+
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
     int NUM_GENERATIONS;
@@ -80,15 +81,15 @@ public:
 
 	bool isReactionNormDispersal() const;
 
-    bool isNoRelatedness() const;
-
     bool isEvolutionHelpAfterDispersal() const;
 
 	bool isLowSurvivalBreeder() const;
 
+    bool isLowSurvialFloater() const;
+
 	bool isNoGroupAugmentation() const;
 
-    bool isLowSurvialFloater() const;
+    bool isNoRelatedness() const;
 
     int getMaxColonies() const;
 

@@ -1,4 +1,4 @@
-#Run parameters
+Run parameters
 REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
@@ -18,9 +18,9 @@ BIAS_FLOAT_BREEDER: 2  # mean of number of groups a floater can visit to try to 
 FIXED_GROUP_SIZE: 4		# in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 # Modifiers in survival. X0 + Xsn - Xsh :< 1
-X0: 0.5  # base survival without the effect of help or group size
+X0: 0.7  # base survival without the effect of help or group size
 Xsh: 0.2    # cost of help in survival
-Xsn: 0.4    # benefit of group size in survival
+Xsn: 0.2    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
