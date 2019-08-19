@@ -10,7 +10,7 @@ class Parameters {
 
 
     std::string name;
-///Run parameters
+///#Run parameters
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
