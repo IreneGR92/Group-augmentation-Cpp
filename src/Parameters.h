@@ -17,7 +17,7 @@ class Parameters {
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
 	bool LOW_SURVIVAL_BREEDER;
 	bool NO_GROUP_AUGMENTATION;
-    bool OLD_SURVIVAL_FORMULA;
+    bool LOW_SURVIVAL_FLOATER;
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
     int NUM_GENERATIONS;
@@ -88,7 +88,7 @@ public:
 
 	bool isNoGroupAugmentation() const;
 
-    bool isOldSurvivalFormula() const;
+    bool isLowSurvialFloater() const;
 
     int getMaxColonies() const;
 

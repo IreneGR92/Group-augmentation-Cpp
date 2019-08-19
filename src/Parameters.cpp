@@ -26,7 +26,7 @@ Parameters::Parameters(string url) {
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
 	this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
 	this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
-    this->OLD_SURVIVAL_FORMULA = config["OLD_SURVIVAL_FORMULA"].as<bool>();
+    this->LOW_SURVIVAL_FLOATER = config["LOW_SURVIVAL_FLOATER"].as<bool>();
     this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
     this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
     this->MAX_NUM_REPLICATES = config["MAX_NUM_REPLICATES"].as<int>();
@@ -82,8 +82,8 @@ bool Parameters::isNoGroupAugmentation() const {
 	return NO_GROUP_AUGMENTATION;
 }
 
-bool Parameters::isOldSurvivalFormula() const {
-    return OLD_SURVIVAL_FORMULA;
+bool Parameters::isLowSurvialFloater() const {
+    return LOW_SURVIVAL_FLOATER;
 }
 
 int Parameters::getMaxColonies() const {

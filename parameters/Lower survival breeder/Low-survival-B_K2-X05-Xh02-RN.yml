@@ -5,7 +5,7 @@ NO_RELATEDNESS: false     # Apply implementation to remove the effect of related
 EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: true
 NO_GROUP_AUGMENTATION: false
-OLD_SURVIVAL_FORMULA: false
+LOW_SURVIVAL_FLOATER: false
 
 MAX_COLONIES: 5000     # max number of groups or colonies
 NUM_GENERATIONS: 200000

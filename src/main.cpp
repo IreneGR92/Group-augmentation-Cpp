@@ -294,7 +294,7 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 double Individual::calcSurvival(int totalHelpers) {
 
     if (parameters.isNoGroupAugmentation()){
-        if (parameters.isOldSurvivalFormula()) {
+        if (parameters.isLowSurvialFloater()) {
             survival = (1 - parameters.getX0()) /
                        (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (parameters.getFixedGroupSize()))); // +1 to know group size (1 breeder + helpers)
         } else {
@@ -307,9 +307,8 @@ double Individual::calcSurvival(int totalHelpers) {
             }
         }
     } else {
-        if (parameters.isOldSurvivalFormula()) {
-            survival = (1 - parameters.getX0()) /
-                       (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (totalHelpers + 1))); // +1 to know group size (1 breeder + helpers)
+        if (parameters.isLowSurvialFloater() && fishType == FLOATER ) {
+            survival = parameters.getX0();  // +1 to know group size (1 breeder + helpers)
         } else {
             survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(totalHelpers + 1))) -
                        parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
@@ -897,18 +896,18 @@ int main(int count, char **argv) {
     fout << "PARAMETER VALUES" << endl
 
          << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-         << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-         << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-         << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-		 << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-		 << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
-		 << "Old_formula_survival?: " << "\t" << parameters.isOldSurvivalFormula() << endl
-         << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-         << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-         << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-         << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-         << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-         << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
+            << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+            << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+            << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+            << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
+            << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
+            << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
+            << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+            << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+            << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+            << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+            << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+            << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
          << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
@@ -932,18 +931,18 @@ int main(int count, char **argv) {
     fout2 << "PARAMETER VALUES" << endl
 
 		<< "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-		<< "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-		<< "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-		<< "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-		<< "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-		<< "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
-		<< "Old_formula_survival?: " << "\t" << parameters.isOldSurvivalFormula() << endl
-		<< "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-		<< "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-		<< "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-		<< "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-		<< "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-		<< "X0(Base_survival): " << "\t" << parameters.getX0() << endl
+                                                                              << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+                                                                              << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+                                                                              << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+                                                                              << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
+                                                                              << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
+                                                                              << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
+                                                                              << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+                                                                              << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+                                                                              << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+                                                                              << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+                                                                              << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+                                                                              << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
 		<< "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
 		<< "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
 		<< "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
