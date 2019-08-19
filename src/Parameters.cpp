@@ -22,11 +22,11 @@ Parameters::Parameters(string url) {
     this->name = name;
     this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
-    this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
 	this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
-	this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->LOW_SURVIVAL_FLOATER = config["LOW_SURVIVAL_FLOATER"].as<bool>();
+    this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
+    this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
     this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
     this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
     this->MAX_NUM_REPLICATES = config["MAX_NUM_REPLICATES"].as<int>();
