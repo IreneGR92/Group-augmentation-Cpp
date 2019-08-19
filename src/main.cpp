@@ -896,18 +896,18 @@ int main(int count, char **argv) {
     fout << "PARAMETER VALUES" << endl
 
          << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-            << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-            << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-            << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-            << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-            << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
-            << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
-            << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-            << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-            << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-            << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-            << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-            << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
+         << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+         << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+         << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
+         << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
+         << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
+         << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+         << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+         << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+         << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+         << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+         << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+         << "X0(Baseline_survival): " << "\t" << parameters.getX0() << endl
          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
          << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
@@ -930,37 +930,37 @@ int main(int count, char **argv) {
 
     fout2 << "PARAMETER VALUES" << endl
 
-		<< "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-                                                                              << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-                                                                              << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-                                                                              << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-                                                                              << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-                                                                              << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
-                                                                              << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
-                                                                              << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-                                                                              << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-                                                                              << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-                                                                              << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-                                                                              << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-                                                                              << "X0(Base_survival): " << "\t" << parameters.getX0() << endl
-		<< "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
-		<< "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
-		<< "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
-		<< "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
-		<< "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
-		<< "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
-		<< "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
-		<< "initBeta: " << "\t" << parameters.getInitBeta() << endl
-		<< "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
-		<< "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
-		<< "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
-		<< "mutAlphaAge2: " << "\t" << parameters.getMutationAlphaAge2() << endl
-		<< "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
-		<< "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
-		<< "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
-		<< "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
-		<< "stepBeta: " << "\t" << parameters.getStepBeta() << endl
-		<< "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
+        << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
+        << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+        << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+        << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
+        << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
+        << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
+        << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+        << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+        << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+        << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+        << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+        << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+        << "X0(Baseline_survival): " << "\t" << parameters.getX0() << endl
+        << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
+        << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
+        << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
+        << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
+        << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
+        << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
+        << "initAlphaAge2: " << "\t" << parameters.getInitAlphaAge2() << endl
+        << "initBeta: " << "\t" << parameters.getInitBeta() << endl
+        << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+        << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
+        << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
+        << "mutAlphaAge2: " << "\t" << parameters.getMutationAlphaAge2() << endl
+        << "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
+        << "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
+        << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
+        << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
+        << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
+        << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
     // column headings in output file 1
     fout << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t"
