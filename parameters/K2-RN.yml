@@ -1,4 +1,4 @@
-#Run parameters
+##Run parameters
 REACTION_NORM_HELP: true    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
