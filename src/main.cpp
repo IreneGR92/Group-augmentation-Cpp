@@ -1,7 +1,7 @@
 /***********************************************
  GROUP AUGMENTATION MODEL
  - Passive group augmentation: individuals help in order to increase group size which in turn increases survival
- - Active group augmentation or delayed reciprocity: if inherit the breeding possition, individuals benefit of the help given by the recruits in the group.
+ - Active group augmentation or delayed reciprocity: if inherit the breeding position, individuals benefit of the help given by the recruits in the group.
 
 
  Stochastic individual based model.
@@ -9,9 +9,9 @@
  Population overlap, turn over when breeder dies. 
  Older/more dominant individual higher probability of becoming new breeder.
  Evolution of level of help and dispersal. Inclusion of reaction norm to age.
- Dispersal produces temporal dispersers/floaters that can reproduce in another group or join as helpers. 
+ Dispersal produces dispersers/floaters that can reproduce in another group or join as helpers.
  Survival dependent on group size, level of help and predation/environment.
- Fecundity dependent on cummulative level of help within group.
+ Fecundity dependent on cumulative level of help within group.
  Relatedness as an emergent property.
 
 ***********************************************/
@@ -116,7 +116,9 @@ Individual::Individual(double alpha_, double alphaAge_, double alphaAge2_, doubl
     beta = beta_;
     betaAge = betaAge_;
     drift = drift_;
-    Mutate();
+    if(generation != 0) {
+        Mutate();
+    }
     fishType = fishType_;
     age = 1;
     inherit = true;
@@ -186,7 +188,7 @@ Group::Group(double alpha_ = parameters.getInitAlpha(), double alphaAge_ = param
     realFecundity = NO_VALUE;
 
     for (int i = 0; i < numhelp_; ++i) {
-        helpers.emplace_back(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), HELPER);
+        helpers.emplace_back(Individual(alpha_, alphaAge_, alphaAge2_, beta_, betaAge_, DriftUniform(generator), HELPER));
     }
 
     GroupSize();
@@ -806,7 +808,7 @@ void Statistics(vector<Group> groups) {
         sumSurvival = sumSurvivalHelper + sumSurvivalFloater + sumSurvivalBreeder;
         sumsqSurvival = sumsqSurvivalHelper + sumsqSurvivalFloater + sumsqSurvivalBreeder;
 
-        if (groupStatsIt->helpersPresent) { //TODO: this check is before survival, however we calculate help after survival
+        if (groupStatsIt->helpersPresent) { //TODO: cumulative help value before survival but help value after
             sumCumHelp += groupStatsIt->cumHelp;
             sumsqCumHelp += groupStatsIt->cumHelp * groupStatsIt->cumHelp;
             sumprodHelpGroup += groupStatsIt->cumHelp * groupStatsIt->groupSize;
