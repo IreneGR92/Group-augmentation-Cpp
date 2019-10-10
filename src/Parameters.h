@@ -45,11 +45,9 @@ class Parameters {
 //For help
     double INIT_ALPHA;            // bigger values higher level of help
     double INIT_ALPHA_AGE;            //linear term for age, positive: higher help with age
-    double INIT_ALPHA_AGE2;            //quadratic term for age, positive: higher help with age
 
     double MUTATION_ALPHA;            // mutation rate in alpha for level of help
     double MUTATION_ALPHA_AGE;
-    double MUTATION_ALPHA_AGE2;
     double STEP_ALPHA;            // mutation step size in alpha for level of help
 
 
@@ -119,13 +117,9 @@ public:
 
     double getInitAlphaAge() const;
 
-    double getInitAlphaAge2() const;
-
     double getMutationAlpha() const;
 
     double getMutationAlphaAge() const;
-
-    double getMutationAlphaAge2() const;
 
     double getStepAlpha() const;
 
@@ -146,8 +140,6 @@ public:
     void setMutationAlpha(double mutationAlpha);
 
     void setMutationAlphaAge(double mutationAlphaAge);
-
-    void setMutationAlphaAge2(double mutationAlphaAge2);
 
 };
 

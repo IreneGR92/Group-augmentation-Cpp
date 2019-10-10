@@ -41,10 +41,8 @@ Parameters::Parameters(string url) {
     this->K1 = config["K1"].as<double>();
     this->INIT_ALPHA = config["INIT_ALPHA"].as<double>();
     this->INIT_ALPHA_AGE = config["INIT_ALPHA_AGE"].as<double>();
-    this->INIT_ALPHA_AGE2 = config["INIT_ALPHA_AGE2"].as<double>();
     this->MUTATION_ALPHA = config["MUTATION_ALPHA"].as<double>();
     this->MUTATION_ALPHA_AGE = config["MUTATION_ALPHA_AGE"].as<double>();
-    this->MUTATION_ALPHA_AGE2 = config["MUTATION_ALPHA_AGE2"].as<double>();
     this->STEP_ALPHA = config["STEP_ALPHA"].as<double>();
     this->INIT_BETA = config["INIT_BETA"].as<double>();
     this->INIT_BETA_AGE = config["INIT_BETA_AGE"].as<double>();
@@ -142,20 +140,12 @@ double Parameters::getInitAlphaAge() const {
     return INIT_ALPHA_AGE;
 }
 
-double Parameters::getInitAlphaAge2() const {
-    return INIT_ALPHA_AGE2;
-}
-
 double Parameters::getMutationAlpha() const {
     return MUTATION_ALPHA;
 }
 
 double Parameters::getMutationAlphaAge() const {
     return MUTATION_ALPHA_AGE;
-}
-
-double Parameters::getMutationAlphaAge2() const {
-    return MUTATION_ALPHA_AGE2;
 }
 
 double Parameters::getStepAlpha() const {
@@ -196,10 +186,6 @@ void Parameters::setMutationAlpha(double mutationAlpha) {
 
 void Parameters::setMutationAlphaAge(double mutationAlphaAge) {
     MUTATION_ALPHA_AGE = mutationAlphaAge;
-}
-
-void Parameters::setMutationAlphaAge2(double mutationAlphaAge2) {
-    MUTATION_ALPHA_AGE2 = mutationAlphaAge2;
 }
 
 bool Parameters::isReactionNormDispersal() const {
