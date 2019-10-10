@@ -60,6 +60,7 @@ int replica, generation, population, deaths, totalFloaters, newbreederFloater, n
 int driftGroupSize, maxGroupSize, countGroupWithHelpers, countHelpers, countBreeders; //counters
 double relatedness;
 double meanGroupSize, stdevGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
+        meanGroupSizeHelp, stdevGroupSizeHelp, sumGroupSizeHelp, sumsqGroupSizeHelp, varGroupSizeHelp,
         meanAge, stdevAge, sumAge, sumsqAge, varAge,
         meanAgeHelper, stdevAgeHelper, sumAgeHelper, sumsqAgeHelper, varAgeHelper,
         meanAgeFloater, stdevAgeFloater, sumAgeFloater, sumsqAgeFloater, varAgeFloater,
@@ -663,6 +664,7 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
     population = 0, totalFloaters = 0, countGroupWithHelpers = 0, countHelpers = 0, countBreeders= 0,
     relatedness = 0.0, driftGroupSize = 0,
     meanGroupSize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
+    meanGroupSizeHelp = 0.0, stdevGroupSizeHelp = 0.0, sumGroupSizeHelp = 0.0, sumsqGroupSizeHelp = 0.0, varGroupSizeHelp = 0.0,
     meanAge = 0.0, stdevAge = 0.0, sumAge = 0.0, sumsqAge = 0.0, varAge = 0.0,
     meanAgeHelper = 0.0, stdevAgeHelper = 0.0, sumAgeHelper = 0.0, sumsqAgeHelper = 0.0, varAgeHelper = 0.0,
     meanAgeFloater = 0.0, stdevAgeFloater = 0.0, sumAgeFloater = 0.0, sumsqAgeFloater = 0.0, varAgeFloater = 0.0,
@@ -780,6 +782,8 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
         if (groupStatsIt->helpersPresent) {
             sumCumHelp += groupStatsIt->cumHelp;
             sumsqCumHelp += groupStatsIt->cumHelp * groupStatsIt->cumHelp;
+            sumGroupSizeHelp += groupStatsIt->groupSize;
+            sumsqGroupSizeHelp += groupStatsIt->groupSize * groupStatsIt->groupSize;
             sumprodHelpGroup += groupStatsIt->cumHelp * groupStatsIt->groupSize;
 
             countGroupWithHelpers++;
@@ -834,6 +838,7 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
     population = countBreeders + countHelpers + totalFloaters;
 
     meanGroupSize = sumGroupSize / parameters.getMaxColonies();
+    countGroupWithHelpers == 0 ? meanGroupSizeHelp = 0 : meanGroupSizeHelp = sumGroupSizeHelp / countGroupWithHelpers;
 
     meanAlpha = sumAlpha / population;
     meanAlphaAge = sumAlphaAge / population;
@@ -868,6 +873,7 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
 
     //Variance
     varGroupSize = sumsqGroupSize / parameters.getMaxColonies() - meanGroupSize * meanGroupSize;
+    varGroupSizeHelp = sumsqGroupSizeHelp / countGroupWithHelpers - meanGroupSizeHelp * meanGroupSizeHelp;
 
     varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
     varAlphaAge = sumsqAlphaAge / population - meanAlphaAge * meanAlphaAge;
@@ -890,12 +896,13 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
     varSurvivalBreeder = sumsqSurvivalBreeder / countBreeders - meanSurvivalBreeder * meanSurvivalBreeder;
 
     // SD
-    /*if (varGroupSize < 0 || varTotalHelpers < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 ||
+    /*if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 ||
         varDispersal < 0 | varHelp < 0 || varCumHelp < 0 || varSurvival < 0) {
         cout << "error variance negative" << endl;
     }*/
 
     varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
+    varGroupSizeHelp > 0 ? stdevGroupSizeHelp = sqrt(varGroupSizeHelp) : stdevGroupSizeHelp = 0;
 
     varAlpha > 0 ? stdevAlpha = sqrt(varAlpha) : stdevAlpha = 0;
     varAlphaAge > 0 ? stdevAlphaAge = sqrt(varAlphaAge) : stdevAlphaAge = 0;
@@ -918,16 +925,13 @@ void Statistics(vector<Group> groups, vector<Individual> floaters) {
     varSurvivalBreeder > 0 ? stdevSurvivalBreeder = sqrt(varSurvivalBreeder) : stdevSurvivalBreeder = 0;
 
     //Correlations
-    (stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / countHelpers -
+    (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal = (sumprodHelpDispersal / countHelpers -
                                                                   meanHelp * meanDispersal) /
                                                                  (stdevHelp * stdevDispersal) : corr_HelpDispersal = 0;
-    (stdevCumHelp > 0 && stdevGroupSize > 0) ? corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers -
-                                                                 meanCumHelp * meanGroupSize) /
-                                                                (stdevCumHelp * stdevGroupSize) : corr_HelpGroup = 0;
 
-
-
-    if (driftGroupSize > countGroupWithHelpers) cout << "problem" << endl;
+    (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSize > 0) ? corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers -
+                                                                 meanCumHelp * meanGroupSizeHelp) /
+                                                                (stdevCumHelp * stdevGroupSizeHelp) : corr_HelpGroup = 0;
 
 }
 
