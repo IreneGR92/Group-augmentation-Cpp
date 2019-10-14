@@ -32,11 +32,9 @@ K1: 1    # benefit of cumHelp in the fecundity
 #For help
 INIT_ALPHA: 0.0            #bigger values higher level of help
 INIT_ALPHA_AGE: 0.0            #linear term for age
-INIT_ALPHA_AGE2: 0.0            #quadratic term for age
 
 MUTATION_ALPHA: 0.05            # mutation rate in alpha for level of help
 MUTATION_ALPHA_AGE: 0.05
-MUTATION_ALPHA_AGE2: 0.05
 STEP_ALPHA: 0.04            # mutation step size in alpha for level of help
 
 
