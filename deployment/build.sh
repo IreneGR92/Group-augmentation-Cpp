@@ -4,7 +4,7 @@
 name=${PWD##*/}
 echo $@
 
-cd ../bin/
+cd ../cmake-build-release/
 ./App "../parameters/$@"
 
 
