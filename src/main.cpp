@@ -1123,8 +1123,8 @@ int main(int count, char **argv) {
 
                 //Calculate the survival of the breeder
                 if (parameters.isLowSurvivalBreeder()) {
-                    itHelpSurvival->breeder.calcSurvival(1); //survival for breeder does not include group size benefits
-                } // TODO:Change to 0?
+                    itHelpSurvival->breeder.calcSurvival(0); //survival for breeder does not include group size benefits
+                } // TODO:Change to 1?
                 else {
                     itHelpSurvival->breeder.calcSurvival(itHelpSurvival->groupSize);
                 }
@@ -1132,7 +1132,7 @@ int main(int count, char **argv) {
 
             vector<Individual, std::allocator<Individual>>::iterator floatIt;
             for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-                floatIt->calcSurvival(1); // TODO:Change to 0?
+                floatIt->calcSurvival(0); // TODO:Change to 1?
             }
 
             if (generation % parameters.getSkip() == 0) {
