@@ -264,10 +264,13 @@ void Individual::calcHelp() {
     if (fishType == HELPER) {
         if (!parameters.isReactionNormHelp()) {
             help = alpha;
+
         } else {
             help = alpha + alphaAge * age;
-            if (help < 0) { help = 0; }
         }
+
+        if (help < 0) { help = 0; }
+
     } else {
         help = NAN;
         cout << "Error: floaters get a help value" << endl;
@@ -299,32 +302,34 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 
 double Individual::calcSurvival(int groupSize) {
 
-    if (parameters.isNoGroupAugmentation()){
-        if (parameters.isLowSurvialFloater()) {
-            survival = (1 - parameters.getX0()) /
-                       (1 + exp(parameters.getXsh() * help - parameters.getXsn() * (parameters.getFixedGroupSize()))); // +1 to know group size (1 breeder + helpers)
-        } else {
-            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(parameters.getFixedGroupSize()))) -
-                       parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+    if (parameters.isLogisticSurvival()){
+        if (parameters.isNoGroupAugmentation()){
+            survival = (1 - parameters.getM())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * parameters.getFixedGroupSize() + parameters.getXsh() * help));
 
-            if (survival > 0.95) {
-                survival = 0.95;
-               // cout << "survival greater than 1" << endl;
+        } else {
+            if (parameters.isLowSurvivalFloater() && fishType == FLOATER ) {
+                survival = 0.5; //TODO: change
+            } else {
+                survival = (1 - parameters.getM())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help));
             }
         }
-    } else {
-        if (parameters.isLowSurvialFloater() && fishType == FLOATER ) {
-            survival = parameters.getX0();  // +1 to know group size (1 breeder + helpers)
-        } else {
-            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(groupSize))) -
-                       parameters.getXsh() / (1 + exp(-help)); //alternative implementation of survival, if Xsn=Xsh, equivalent size effect of help and group size in survival
+    }else{
+        if (parameters.isNoGroupAugmentation()){
+            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(parameters.getFixedGroupSize()))) - parameters.getXsh() / (1 + exp(-help));
 
-            if (survival > 0.95) {
-                survival = 0.95;
-                //cout << "survival greater than 1" << endl;
+        } else {
+            if (parameters.isLowSurvivalFloater() && fishType == FLOATER ) {
+                survival = parameters.getX0();
+            } else {
+                survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(groupSize))) - parameters.getXsh() / (1 + exp(-help));
             }
+        }
+        if (survival > 0.95) {
+            survival = 0.95;
+            //cout << "process camuflaged to selection" << endl;
         }
     }
+
     return survival;
 }
 
@@ -576,8 +581,7 @@ void Group::IncreaseAge() {
 
 void Group::Fecundity() {
     if (!parameters.isNoRelatedness()) {
-        fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp *
-                                                                             parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
+        fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp * parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
     } else {
         fecundity = parameters.getK0();
     }
@@ -592,8 +596,7 @@ void Group::Reproduction() // populate offspring generation
     if (breederAlive) {
         for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
         {
-            helpers.emplace_back(breeder.alpha, breeder.alphaAge, breeder.beta, breeder.betaAge,
-                                 breeder.drift); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
+            helpers.emplace_back(breeder.alpha, breeder.alphaAge, breeder.beta, breeder.betaAge, breeder.drift); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
 }
@@ -601,8 +604,7 @@ void Group::Reproduction() // populate offspring generation
 
 void Individual::Mutate() // mutate genome of offspring 
 {
-    normal_distribution<double> NormalA(0,
-                                        parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
+    normal_distribution<double> NormalA(0, parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
     normal_distribution<double> NormalB(0, parameters.getStepBeta());
     normal_distribution<double> NormalD(0, parameters.getStepDrift());
 
@@ -618,10 +620,6 @@ void Individual::Mutate() // mutate genome of offspring
 
     if (Uniform(generator) < parameters.getMutationAlpha()) {
         alpha += NormalA(generator);
-        if (!parameters.isReactionNormHelp()) {
-            if (alpha < 0) { alpha = 0; }
-            else if (alpha > 4) { alpha = 4; } //else camouflaged to selection
-        }
     }
     if (parameters.isReactionNormHelp()) {
         if (Uniform(generator) < parameters.getMutationAlphaAge()) {
@@ -932,15 +930,17 @@ int main(int count, char **argv) {
          << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
          << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
          << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-         << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
+         << "Low_survival_floater?: " << "\t" << parameters.isLowSurvivalFloater() << endl
          << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
          << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+         << "Logistic_survival?: " << "\t" << parameters.isLogisticSurvival() << endl
          << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
          << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
          << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
          << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
          << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-         << "X0(Baseline_survival): " << "\t" << parameters.getX0() << endl
+         << "m(predation): " << "\t" << parameters.getM() << endl
+         << "X0(intercept): " << "\t" << parameters.getX0() << endl
          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
          << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
@@ -961,35 +961,37 @@ int main(int count, char **argv) {
 
     fout2 << "PARAMETER VALUES" << endl
 
-        << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
-        << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
-        << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
-        << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
-        << "Low_survival_floater?: " << "\t" << parameters.isLowSurvialFloater() << endl
-        << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
-        << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
-        << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
-        << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
-        << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
-        << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
-        << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
-        << "X0(Baseline_survival): " << "\t" << parameters.getX0() << endl
-        << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
-        << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
-        << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
-        << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
-        << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
-        << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
-        << "initBeta: " << "\t" << parameters.getInitBeta() << endl
-        << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
-        << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
-        << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
-        << "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
-        << "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
-        << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
-        << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
-        << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
-        << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
+            << "Reaction_norm_help?: " << "\t" << parameters.isReactionNormHelp() << endl
+            << "Reaction_norm_dispersal?: " << "\t" << parameters.isReactionNormDispersal() << endl
+            << "Evolution_help_after_dispersal?: " << "\t" << parameters.isEvolutionHelpAfterDispersal() << endl
+            << "Low_survival_breeder?: " << "\t" << parameters.isLowSurvivalBreeder() << endl
+            << "Low_survival_floater?: " << "\t" << parameters.isLowSurvivalFloater() << endl
+            << "No_group_augmentation?: " << "\t" << parameters.isNoGroupAugmentation() << endl
+            << "No_effect_relatedness?: " << "\t" << parameters.isNoRelatedness() << endl
+            << "Logistic_survival?: " << "\t" << parameters.isLogisticSurvival() << endl
+            << "Initial_population: " << "\t" << parameters.getMaxColonies() * (parameters.getInitNumHelpers() + 1) << endl
+            << "Number_of_colonies: " << "\t" << parameters.getMaxColonies() << endl
+            << "Number_generations: " << "\t" << parameters.getNumGenerations() << endl
+            << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
+            << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
+            << "m(predation): " << "\t" << parameters.getM() << endl
+            << "X0(intercept): " << "\t" << parameters.getX0() << endl
+            << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
+            << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
+            << "K0(Base_fecundity): " << "\t" << parameters.getK0() << endl
+            << "K1(Benefit_help_fecundity): " << "\t" << parameters.getK1() << endl
+            << "initAlpha: " << "\t" << parameters.getInitAlpha() << endl
+            << "initAlphaAge: " << "\t" << parameters.getInitAlphaAge() << endl
+            << "initBeta: " << "\t" << parameters.getInitBeta() << endl
+            << "initBetaAge: " << "\t" << parameters.getInitBetaAge() << endl
+            << "mutAlpha: " << "\t" << parameters.getMutationAlpha() << endl
+            << "mutAlphaAge: " << "\t" << parameters.getMutationAlphaAge() << endl
+            << "mutBeta: " << "\t" << parameters.getMutationBeta() << endl
+            << "mutBetaAge: " << "\t" << parameters.getMutationBetaAge() << endl
+            << "mutDrift: " << "\t" << parameters.getMutationDrift() << endl
+            << "stepAlpha: " << "\t" << parameters.getStepAlpha() << endl
+            << "stepBeta: " << "\t" << parameters.getStepBeta() << endl
+            << "stepDrift: " << "\t" << parameters.getStepDrift() << endl << endl;
 
     // column headings in output file main
     fout << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t" << "Deaths" << "\t" << "Floaters" << "\t"
@@ -1121,8 +1123,8 @@ int main(int count, char **argv) {
 
                 //Calculate the survival of the breeder
                 if (parameters.isLowSurvivalBreeder()) {
-                    itHelpSurvival->breeder.calcSurvival(0); //survival for breeder does not include group size benefits
-                } // TODO:Change to 1?
+                    itHelpSurvival->breeder.calcSurvival(1); //survival for breeder does not include group size benefits
+                } // TODO:Change to 0?
                 else {
                     itHelpSurvival->breeder.calcSurvival(itHelpSurvival->groupSize);
                 }
@@ -1130,7 +1132,7 @@ int main(int count, char **argv) {
 
             vector<Individual, std::allocator<Individual>>::iterator floatIt;
             for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-                floatIt->calcSurvival(0); // TODO:Change to 1?
+                floatIt->calcSurvival(1); // TODO:Change to 0?
             }
 
             if (generation % parameters.getSkip() == 0) {

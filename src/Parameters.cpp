@@ -27,6 +27,7 @@ Parameters::Parameters(string url) {
     this->LOW_SURVIVAL_FLOATER = config["LOW_SURVIVAL_FLOATER"].as<bool>();
     this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
+    this->LOGISTIC_SURVIVAL = config["LOGISTIC_SURVIVAL"].as<bool>();
     this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
     this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
     this->MAX_NUM_REPLICATES = config["MAX_NUM_REPLICATES"].as<int>();
@@ -34,6 +35,7 @@ Parameters::Parameters(string url) {
     this->INIT_NUM_HELPERS = config["INIT_NUM_HELPERS"].as<int>();
     this->BIAS_FLOAT_BREEDER = config["BIAS_FLOAT_BREEDER"].as<double>();
     this->FIXED_GROUP_SIZE = config["FIXED_GROUP_SIZE"].as<double>();
+    this->m = config["m"].as<double>();
     this->X0 = config["X0"].as<double>();
     this->Xsh = config["Xsh"].as<double>();
     this->Xsn = config["Xsn"].as<double>();
@@ -64,6 +66,10 @@ bool Parameters::isReactionNormHelp() const {
     return REACTION_NORM_HELP;
 }
 
+bool Parameters::isReactionNormDispersal() const {
+    return REACTION_NORM_DISPERSAL;
+}
+
 bool Parameters::isEvolutionHelpAfterDispersal() const {
     return EVOLUTION_HELP_AFTER_DISPERSAL;
 }
@@ -72,7 +78,7 @@ bool Parameters::isLowSurvivalBreeder() const {
 	return LOW_SURVIVAL_BREEDER;
 }
 
-bool Parameters::isLowSurvialFloater() const {
+bool Parameters::isLowSurvivalFloater() const {
     return LOW_SURVIVAL_FLOATER;
 }
 
@@ -82,6 +88,10 @@ bool Parameters::isNoGroupAugmentation() const {
 
 bool Parameters::isNoRelatedness() const {
     return NO_RELATEDNESS;
+}
+
+bool Parameters::isLogisticSurvival() const {
+    return LOGISTIC_SURVIVAL;
 }
 
 int Parameters::getMaxColonies() const {
@@ -110,6 +120,10 @@ double Parameters::getBiasFloatBreeder() const {
 
 int Parameters::getFixedGroupSize() const {
     return FIXED_GROUP_SIZE;
+}
+
+double Parameters::getM() const {
+    return m;
 }
 
 double Parameters::getX0() const {
@@ -188,7 +202,5 @@ void Parameters::setMutationAlphaAge(double mutationAlphaAge) {
     MUTATION_ALPHA_AGE = mutationAlphaAge;
 }
 
-bool Parameters::isReactionNormDispersal() const {
-    return REACTION_NORM_DISPERSAL;
-}
+
 

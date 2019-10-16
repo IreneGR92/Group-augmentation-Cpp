@@ -18,6 +18,7 @@ class Parameters {
     bool LOW_SURVIVAL_FLOATER;
 	bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
+    bool LOGISTIC_SURVIVAL;
 
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
@@ -31,6 +32,7 @@ class Parameters {
 	int FIXED_GROUP_SIZE;	   //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
+    double m;
     double X0; //base survival without the effect of help or group size
     double Xsh;    // cost of help in survival
     double Xsn;    // benefit of group size in survival
@@ -83,11 +85,13 @@ public:
 
 	bool isLowSurvivalBreeder() const;
 
-    bool isLowSurvialFloater() const;
+    bool isLowSurvivalFloater() const;
 
 	bool isNoGroupAugmentation() const;
 
     bool isNoRelatedness() const;
+
+    bool isLogisticSurvival() const;
 
     int getMaxColonies() const;
 
@@ -102,6 +106,8 @@ public:
     double getBiasFloatBreeder() const;
 
 	int getFixedGroupSize() const;
+
+    double getM() const;
 
     double getX0() const;
 
