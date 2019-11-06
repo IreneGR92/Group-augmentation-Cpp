@@ -74,8 +74,8 @@ declare -a arr=(
 #    "Xh2-RN.yml"
 #    "Xn1.yml"
 #    "Xn1-RN.yml"
-    "Xn0-NRN.yml"
-    "Xn0-RN.yml"
+#    "Xn0-NRN.yml"
+#    "Xn0-RN.yml"
 
 #    "bias1-NoGA.yml"
 #    "bias1-RN-NoGA.yml"
@@ -94,7 +94,6 @@ declare -a arr=(
 #    "bias4-m01-NoGA.yml"
 #    "bias4-RN-m01-NoGA.yml"
     "bias1-m03-NoGA.yml"
-    "bias1-RN-m03-NoGA.yml"
     "bias2-m03-NoGA.yml"
     "bias2-RN-m03-NoGA.yml"
     "bias3-m03-NoGA.yml"
