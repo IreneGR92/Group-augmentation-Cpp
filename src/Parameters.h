@@ -33,6 +33,7 @@ class Parameters {
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
     double m;
+    double n;
     double X0; //base survival without the effect of help or group size
     double Xsh;    // cost of help in survival
     double Xsn;    // benefit of group size in survival
@@ -108,6 +109,8 @@ public:
 	int getFixedGroupSize() const;
 
     double getM() const;
+
+    double getN() const;
 
     double getX0() const;
 

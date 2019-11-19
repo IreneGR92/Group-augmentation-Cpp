@@ -308,7 +308,7 @@ double Individual::calcSurvival(int groupSize) {
 
         } else {
             if (parameters.isLowSurvivalFloater() && fishType == FLOATER ) {
-                survival = 0.5; //TODO: change
+                survival = (1 - parameters.getM()*parameters.getN())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help)); //TODO: change?
             } else {
                 survival = (1 - parameters.getM())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help));
             }
@@ -319,7 +319,7 @@ double Individual::calcSurvival(int groupSize) {
 
         } else {
             if (parameters.isLowSurvivalFloater() && fishType == FLOATER ) {
-                survival = parameters.getX0();
+                survival = parameters.getX0(); //TODO:change?
             } else {
                 survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(groupSize))) - parameters.getXsh() / (1 + exp(-help));
             }
