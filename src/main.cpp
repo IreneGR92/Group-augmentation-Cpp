@@ -302,13 +302,17 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 
 double Individual::calcSurvival(int groupSize) {
 
+    if(generation==2000 && fishType == FLOATER){
+        cout << "here" << endl;}
+
     if (parameters.isLogisticSurvival()){
         if (parameters.isNoGroupAugmentation()){
             survival = (1 - parameters.getM())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * parameters.getFixedGroupSize() + parameters.getXsh() * help));
 
         } else {
             if (parameters.isLowSurvivalFloater() && fishType == FLOATER ) {
-                survival = (1 - parameters.getM()*parameters.getN())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help)); //TODO: change?
+                if(generation==2000){cout << "here" << endl;}
+                survival = (1 - parameters.getM() * parameters.getN())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help)); //TODO: change?
             } else {
                 survival = (1 - parameters.getM())/ (1 + exp (- parameters.getX0() - parameters.getXsn() * groupSize + parameters.getXsh() * help));
             }
@@ -940,6 +944,7 @@ int main(int count, char **argv) {
          << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
          << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
          << "m(predation): " << "\t" << parameters.getM() << endl
+         << "n(effect_size_mortality_dispersal): " << "\t" << parameters.getN() << endl
          << "X0(intercept): " << "\t" << parameters.getX0() << endl
          << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
          << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
@@ -975,6 +980,7 @@ int main(int count, char **argv) {
             << "Number_replicates: " << "\t" << parameters.getMaxNumReplicates() << endl
             << "Bias_float_breeder: " << "\t" << parameters.getBiasFloatBreeder() << endl
             << "m(predation): " << "\t" << parameters.getM() << endl
+            << "n(effect_size_mortality_dispersal): " << "\t" << parameters.getN() << endl
             << "X0(intercept): " << "\t" << parameters.getX0() << endl
             << "Xh(Cost_help_survival): " << "\t" << parameters.getXsh() << endl
             << "Xn(Benefit_group_size_survival): " << "\t" << parameters.getXsn() << endl
