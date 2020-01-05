@@ -114,6 +114,8 @@ private:
 public:
     double getSurvival() const;
 
+    void setSurvival(double survival);
+
 };
 
 
@@ -309,8 +311,8 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
 
 double Individual::calcSurvival(int groupSize) {
 
-    if (generation == 2000 && fishType == FLOATER) {
-        cout << "here" << endl;
+    if (fishType == FLOATER && survival !=-1 && survival !=0) {
+        cout << "problem" << endl;
     }
 
     if (parameters.isLogisticSurvival()) {
@@ -321,11 +323,10 @@ double Individual::calcSurvival(int groupSize) {
 
         } else {
             if (parameters.isLowSurvivalFloater() && fishType == FLOATER) {
-                if (generation == 2000) { cout << "here" << endl; }
-                survival = (1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
-                                                                                  parameters.getXsn() * groupSize +
-                                                                                  parameters.getXsh() *
-                                                                                  help)); //TODO: change?
+                setSurvival((1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
+                                                                                   parameters.getXsn() * groupSize +
+                                                                                   parameters.getXsh() *
+                                                                                   help))); //TODO: change?
             } else {
                 survival = (1 - parameters.getM()) / (1 + exp(-parameters.getX0() - parameters.getXsn() * groupSize +
                                                               parameters.getXsh() * help));
@@ -363,6 +364,7 @@ void Group::SurvivalGroup(int &deaths) {
     survHIt = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
+    survHIt -> calcSurvival(groupSize);
     while (!helpers.empty() && sizevec > counting) {
 
         //Mortality helpers
@@ -376,7 +378,8 @@ void Group::SurvivalGroup(int &deaths) {
     }
 
     //Mortality breeder
-    if (Uniform(generator) > breeder.getSurvival()) {
+    breeder.calcSurvival(0);
+    if (Uniform(generator) > breeder.getSurvival()) { //survival for breeder does not include group size benefits
         breederAlive = false;
         deaths++;
     }
@@ -388,6 +391,7 @@ void SurvivalFloaters(vector<Individual> &floaters, int &deaths) //Calculate the
     survFIt = floaters.begin();
     int sizevec = floaters.size();
     int counting = 0;
+    survFIt -> calcSurvival(0);
     while (!floaters.empty() && sizevec > counting) {
 
         //Mortality floaters
@@ -671,6 +675,11 @@ void Individual::Mutate() // mutate genome of offspring
 
 double Individual::getSurvival() const {
     return survival;
+}
+
+void Individual::setSurvival(double survival) {
+    Individual::survival = survival;
+    }
 }
 
 /* CALCULATE STATISTICS */
@@ -1140,10 +1149,18 @@ int main(int count, char **argv) {
 
         for (generation = 1; generation <= parameters.getNumGenerations(); generation++) {
 
+            vector<Group, std::allocator<Group>>::iterator itReproduction;
+            for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
+                itReproduction->Fecundity();
+                itReproduction->Reproduction();
+            }
+
             deaths = 0; // to keep track of how many individuals die each generation
             newbreederFloater = 0, newbreederHelper = 0, inheritance = 0;
 
             vector<Group, std::allocator<Group>>::iterator itDispersal;
+
+
             for (itDispersal = groups.begin(); itDispersal < groups.end(); ++itDispersal) {
                 itDispersal->Disperse(floaters);
             }
@@ -1152,27 +1169,17 @@ int main(int count, char **argv) {
             for (itHelpSurvival = groups.begin(); itHelpSurvival < groups.end(); ++itHelpSurvival) {
                 itHelpSurvival->CumHelp();
                 itHelpSurvival->GroupSize();
+                itHelpSurvival->SurvivalGroup(deaths);
 
                 //Calculate survival for the helpers
                 vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
                 for (helperStatsIt = itHelpSurvival->helpers.begin();
                      helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
-                    helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
-                }
-
-                //Calculate the survival of the breeder
-                if (parameters.isLowSurvivalBreeder()) {
-                    itHelpSurvival->breeder.calcSurvival(0); //survival for breeder does not include group size benefits
-                } // TODO:Change to 1?
-                else {
-                    itHelpSurvival->breeder.calcSurvival(itHelpSurvival->groupSize);
+                     helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
                 }
             }
 
-            vector<Individual, std::allocator<Individual>>::iterator floatIt;
-            for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-                floatIt->calcSurvival(0); // TODO:Change to 1?
-            }
+            SurvivalFloaters(floaters, deaths);
 
             if (generation % parameters.getSkip() == 0) {
                 Statistics(groups, floaters); // Statistics calculated before survival
@@ -1192,15 +1199,15 @@ int main(int count, char **argv) {
                 }
             }
 
-            vector<Group, std::allocator<Group>>::iterator itAge;
-            for (itAge = groups.begin(); itAge < groups.end(); ++itAge) {
-                itAge->IncreaseAge(); //add 1 rank or age to all individuals alive
-            }
-
             Reassign(floaters, groups);
             /*if (!floaters.empty()) {
                 cout << "Not all floaters were reassigned!" << endl;
             }*/
+
+            vector<Group, std::allocator<Group>>::iterator itAge;
+            for (itAge = groups.begin(); itAge < groups.end(); ++itAge) {
+                itAge->IncreaseAge(); //add 1 rank or age to all individuals alive
+            }
 
             if (generation % parameters.getSkip() == 0) {
 
@@ -1322,11 +1329,6 @@ int main(int count, char **argv) {
                 }
             }
 
-            vector<Group, std::allocator<Group>>::iterator itReproduction;
-            for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-                itReproduction->Fecundity();
-                itReproduction->Reproduction();
-            }
         }
     }
 
