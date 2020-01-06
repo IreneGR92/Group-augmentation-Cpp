@@ -98,11 +98,11 @@ struct Individual // define individual traits
     bool inherit;                                                    //did the new breeder inherit the territory or did it disperse?
 
     //Functions inside Individual
-    double calcDispersal();
+    void calcDispersal();
 
     void calcHelp();
 
-    double calcSurvival(int groupSize);
+    void calcSurvival(int groupSize);
 
     void Mutate();
 
@@ -117,6 +117,16 @@ public:
     void setSurvival(double survival);
 
 };
+
+
+double Individual::getSurvival() const {
+    return survival;
+}
+
+void Individual::setSurvival(double survival) {
+    Individual::survival = survival;
+}
+
 
 
 Individual::Individual(double alpha_, double alphaAge_, double beta_, double betaAge_, double drift_,
@@ -169,20 +179,11 @@ struct Group // define group traits
 
     void GroupSize();
 
-    void Fecundity();
-
     void Reproduction();
 };
 
 
 Group::Group() {
-
-    double alpha_ = parameters.getInitAlpha();
-    double alphaAge_ = parameters.getInitAlphaAge();
-    double beta_ = parameters.getInitBeta();
-    double betaAge_ = parameters.getInitBetaAge();
-    int numhelp_ = parameters.getInitNumHelpers();
-
 
     breederAlive = true;
     helpersPresent = false;
@@ -190,7 +191,7 @@ Group::Group() {
     fecundity = NO_VALUE;
     realFecundity = NO_VALUE;
 
-    for (int i = 0; i < numhelp_; ++i) {
+    for (int i = 0; i < parameters.getInitNumHelpers(); ++i) {
 
 
         helpers.emplace_back(
@@ -200,6 +201,8 @@ Group::Group() {
 
     GroupSize();
 }
+
+
 
 /* TOTAL NUMBER OF INDIVIDUALS PER GROUP*/
 
@@ -219,10 +222,83 @@ void InitGroup(vector<Group> &groups) {
     }
 }
 
+/* REPRODUCTION */
+
+void Group::Reproduction() // populate offspring generation
+{
+    //Calculate fecundity
+    if (!parameters.isNoRelatedness()) {
+        fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp *
+                                                                             parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
+    } else {
+        fecundity = parameters.getK0();
+    }
+
+
+    poisson_distribution<int> PoissonFec(fecundity);
+    realFecundity = PoissonFec(generator); //integer number
+
+
+    //Reproduce
+    if (breederAlive) {
+        for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
+        {
+            helpers.emplace_back(breeder.alpha, breeder.alphaAge, breeder.beta, breeder.betaAge,
+                                 breeder.drift,
+                                 HELPER); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
+        }
+    }
+}
+
+
+void Individual::Mutate() // mutate genome of offspring
+{
+    normal_distribution<double> NormalA(0,
+                                        parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
+    normal_distribution<double> NormalB(0, parameters.getStepBeta());
+    normal_distribution<double> NormalD(0, parameters.getStepDrift());
+
+    if (parameters.isEvolutionHelpAfterDispersal()) {
+        if (generation < parameters.getNumGenerations() / 4) {
+            parameters.setMutationAlpha(0);
+            parameters.setMutationAlphaAge(0);
+        } else {
+            parameters.setMutationAlpha(0.05);
+            parameters.setMutationAlphaAge(0.05);
+        }
+    }
+
+    if (Uniform(generator) < parameters.getMutationAlpha()) {
+        alpha += NormalA(generator);
+    }
+    if (parameters.isReactionNormHelp()) {
+        if (Uniform(generator) < parameters.getMutationAlphaAge()) {
+            alphaAge += NormalA(generator);
+        }
+    }
+
+    if (Uniform(generator) < parameters.getMutationBeta()) {
+        beta += NormalB(generator);
+        if (!parameters.isReactionNormDispersal()) {
+            if (beta < 0) { beta = 0; }
+            else if (beta > 1) { beta = 1; }
+        }
+    }
+    if (parameters.isReactionNormDispersal()) {
+        if (Uniform(generator) < parameters.getMutationBetaAge()) {
+            betaAge += NormalB(generator);
+        }
+    }
+
+    if (Uniform(generator) < parameters.getMutationDrift()) {
+        drift += NormalD(generator);
+    }
+}
+
 
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
-double Individual::calcDispersal() {
+void Individual::calcDispersal() {
     if (parameters.isNoRelatedness() && age == 1) {
         dispersal = 1;
 
@@ -238,8 +314,6 @@ double Individual::calcDispersal() {
             cout << "error in dispersal: " << dispersal << endl;
         }*/
     }
-
-    return dispersal;
 }
 
 
@@ -307,13 +381,10 @@ void Group::CumHelp() //Calculate accumulative help of all individuals inside of
     //cumHelp += breeder.help;
 }
 
+
 /*SURVIVAL*/
 
-double Individual::calcSurvival(int groupSize) {
-
-    if (fishType == FLOATER && survival !=-1 && survival !=0) {
-        cout << "problem" << endl;
-    }
+void Individual::calcSurvival(int groupSize) {
 
     if (parameters.isLogisticSurvival()) {
         if (parameters.isNoGroupAugmentation()) {
@@ -323,10 +394,11 @@ double Individual::calcSurvival(int groupSize) {
 
         } else {
             if (parameters.isLowSurvivalFloater() && fishType == FLOATER) {
-                setSurvival((1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
+                setSurvival(
+                        (1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
                                                                                    parameters.getXsn() * groupSize +
-                                                                                   parameters.getXsh() *
-                                                                                   help))); //TODO: change?
+                                                                                   parameters.getXsh() * help))
+                                                                                   ); //TODO: change?
             } else {
                 survival = (1 - parameters.getM()) / (1 + exp(-parameters.getX0() - parameters.getXsn() * groupSize +
                                                               parameters.getXsh() * help));
@@ -350,8 +422,6 @@ double Individual::calcSurvival(int groupSize) {
             //cout << "process camuflaged to selection" << endl;
         }
     }
-
-    return survival;
 }
 
 
@@ -600,87 +670,6 @@ void Group::IncreaseAge() {
     }
 }
 
-
-/* REPRODUCTION */
-
-void Group::Fecundity() {
-    if (!parameters.isNoRelatedness()) {
-        fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp *
-                                                                             parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
-    } else {
-        fecundity = parameters.getK0();
-    }
-
-
-    poisson_distribution<int> PoissonFec(fecundity);
-    realFecundity = PoissonFec(generator); //integer number
-}
-
-void Group::Reproduction() // populate offspring generation
-{
-    if (breederAlive) {
-        for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
-        {
-            helpers.emplace_back(breeder.alpha, breeder.alphaAge, breeder.beta, breeder.betaAge,
-                                 breeder.drift,
-                                 HELPER); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
-        }
-    }
-}
-
-
-void Individual::Mutate() // mutate genome of offspring 
-{
-    normal_distribution<double> NormalA(0,
-                                        parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
-    normal_distribution<double> NormalB(0, parameters.getStepBeta());
-    normal_distribution<double> NormalD(0, parameters.getStepDrift());
-
-    if (parameters.isEvolutionHelpAfterDispersal()) {
-        if (generation < parameters.getNumGenerations() / 4) {
-            parameters.setMutationAlpha(0);
-            parameters.setMutationAlphaAge(0);
-        } else {
-            parameters.setMutationAlpha(0.05);
-            parameters.setMutationAlphaAge(0.05);
-        }
-    }
-
-    if (Uniform(generator) < parameters.getMutationAlpha()) {
-        alpha += NormalA(generator);
-    }
-    if (parameters.isReactionNormHelp()) {
-        if (Uniform(generator) < parameters.getMutationAlphaAge()) {
-            alphaAge += NormalA(generator);
-        }
-    }
-
-    if (Uniform(generator) < parameters.getMutationBeta()) {
-        beta += NormalB(generator);
-        if (!parameters.isReactionNormDispersal()) {
-            if (beta < 0) { beta = 0; }
-            else if (beta > 1) { beta = 1; }
-        }
-    }
-    if (parameters.isReactionNormDispersal()) {
-        if (Uniform(generator) < parameters.getMutationBetaAge()) {
-            betaAge += NormalB(generator);
-        }
-    }
-
-    if (Uniform(generator) < parameters.getMutationDrift()) {
-        drift += NormalD(generator);
-    }
-}
-
-double Individual::getSurvival() const {
-    return survival;
-}
-
-void Individual::setSurvival(double survival) {
-    Individual::survival = survival;
-    }
-}
 
 /* CALCULATE STATISTICS */
 void Statistics(vector<Group> groups, vector<Individual> floaters) {
@@ -1149,49 +1138,32 @@ int main(int count, char **argv) {
 
         for (generation = 1; generation <= parameters.getNumGenerations(); generation++) {
 
-            vector<Group, std::allocator<Group>>::iterator itReproduction;
-            for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-                itReproduction->Fecundity();
-                itReproduction->Reproduction();
-            }
-
             deaths = 0; // to keep track of how many individuals die each generation
             newbreederFloater = 0, newbreederHelper = 0, inheritance = 0;
 
+
+            //Reproduction
+            vector<Group, std::allocator<Group>>::iterator itReproduction;
+            for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
+                itReproduction->Reproduction();
+            }
+
+            //Dispersal
             vector<Group, std::allocator<Group>>::iterator itDispersal;
-
-
             for (itDispersal = groups.begin(); itDispersal < groups.end(); ++itDispersal) {
                 itDispersal->Disperse(floaters);
             }
 
+            //Help & Survival
             vector<Group, std::allocator<Group>>::iterator itHelpSurvival;
             for (itHelpSurvival = groups.begin(); itHelpSurvival < groups.end(); ++itHelpSurvival) {
                 itHelpSurvival->CumHelp();
-                itHelpSurvival->GroupSize();
                 itHelpSurvival->SurvivalGroup(deaths);
-
-                //Calculate survival for the helpers
-                vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
-                for (helperStatsIt = itHelpSurvival->helpers.begin();
-                     helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
-                     helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
-                }
             }
 
             SurvivalFloaters(floaters, deaths);
 
-            if (generation % parameters.getSkip() == 0) {
-                Statistics(groups, floaters); // Statistics calculated before survival
-            }
-
-            vector<Group, std::allocator<Group>>::iterator itSurvival;
-            for (itSurvival = groups.begin(); itSurvival < groups.end(); ++itSurvival) {
-                itSurvival->SurvivalGroup(deaths);
-            }
-
-            SurvivalFloaters(floaters, deaths);
-
+            //Become a breeder
             vector<Group, std::allocator<Group>>::iterator itBreeder;
             for (itBreeder = groups.begin(); itBreeder < groups.end(); ++itBreeder) {
                 if (!itBreeder->breederAlive) {
@@ -1199,16 +1171,24 @@ int main(int count, char **argv) {
                 }
             }
 
+            //Statistics
+            if (generation % parameters.getSkip() == 0) {
+                Statistics(groups, floaters); /// Statistics calculated AFTER survival
+            }
+
+            //Reassign floaters to groups for later philopatry vs dispersal
             Reassign(floaters, groups);
             /*if (!floaters.empty()) {
                 cout << "Not all floaters were reassigned!" << endl;
             }*/
 
+            //Increase age
             vector<Group, std::allocator<Group>>::iterator itAge;
             for (itAge = groups.begin(); itAge < groups.end(); ++itAge) {
                 itAge->IncreaseAge(); //add 1 rank or age to all individuals alive
             }
 
+            //Print stats
             if (generation % parameters.getSkip() == 0) {
 
                 // show values on screen
