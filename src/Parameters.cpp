@@ -36,7 +36,7 @@ Parameters::Parameters(string url) {
     this->BIAS_FLOAT_BREEDER = config["BIAS_FLOAT_BREEDER"].as<double>();
     this->FIXED_GROUP_SIZE = config["FIXED_GROUP_SIZE"].as<double>();
     this->m = config["m"].as<double>();
-    this->n = config["m"].as<double>();
+    this->n = config["n"].as<double>();
     this->X0 = config["X0"].as<double>();
     this->Xsh = config["Xsh"].as<double>();
     this->Xsn = config["Xsn"].as<double>();
