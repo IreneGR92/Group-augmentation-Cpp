@@ -155,8 +155,6 @@ struct Group // define group traits
 
     void GroupSize();
 
-    void Fecundity();
-
     void Reproduction();
 };
 
@@ -569,7 +567,9 @@ void Group::IncreaseAge() {
 
 /* REPRODUCTION */
 
-void Group::Fecundity() {
+void Group::Reproduction() // populate offspring generation
+{
+    //Calculate fecundity
     if (!parameters.isNoRelatedness()) {
         fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp * parameters.getK1()); //fecundity function of cummulative help in the group. If cumHelp bigger than 2, no effect on fecundity
     } else {
@@ -579,10 +579,8 @@ void Group::Fecundity() {
 
     poisson_distribution<int> PoissonFec(fecundity);
     realFecundity = PoissonFec(generator); //integer number
-}
 
-void Group::Reproduction() // populate offspring generation
-{
+    //Reproduction
     if (breederAlive) {
         for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
         {
@@ -1280,9 +1278,9 @@ int main(int count, char **argv) {
                 }
             }
 
+            //Reproduction
             vector<Group, std::allocator<Group>>::iterator itReproduction;
             for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-                itReproduction->Fecundity();
                 itReproduction->Reproduction();
             }
         }
