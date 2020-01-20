@@ -8,59 +8,48 @@
 using namespace std;
 
 Individual::Individual(Individual &individual, Classes fishType, Parameters &parameters,
-                       std::default_random_engine &generator, int &generation) {
+                       std::default_random_engine &generator, int &generation) :
+        Individual(individual.alpha, individual.alphaAge, individual.beta, individual.betaAge, individual.drift,
+                   fishType,
+                   generator, parameters, generation) {
+
     if (individual.fishType != BREEDER) {
         cout << "ERROR fishtype is not BREEDER";
     }
+}
+
+Individual::Individual(double drift, Classes fishType, Parameters &parameters,
+                       std::default_random_engine &generator, int &generation) :
+        Individual(parameters.getInitAlpha(), parameters.getInitAlphaAge(), parameters.getInitBeta(),
+                   parameters.getInitBetaAge(), drift, fishType, generator, parameters, generation) {
+}
+
+//PRIVATE
+Individual::Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, Classes fishType,
+                       std::default_random_engine &generator, Parameters &parameters, int &generation) {
     this->parameters = parameters;
     this->generator = generator;
 
-    alpha = individual.alpha;
-    alphaAge = individual.alphaAge;
-    beta = individual.beta;
-    betaAge = individual.betaAge;
-    drift = individual.drift;
+    this->alpha = alpha;
+    this->alphaAge = alphaAge;
+    this->beta = beta;
+    this->betaAge = betaAge;
+    this->drift = drift;
 
-
-    if (generation != 0) {
-        mutate(generation);
-    }
     this->fishType = fishType;
-    age = 1;
-    inherit = true;
 
-    survival = Parameters::NO_VALUE;
-    help = 0;
-
-    dispersal = Parameters::NO_VALUE;
-}
-
-
-Individual::Individual(double drift_, Classes fishType_, Parameters &parameters,
-                       std::default_random_engine &generator, int &generation) {
-    this->parameters = parameters;
-    this->generator = generator;
-
-
-    alpha = parameters.getInitAlpha();
-    alphaAge = parameters.getInitAlphaAge();
-    beta = parameters.getInitBeta();
-    betaAge = parameters.getInitBetaAge();
-    drift = drift_;
-
+    this->inherit = true;
+    this->age = 1;
+    this->help = 0;
+    this->survival = Parameters::NO_VALUE;
+    this->dispersal = Parameters::NO_VALUE;
 
     if (generation != 0) {
-        mutate(generation);
+        this->mutate(generation);
     }
-    fishType = fishType_;
-    age = 1;
-    inherit = true;
 
-    survival = Parameters::NO_VALUE;
-    help = 0;
-
-    dispersal = Parameters::NO_VALUE;
 }
+
 
 /*DISPLAY LEVEL OF HELP*/
 void Individual::calculateHelp() {
