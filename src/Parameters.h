@@ -5,6 +5,7 @@
 
 #include <string>
 #include <fstream>
+#include <random>
 
 class Parameters {
 
@@ -14,9 +15,9 @@ class Parameters {
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
-	bool LOW_SURVIVAL_BREEDER;
+    bool LOW_SURVIVAL_BREEDER;
     bool LOW_SURVIVAL_FLOATER;
-	bool NO_GROUP_AUGMENTATION;
+    bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
     bool LOGISTIC_SURVIVAL;
 
@@ -29,7 +30,7 @@ class Parameters {
 //Fix values
     int INIT_NUM_HELPERS;     //initial number of helpers per group
     double BIAS_FLOAT_BREEDER; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
-	int FIXED_GROUP_SIZE;	   //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
+    int FIXED_GROUP_SIZE;       //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
     double m;
@@ -76,19 +77,23 @@ public:
 
     Parameters(std::string url);
 
+    std::uniform_real_distribution<double> driftUniform;
+    std::uniform_real_distribution<double> uniform;
+
+
     const std::string &getName() const;
 
     bool isReactionNormHelp() const;
 
-	bool isReactionNormDispersal() const;
+    bool isReactionNormDispersal() const;
 
     bool isEvolutionHelpAfterDispersal() const;
 
-	bool isLowSurvivalBreeder() const;
+    bool isLowSurvivalBreeder() const;
 
     bool isLowSurvivalFloater() const;
 
-	bool isNoGroupAugmentation() const;
+    bool isNoGroupAugmentation() const;
 
     bool isNoRelatedness() const;
 
@@ -106,7 +111,7 @@ public:
 
     double getBiasFloatBreeder() const;
 
-	int getFixedGroupSize() const;
+    int getFixedGroupSize() const;
 
     double getM() const;
 
@@ -149,6 +154,8 @@ public:
     void setMutationAlpha(double mutationAlpha);
 
     void setMutationAlphaAge(double mutationAlphaAge);
+
+    static const int NO_VALUE = -1;
 
 };
 

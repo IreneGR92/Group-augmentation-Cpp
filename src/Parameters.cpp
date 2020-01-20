@@ -23,7 +23,7 @@ Parameters::Parameters(string url) {
     this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
-	this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
+    this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
     this->LOW_SURVIVAL_FLOATER = config["LOW_SURVIVAL_FLOATER"].as<bool>();
     this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
@@ -56,6 +56,8 @@ Parameters::Parameters(string url) {
     this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
 
 
+    this->driftUniform = uniform_real_distribution<double>(0, 100);
+    this->uniform = uniform_real_distribution<double>(0, 1);
 
 }
 
@@ -76,7 +78,7 @@ bool Parameters::isEvolutionHelpAfterDispersal() const {
 }
 
 bool Parameters::isLowSurvivalBreeder() const {
-	return LOW_SURVIVAL_BREEDER;
+    return LOW_SURVIVAL_BREEDER;
 }
 
 bool Parameters::isLowSurvivalFloater() const {
@@ -84,7 +86,7 @@ bool Parameters::isLowSurvivalFloater() const {
 }
 
 bool Parameters::isNoGroupAugmentation() const {
-	return NO_GROUP_AUGMENTATION;
+    return NO_GROUP_AUGMENTATION;
 }
 
 bool Parameters::isNoRelatedness() const {

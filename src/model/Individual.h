@@ -4,9 +4,20 @@
 
 
 #include "Classes.h"
+#include "../Parameters.h"
 
 struct Individual {
-    Individual(double alpha_, double alphaAge_, double beta_, double betaAge_, double drift_, Classes fishType_);
+
+    Individual(Individual &individual, Classes fishType, Parameters &parameters, std::default_random_engine &generator,
+               int &generation);
+
+    Individual(double drift_, Classes fishType_, Parameters &parameters, std::default_random_engine &generator,
+               int &generation);
+
+
+    Parameters parameters;
+
+    std::default_random_engine generator;
 
     double alpha, alphaAge, beta, betaAge, drift,        // genetic values
             dispersal, help, survival;                                    // phenotypic values
@@ -21,7 +32,8 @@ struct Individual {
 
     double calcSurvival(int groupSize);
 
-    void Mutate();
+    void Mutate(int generation);
+
 };
 
 

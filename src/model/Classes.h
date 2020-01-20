@@ -1,6 +1,4 @@
-//
-// Created by odin on 20/1/20.
-//
+
 
 #ifndef GROUP_AUGMENTATION_CLASSES_H
 #define GROUP_AUGMENTATION_CLASSES_H
