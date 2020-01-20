@@ -8,7 +8,7 @@
 using namespace std;
 
 Individual::Individual(Individual &individual, Classes fishType, Parameters &parameters,
-                       std::default_random_engine &generator,  int &generation) {
+                       std::default_random_engine &generator, int &generation) {
     if (individual.fishType != BREEDER) {
         cout << "ERROR fishtype is not BREEDER";
     }
@@ -22,8 +22,8 @@ Individual::Individual(Individual &individual, Classes fishType, Parameters &par
     drift = individual.drift;
 
 
-        if (generation != 0) {
-            mutate(generation);
+    if (generation != 0) {
+        mutate(generation);
     }
     this->fishType = fishType;
     age = 1;
@@ -37,7 +37,7 @@ Individual::Individual(Individual &individual, Classes fishType, Parameters &par
 
 
 Individual::Individual(double drift_, Classes fishType_, Parameters &parameters,
-                       std::default_random_engine &generator,  int &generation) {
+                       std::default_random_engine &generator, int &generation) {
     this->parameters = parameters;
     this->generator = generator;
 
@@ -49,8 +49,8 @@ Individual::Individual(double drift_, Classes fishType_, Parameters &parameters,
     drift = drift_;
 
 
-        if (generation != 0) {
-            mutate(generation);
+    if (generation != 0) {
+        mutate(generation);
     }
     fishType = fishType_;
     age = 1;
@@ -63,7 +63,7 @@ Individual::Individual(double drift_, Classes fishType_, Parameters &parameters,
 }
 
 /*DISPLAY LEVEL OF HELP*/
-void Individual::calcHelp() {
+void Individual::calculateHelp() {
     if (fishType == HELPER) {
         if (!parameters.isReactionNormHelp()) {
             help = alpha;
@@ -125,8 +125,6 @@ double Individual::calcSurvival(int groupSize) {
 }
 
 
-
-
 void Individual::mutate(int generation) // mutate genome of offspring
 {
     normal_distribution<double> NormalA(0,
@@ -172,8 +170,6 @@ void Individual::mutate(int generation) // mutate genome of offspring
 }
 
 
-
-
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
@@ -191,3 +187,75 @@ double Individual::calcDispersal() {
 
     return dispersal;
 }
+
+void Individual::increaseAge(bool alive) {
+    if (alive) {
+        this->age++;
+    } else {
+        this->age = Parameters::NO_VALUE;
+    }
+}
+
+void Individual::increaseAge() {
+    this->increaseAge(true);
+}
+
+
+double Individual::getSurvival() const {
+    return survival;
+}
+
+double Individual::getHelp() const {
+    return help;
+}
+
+double Individual::getDispersal() const {
+    return dispersal;
+}
+
+double Individual::getDrift() const {
+    return drift;
+}
+
+double Individual::getBetaAge() const {
+    return betaAge;
+}
+
+double Individual::getBeta() const {
+    return beta;
+}
+
+double Individual::getAlphaAge() const {
+    return alphaAge;
+}
+
+double Individual::getAlpha() const {
+    return alpha;
+}
+
+Classes Individual::getFishType() const {
+    return fishType;
+}
+
+int Individual::getAge() const {
+    return age;
+}
+
+bool Individual::isInherit() const {
+    return inherit;
+}
+
+void Individual::setHelp(double help) {
+    Individual::help = help;
+}
+
+void Individual::setInherit(bool inherit) {
+    Individual::inherit = inherit;
+}
+
+void Individual::setFishType(Classes fishType) {
+    Individual::fishType = fishType;
+}
+
+
+

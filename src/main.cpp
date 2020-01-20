@@ -70,7 +70,7 @@ double meanGroupSize, stdevGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize
 /* INITIALISE POPULATION */
 vector<Group> initializeGroups(int &generation) {
 
-    vector<Group> groups(parameters.getMaxColonies(),Group(parameters, generator, generation));
+    vector<Group> groups(parameters.getMaxColonies(), Group(parameters, generator, generation));
 
     return groups;
 }
@@ -85,7 +85,7 @@ void survivalFloaters(vector<Individual> &floaters, int &deaths) //Calculate the
     while (!floaters.empty() && sizevec > counting) {
 
         //Mortality floaters
-        if (parameters.uniform(generator) > survFIt->survival) {
+        if (parameters.uniform(generator) > survFIt->getSurvival()) {
             *survFIt = floaters[floaters.size() - 1];
             floaters.pop_back();
             ++counting;
@@ -105,9 +105,9 @@ void reassignFloaters(vector<Individual> &floaters, vector<Group> &groups) {
         vector<Individual>::iterator indIt;
         while (!floaters.empty()) {
             indIt = floaters.end() - 1;
-            indIt->help = 0;
+            indIt->setHelp(0);
             selectGroup = UniformMaxCol(generator);
-            //indIt->fishType = HELPER; //modify the class
+            //indIt->getFishType() = HELPER; //modify the class
             groups[selectGroup].helpers.push_back(
                     *indIt); //add the floater to the helper vector in a randomly selected group
             floaters.pop_back(); //remove the floater from its vector
@@ -140,7 +140,7 @@ void reassignFloaters(vector<Individual> &floaters, vector<Group> &groups) {
 
             /*vector<Individual, std::allocator<Individual>>::iterator floatIt;
             for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-                floatIt->fishType = HELPER; //all floaters pass to be helpers
+                floatIt->getFishType() = HELPER; //all floaters pass to be helpers
             }*/
 
             while (!floaters.empty()) {
@@ -163,7 +163,7 @@ void reassignFloaters(vector<Individual> &floaters, vector<Group> &groups) {
             while (!floaters.empty()) {
                 floatIt = floaters.end() - 1;
                 selectGroup = UniformMaxCol(generator);
-                //floatIt->fishType = HELPER; //modify the class
+                //floatIt->getFishType() = HELPER; //modify the class
                 groups[selectGroup].helpers.push_back(
                         *floatIt); //add the floater to the helper vector in a randomly selected group
                 floaters.pop_back(); //remove the floater from its vector
@@ -210,46 +210,46 @@ void calculateStatistics(vector<Group> groups, vector<Individual> floaters) {
              helperStatsIt < groupStatsIt->helpers.end(); ++helperStatsIt) {
 
             // Genes
-            sumAlpha += helperStatsIt->alpha;
-            sumsqAlpha += helperStatsIt->alpha * helperStatsIt->alpha;
+            sumAlpha += helperStatsIt->getAlpha();
+            sumsqAlpha += helperStatsIt->getAlpha() * helperStatsIt->getAlpha();
 
-            sumAlphaAge += helperStatsIt->alphaAge;
-            sumsqAlphaAge += helperStatsIt->alphaAge * helperStatsIt->alphaAge;
+            sumAlphaAge += helperStatsIt->getAlphaAge();
+            sumsqAlphaAge += helperStatsIt->getAlphaAge() * helperStatsIt->getAlphaAge();
 
-            sumBeta += helperStatsIt->beta;
-            sumsqBeta += helperStatsIt->beta * helperStatsIt->beta;
+            sumBeta += helperStatsIt->getBeta();
+            sumsqBeta += helperStatsIt->getBeta() * helperStatsIt->getBeta();
 
-            sumBetaAge += helperStatsIt->betaAge;
-            sumsqBetaAge += helperStatsIt->betaAge * helperStatsIt->betaAge;
+            sumBetaAge += helperStatsIt->getBetaAge();
+            sumsqBetaAge += helperStatsIt->getBetaAge() * helperStatsIt->getBetaAge();
 
             //Relatedness
             if (groupStatsIt->breederAlive) {
-                sumDriftB += groupStatsIt->breeder.drift;
-                sumDriftH += helperStatsIt->drift;
-                sumDriftBH += helperStatsIt->drift * groupStatsIt->breeder.drift;
-                sumDriftBB += groupStatsIt->breeder.drift * groupStatsIt->breeder.drift;
+                sumDriftB += groupStatsIt->breeder.getDrift();
+                sumDriftH += helperStatsIt->getDrift();
+                sumDriftBH += helperStatsIt->getDrift() * groupStatsIt->breeder.getDrift();
+                sumDriftBB += groupStatsIt->breeder.getDrift() * groupStatsIt->breeder.getDrift();
                 ++driftGroupSize;
             }
 
             //Phenotypes
-            sumAgeHelper += helperStatsIt->age;
-            sumsqAgeHelper += helperStatsIt->age * helperStatsIt->age;
+            sumAgeHelper += helperStatsIt->getAge();
+            sumsqAgeHelper += helperStatsIt->getAge() * helperStatsIt->getAge();
 
-            if (!isnan(helperStatsIt->help)) {
-                sumHelp += helperStatsIt->help;
-                sumsqHelp += helperStatsIt->help * helperStatsIt->help;
+            if (!isnan(helperStatsIt->getHelp())) {
+                sumHelp += helperStatsIt->getHelp();
+                sumsqHelp += helperStatsIt->getHelp() * helperStatsIt->getHelp();
             }
 
-            if (!isnan(helperStatsIt->dispersal)) {
-                sumDispersal += helperStatsIt->dispersal;
-                sumsqDispersal += helperStatsIt->dispersal * helperStatsIt->dispersal;
+            if (!isnan(helperStatsIt->getDispersal())) {
+                sumDispersal += helperStatsIt->getDispersal();
+                sumsqDispersal += helperStatsIt->getDispersal() * helperStatsIt->getDispersal();
 
-                sumprodHelpDispersal += helperStatsIt->help * helperStatsIt->dispersal;
+                sumprodHelpDispersal += helperStatsIt->getHelp() * helperStatsIt->getDispersal();
             }
 
-            if (!isnan(helperStatsIt->survival)) {
-                sumSurvivalHelper += helperStatsIt->survival;
-                sumsqSurvivalHelper += helperStatsIt->survival * helperStatsIt->survival;
+            if (!isnan(helperStatsIt->getSurvival())) {
+                sumSurvivalHelper += helperStatsIt->getSurvival();
+                sumsqSurvivalHelper += helperStatsIt->getSurvival() * helperStatsIt->getSurvival();
             }
         }
 
@@ -259,24 +259,24 @@ void calculateStatistics(vector<Group> groups, vector<Individual> floaters) {
         if (groupStatsIt->breederAlive) {
 
             //Genes
-            sumAlpha += groupStatsIt->breeder.alpha;
-            sumsqAlpha += groupStatsIt->breeder.alpha * groupStatsIt->breeder.alpha;
+            sumAlpha += groupStatsIt->breeder.getAlpha();
+            sumsqAlpha += groupStatsIt->breeder.getAlpha() * groupStatsIt->breeder.getAlpha();
 
-            sumAlphaAge += groupStatsIt->breeder.alphaAge;
-            sumsqAlphaAge += groupStatsIt->breeder.alphaAge * groupStatsIt->breeder.alphaAge;
+            sumAlphaAge += groupStatsIt->breeder.getAlphaAge();
+            sumsqAlphaAge += groupStatsIt->breeder.getAlphaAge() * groupStatsIt->breeder.getAlphaAge();
 
-            sumBeta += groupStatsIt->breeder.beta;
-            sumsqBeta += groupStatsIt->breeder.beta * groupStatsIt->breeder.beta;
+            sumBeta += groupStatsIt->breeder.getBeta();
+            sumsqBeta += groupStatsIt->breeder.getBeta() * groupStatsIt->breeder.getBeta();
 
-            sumBetaAge += groupStatsIt->breeder.betaAge;
-            sumsqBetaAge += groupStatsIt->breeder.betaAge * groupStatsIt->breeder.betaAge;
+            sumBetaAge += groupStatsIt->breeder.getBetaAge();
+            sumsqBetaAge += groupStatsIt->breeder.getBetaAge() * groupStatsIt->breeder.getBetaAge();
 
             //Phenotypes
-            sumAgeBreeder += groupStatsIt->breeder.age;
-            sumsqAgeBreeder += groupStatsIt->breeder.age * groupStatsIt->breeder.age;
+            sumAgeBreeder += groupStatsIt->breeder.getAge();
+            sumsqAgeBreeder += groupStatsIt->breeder.getAge() * groupStatsIt->breeder.getAge();
 
-            sumSurvivalBreeder += groupStatsIt->breeder.survival;
-            sumsqSurvivalBreeder += groupStatsIt->breeder.survival * groupStatsIt->breeder.survival;
+            sumSurvivalBreeder += groupStatsIt->breeder.getSurvival();
+            sumsqSurvivalBreeder += groupStatsIt->breeder.getSurvival() * groupStatsIt->breeder.getSurvival();
 
             countBreeders++;
         }
@@ -306,30 +306,30 @@ void calculateStatistics(vector<Group> groups, vector<Individual> floaters) {
     vector<Individual, std::allocator<Individual>>::iterator floatStatsIt;
     for (floatStatsIt = floaters.begin(); floatStatsIt < floaters.end(); ++floatStatsIt) {
         // Genes
-        sumAlpha += floatStatsIt->alpha;
-        sumsqAlpha += floatStatsIt->alpha * floatStatsIt->alpha;
+        sumAlpha += floatStatsIt->getAlpha();
+        sumsqAlpha += floatStatsIt->getAlpha() * floatStatsIt->getAlpha();
 
-        sumAlphaAge += floatStatsIt->alphaAge;
-        sumsqAlphaAge += floatStatsIt->alphaAge * floatStatsIt->alphaAge;
+        sumAlphaAge += floatStatsIt->getAlphaAge();
+        sumsqAlphaAge += floatStatsIt->getAlphaAge() * floatStatsIt->getAlphaAge();
 
-        sumBeta += floatStatsIt->beta;
-        sumsqBeta += floatStatsIt->beta * floatStatsIt->beta;
+        sumBeta += floatStatsIt->getBeta();
+        sumsqBeta += floatStatsIt->getBeta() * floatStatsIt->getBeta();
 
-        sumBetaAge += floatStatsIt->betaAge;
-        sumsqBetaAge += floatStatsIt->betaAge * floatStatsIt->betaAge;
+        sumBetaAge += floatStatsIt->getBetaAge();
+        sumsqBetaAge += floatStatsIt->getBetaAge() * floatStatsIt->getBetaAge();
 
         //Phenotypes
-        sumAgeFloater += floatStatsIt->age;
-        sumsqAgeFloater += floatStatsIt->age * floatStatsIt->age;
+        sumAgeFloater += floatStatsIt->getAge();
+        sumsqAgeFloater += floatStatsIt->getAge() * floatStatsIt->getAge();
 
-        if (!isnan(floatStatsIt->dispersal)) {
-            sumDispersal += floatStatsIt->dispersal;
-            sumsqDispersal += floatStatsIt->dispersal * floatStatsIt->dispersal;
+        if (!isnan(floatStatsIt->getDispersal())) {
+            sumDispersal += floatStatsIt->getDispersal();
+            sumsqDispersal += floatStatsIt->getDispersal() * floatStatsIt->getDispersal();
         }
 
-        if (!isnan(floatStatsIt->survival)) {
-            sumSurvivalFloater += floatStatsIt->survival;
-            sumsqSurvivalFloater += floatStatsIt->survival * floatStatsIt->survival;
+        if (!isnan(floatStatsIt->getSurvival())) {
+            sumSurvivalFloater += floatStatsIt->getSurvival();
+            sumsqSurvivalFloater += floatStatsIt->getSurvival() * floatStatsIt->getSurvival();
         }
     }
 
@@ -796,16 +796,16 @@ int main(int count, char **argv) {
                               << replica + 1
                               << "\t" << generation
                               << "\t" << groupID
-                              << "\t" << itGroups->breeder.fishType
-                              << "\t" << setprecision(4) << itGroups->breeder.age
-                              << "\t" << setprecision(4) << itGroups->breeder.alpha
-                              << "\t" << setprecision(4) << itGroups->breeder.alphaAge
-                              << "\t" << setprecision(4) << itGroups->breeder.beta
-                              << "\t" << setprecision(4) << itGroups->breeder.betaAge
-                              << "\t" << setprecision(4) << itGroups->breeder.drift
+                              << "\t" << itGroups->breeder.getFishType()
+                              << "\t" << setprecision(4) << itGroups->breeder.getAge()
+                              << "\t" << setprecision(4) << itGroups->breeder.getAlpha()
+                              << "\t" << setprecision(4) << itGroups->breeder.getAlphaAge()
+                              << "\t" << setprecision(4) << itGroups->breeder.getBeta()
+                              << "\t" << setprecision(4) << itGroups->breeder.getBetaAge()
+                              << "\t" << setprecision(4) << itGroups->breeder.getDrift()
                               << "\t" << setprecision(4) << "NA"
                               << "\t" << setprecision(4) << "NA"
-                              << "\t" << setprecision(4) << itGroups->breeder.survival
+                              << "\t" << setprecision(4) << itGroups->breeder.getSurvival()
                               << endl;
 
                         for (vector<Individual>::iterator itHelpers = itGroups->helpers.begin();
@@ -814,16 +814,16 @@ int main(int count, char **argv) {
                                   << replica + 1
                                   << "\t" << generation
                                   << "\t" << groupID
-                                  << "\t" << itHelpers->fishType
-                                  << "\t" << setprecision(4) << itHelpers->age
-                                  << "\t" << setprecision(4) << itHelpers->alpha
-                                  << "\t" << setprecision(4) << itHelpers->alphaAge
-                                  << "\t" << setprecision(4) << itHelpers->beta
-                                  << "\t" << setprecision(4) << itHelpers->betaAge
-                                  << "\t" << setprecision(4) << itHelpers->drift
-                                  << "\t" << setprecision(4) << itHelpers->help // TODO: for floaters is 0 no NA!
-                                  << "\t" << setprecision(4) << itHelpers->dispersal
-                                  << "\t" << setprecision(4) << itHelpers->survival
+                                  << "\t" << itHelpers->getFishType()
+                                  << "\t" << setprecision(4) << itHelpers->getAge()
+                                  << "\t" << setprecision(4) << itHelpers->getAlpha()
+                                  << "\t" << setprecision(4) << itHelpers->getAlphaAge()
+                                  << "\t" << setprecision(4) << itHelpers->getBeta()
+                                  << "\t" << setprecision(4) << itHelpers->getBetaAge()
+                                  << "\t" << setprecision(4) << itHelpers->getDrift()
+                                  << "\t" << setprecision(4) << itHelpers->getHelp() // TODO: for floaters is 0 no NA!
+                                  << "\t" << setprecision(4) << itHelpers->getDispersal()
+                                  << "\t" << setprecision(4) << itHelpers->getSurvival()
                                   << endl;
                         }
                         counter++;
