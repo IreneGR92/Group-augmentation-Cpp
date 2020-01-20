@@ -3,13 +3,13 @@
 #define GROUP_AUGMENTATION_INDIVIDUAL_H
 
 
-#include "Classes.h"
+#include "FishType.h"
 #include "../Parameters.h"
 
 class Individual {
 
-    Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, Classes fishType,
-               std::default_random_engine &generator,  Parameters &parameters, int &generation);
+    Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
+               std::default_random_engine &generator, Parameters &parameters, int &generation);
 
     Parameters parameters;
 
@@ -25,7 +25,7 @@ class Individual {
     double alpha;
 
 
-    Classes fishType;                                                // possible classes: breeder, helper, floater
+    FishType fishType;                                                // possible classes: breeder, helper, floater
     int age;
     bool inherit;                                                    //did the new breeder inherit the territory or did it disperse?
 
@@ -34,10 +34,10 @@ class Individual {
     void mutate(int generation);
 
 public:
-    Individual(Individual &individual, Classes fishType, Parameters &parameters, std::default_random_engine &generator,
+    Individual(Individual &individual, FishType fishType, Parameters &parameters, std::default_random_engine &generator,
                int &generation);
 
-    Individual(double drift, Classes fishType, Parameters &parameters, std::default_random_engine &generator,
+    Individual(double drift, FishType fishType, Parameters &parameters, std::default_random_engine &generator,
                int &generation);
 
     void calculateHelp();
@@ -63,7 +63,7 @@ public:
 
     double getAlpha() const;
 
-    Classes getFishType() const;
+    FishType getFishType() const;
 
     int getAge() const;
 
@@ -73,7 +73,7 @@ public:
 
     void setInherit(bool inherit);
 
-    void setFishType(Classes fishType);
+    void setFishType(FishType fishType);
 
     void increaseAge(bool alive);
 

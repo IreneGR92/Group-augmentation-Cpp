@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <algorithm>
 #include "Group.h"
-#include "Classes.h"
+#include "FishType.h"
 #include "../Parameters.h"
 
 using namespace std;

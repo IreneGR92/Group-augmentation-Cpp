@@ -2,12 +2,12 @@
 #include <iostream>
 
 #include "Individual.h"
-#include "Classes.h"
+#include "FishType.h"
 #include "../Parameters.h"
 
 using namespace std;
 
-Individual::Individual(Individual &individual, Classes fishType, Parameters &parameters,
+Individual::Individual(Individual &individual, FishType fishType, Parameters &parameters,
                        std::default_random_engine &generator, int &generation) :
         Individual(individual.alpha, individual.alphaAge, individual.beta, individual.betaAge, individual.drift,
                    fishType,
@@ -18,14 +18,14 @@ Individual::Individual(Individual &individual, Classes fishType, Parameters &par
     }
 }
 
-Individual::Individual(double drift, Classes fishType, Parameters &parameters,
+Individual::Individual(double drift, FishType fishType, Parameters &parameters,
                        std::default_random_engine &generator, int &generation) :
         Individual(parameters.getInitAlpha(), parameters.getInitAlphaAge(), parameters.getInitBeta(),
                    parameters.getInitBetaAge(), drift, fishType, generator, parameters, generation) {
 }
 
 //PRIVATE
-Individual::Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, Classes fishType,
+Individual::Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
                        std::default_random_engine &generator, Parameters &parameters, int &generation) {
     this->parameters = parameters;
     this->generator = generator;
@@ -222,7 +222,7 @@ double Individual::getAlpha() const {
     return alpha;
 }
 
-Classes Individual::getFishType() const {
+FishType Individual::getFishType() const {
     return fishType;
 }
 
@@ -242,7 +242,7 @@ void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-void Individual::setFishType(Classes fishType) {
+void Individual::setFishType(FishType fishType) {
     Individual::fishType = fishType;
 }
 
