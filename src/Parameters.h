@@ -2,10 +2,11 @@
 #ifndef CPP_PARAMETERS_H
 #define CPP_PARAMETERS_H
 
-
+#include <iomanip>
 #include <string>
 #include <fstream>
 #include <random>
+
 
 class Parameters {
 
@@ -66,19 +67,26 @@ class Parameters {
 
 //For relatedness
     double MUTATION_DRIFT;            // mutation rate in the neutral selected value to track level of relatedness
-    double STEP_DRIFT;            // mutation step size in the neutral genetic value to track level of relatedness
+    double STEP_DRIFT; // mutation step size in the neutral genetic value to track level of relatedness
 
+//
+    std::string mainWriter, lastGenerationWriter;
 
+    std::string getName(std::string url);
 
+    void print(std::ofstream &outputStream);
 
 public:
 
-    Parameters();
 
     Parameters(std::string url);
 
+    Parameters();
+
     std::uniform_real_distribution<double> driftUniform;
     std::uniform_real_distribution<double> uniform;
+
+    void print();
 
 
     const std::string &getName() const;
@@ -156,6 +164,10 @@ public:
     void setMutationAlphaAge(double mutationAlphaAge);
 
     static const int NO_VALUE = -1;
+
+    const std::string &getMainWriter() const;
+
+    const std::string &getLastGenerationWriter() const;
 
 };
 
