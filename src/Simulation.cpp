@@ -4,6 +4,7 @@
 
 void Simulation::run() {
 
+    statistics.printHeadersToConsole();
 
     statistics.calculateStatistics(groups, floaters);
 //
@@ -13,12 +14,12 @@ void Simulation::run() {
     std::ofstream lastGenerationiWriter(parameters.getLastGenerationWriter());
     statistics.printToFile(replica, generation, deaths, newbreederFloater, newbreederHelper, inheritance);
 
-    this->initializeGroups();
-
     for (generation = 1; generation <= parameters.getNumGenerations(); generation++) {
 
         deaths = 0; // to keep track of how many individuals die each generation
-        newbreederFloater = 0, newbreederHelper = 0, inheritance = 0;
+        newbreederFloater = 0;
+        newbreederHelper = 0;
+        inheritance = 0;
 
         //Dispersal
         std::vector<Group, std::allocator<Group>>::iterator itDispersal;
@@ -227,6 +228,8 @@ Simulation::Simulation(Parameters &parameters, std::default_random_engine &gener
         : replica(replica), statistics(parameters) {
     this->generator = generator;
     this->parameters = parameters;
+
+    this->groups = initializeGroups();
 
 }
 

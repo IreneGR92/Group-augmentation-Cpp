@@ -22,17 +22,8 @@
 #include "Parameters.h"
 #include "Statistics.h"
 #include "Simulation.h"
-//#include <chrono> //if we use the system clock as seed
 
 using namespace std;
-
-/*CONSTANTS AND STRUCTURES*/
-
-// Random numbers
-//mt19937 mt(time(0)); // random number generator
-//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count(); // if we don't want to obtain the same simulation under the same parameters
-//in the same run takes different random values, but different runs same values unless we change the seed
-
 
 
 /* MAIN PROGRAM */
@@ -42,7 +33,8 @@ int main(int count, char **argv) {
 
     unsigned seed = 0;
 
-    Parameters parameters = Parameters(argv[1]);
+    Parameters parameters(argv[1]);
+
 
     default_random_engine generator(seed);
 
@@ -58,7 +50,7 @@ int main(int count, char **argv) {
 
         Simulation simulation(parameters, generator, replica);
 
-        statistics.printHeadersToConsole();
+
         simulation.run();
 
     }

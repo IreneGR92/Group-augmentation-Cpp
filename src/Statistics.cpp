@@ -361,54 +361,7 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newbre
     ofstream lastGen("last_generation_" + parameters.getName() + ".txt");
 
     // write values to output file
-     main << fixed << showpoint
-            << replica << 1
-            << "\t" << generation
-            << "\t" << population
-            << "\t" << deaths
-            << "\t" << totalFloaters
-            << "\t" << setprecision(4) << meanGroupSize
-            << "\t" << setprecision(4) << meanAge
-            << "\t" << setprecision(4) << meanAgeHelper
-            << "\t" << setprecision(4) << meanAgeFloater
-            << "\t" << setprecision(4) << meanAgeBreeder
-            << "\t" << setprecision(4) << meanAlpha
-            << "\t" << setprecision(4) << meanAlphaAge
-            << "\t" << setprecision(4) << meanBeta
-            << "\t" << setprecision(4) << meanBetaAge
-            << "\t" << setprecision(4) << meanHelp
-            << "\t" << setprecision(4) << meanCumHelp
-            << "\t" << setprecision(4) << meanDispersal
-            << "\t" << setprecision(4) << meanSurvival
-            << "\t" << setprecision(4) << meanSurvivalHelper
-            << "\t" << setprecision(4) << meanSurvivalFloater
-            << "\t" << setprecision(4) << meanSurvivalBreeder
-            << "\t" << setprecision(4) << relatedness
-            << "\t" << setprecision(4) << stdevGroupSize
-            << "\t" << setprecision(4) << stdevAge
-            << "\t" << setprecision(4) << stdevAgeHelper
-            << "\t" << setprecision(4) << stdevAgeFloater
-            << "\t" << setprecision(4) << stdevAgeBreeder
-            << "\t" << setprecision(4) << stdevAlpha
-            << "\t" << setprecision(4) << stdevAlphaAge
-            << "\t" << setprecision(4) << stdevBeta
-            << "\t" << setprecision(4) << stdevBetaAge
-            << "\t" << setprecision(4) << stdevHelp
-            << "\t" << setprecision(4) << stdevCumHelp
-            << "\t" << setprecision(4) << stdevDispersal
-            << "\t" << setprecision(4) << stdevSurvival
-            << "\t" << setprecision(4) << stdevSurvivalHelper
-            << "\t" << setprecision(4) << stdevSurvivalFloater
-            << "\t" << setprecision(4) << stdevSurvivalBreeder
-            << "\t" << setprecision(4) << corr_HelpDispersal
-            << "\t" << setprecision(4) << corr_HelpGroup
-            << "\t" << newbreederFloater
-            << "\t" << newbreederHelper
-            << "\t" << inheritance
-            << endl;
-
-// write values to output file
-    lastGen << fixed << showpoint
+    main << fixed << showpoint
          << replica << 1
          << "\t" << generation
          << "\t" << population
@@ -453,6 +406,53 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newbre
          << "\t" << newbreederHelper
          << "\t" << inheritance
          << endl;
+
+// write values to output file
+    lastGen << fixed << showpoint
+            << replica << 1
+            << "\t" << generation
+            << "\t" << population
+            << "\t" << deaths
+            << "\t" << totalFloaters
+            << "\t" << setprecision(4) << meanGroupSize
+            << "\t" << setprecision(4) << meanAge
+            << "\t" << setprecision(4) << meanAgeHelper
+            << "\t" << setprecision(4) << meanAgeFloater
+            << "\t" << setprecision(4) << meanAgeBreeder
+            << "\t" << setprecision(4) << meanAlpha
+            << "\t" << setprecision(4) << meanAlphaAge
+            << "\t" << setprecision(4) << meanBeta
+            << "\t" << setprecision(4) << meanBetaAge
+            << "\t" << setprecision(4) << meanHelp
+            << "\t" << setprecision(4) << meanCumHelp
+            << "\t" << setprecision(4) << meanDispersal
+            << "\t" << setprecision(4) << meanSurvival
+            << "\t" << setprecision(4) << meanSurvivalHelper
+            << "\t" << setprecision(4) << meanSurvivalFloater
+            << "\t" << setprecision(4) << meanSurvivalBreeder
+            << "\t" << setprecision(4) << relatedness
+            << "\t" << setprecision(4) << stdevGroupSize
+            << "\t" << setprecision(4) << stdevAge
+            << "\t" << setprecision(4) << stdevAgeHelper
+            << "\t" << setprecision(4) << stdevAgeFloater
+            << "\t" << setprecision(4) << stdevAgeBreeder
+            << "\t" << setprecision(4) << stdevAlpha
+            << "\t" << setprecision(4) << stdevAlphaAge
+            << "\t" << setprecision(4) << stdevBeta
+            << "\t" << setprecision(4) << stdevBetaAge
+            << "\t" << setprecision(4) << stdevHelp
+            << "\t" << setprecision(4) << stdevCumHelp
+            << "\t" << setprecision(4) << stdevDispersal
+            << "\t" << setprecision(4) << stdevSurvival
+            << "\t" << setprecision(4) << stdevSurvivalHelper
+            << "\t" << setprecision(4) << stdevSurvivalFloater
+            << "\t" << setprecision(4) << stdevSurvivalBreeder
+            << "\t" << setprecision(4) << corr_HelpDispersal
+            << "\t" << setprecision(4) << corr_HelpGroup
+            << "\t" << newbreederFloater
+            << "\t" << newbreederHelper
+            << "\t" << inheritance
+            << endl;
 }
 
 
