@@ -16,6 +16,7 @@ Individual::Individual(Individual &individual, FishType fishType, Parameters &pa
     if (individual.fishType != BREEDER) {
         cout << "ERROR fishtype is not BREEDER";
     }
+    this->mutate(generation);
 }
 
 Individual::Individual(double drift, FishType fishType, Parameters &parameters,
@@ -43,11 +44,6 @@ Individual::Individual(double alpha, double alphaAge, double beta, double betaAg
     this->help = 0;
     this->survival = Parameters::NO_VALUE;
     this->dispersal = Parameters::NO_VALUE;
-
-    if (generation != 0) {
-        this->mutate(generation);
-    }
-
 }
 
 
