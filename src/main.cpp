@@ -86,7 +86,6 @@ double meanGroupSize, stdevGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize
 
 struct Individual // define individual traits
 {
-
     Individual(double alpha_, double alphaAge_, double beta_,
                double betaAge_, double drift_, classes fishType_);
 
@@ -191,8 +190,7 @@ void Group::GroupSize() {
 
 /* INITIALISE POPULATION */
 void InitGroup(vector<Group> &groups) {
-    int i;
-    for (i = 0; i < parameters.getMaxColonies(); i++) {
+    for (int i = 0; i < parameters.getMaxColonies(); i++) {
         groups[i] = Group();
     }
 }
@@ -211,10 +209,6 @@ double Individual::calcDispersal() {
         } else {
             dispersal = 1 / (1 + exp(betaAge * age - beta));
         }
-
-        /*if (dispersal < 0 || dispersal > 1) {
-            cout << "error in dispersal: " << dispersal << endl;
-        }*/
     }
 
     return dispersal;
@@ -1104,10 +1098,11 @@ int main(int count, char **argv) {
             //Help & Survival
             vector<Group, std::allocator<Group>>::iterator itHelpSurvival;
             for (itHelpSurvival = groups.begin(); itHelpSurvival < groups.end(); ++itHelpSurvival) {
+                //Calculate help
                 itHelpSurvival->CumHelp();
-                itHelpSurvival->GroupSize();
 
                 //Calculate survival for the helpers
+                itHelpSurvival->GroupSize();
                 vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
                 for (helperStatsIt = itHelpSurvival->helpers.begin(); helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
                     helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
@@ -1122,20 +1117,24 @@ int main(int count, char **argv) {
                 }
             }
 
+            //Calculate survival for floaters
             vector<Individual, std::allocator<Individual>>::iterator floatIt;
             for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
                 floatIt->calcSurvival(0); // TODO:Change to 1?
             }
 
+            //Calculate stats
             if (generation % parameters.getSkip() == 0) {
                 Statistics(groups, floaters); // Statistics calculated before survival
             }
 
+            //Mortality of helpers and breeders
             vector<Group, std::allocator<Group>>::iterator itSurvival;
             for (itSurvival = groups.begin(); itSurvival < groups.end(); ++itSurvival) {
                 itSurvival->SurvivalGroup(deaths);
             }
 
+            //Mortality of floaters
             SurvivalFloaters(floaters, deaths);
 
             //Become a breeder
