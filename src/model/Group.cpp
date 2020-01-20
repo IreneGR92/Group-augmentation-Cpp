@@ -31,7 +31,7 @@ Group::Group(Parameters &parameters, std::default_random_engine &generator, int 
     GroupSize();
 }
 
-void Group::Disperse(vector<Individual> &floaters) {
+void Group::disperse(vector<Individual> &floaters) {
     vector<Individual, std::allocator<Individual >>::iterator
             dispersalIt;
     dispersalIt = helpers.begin();
@@ -58,7 +58,7 @@ void Group::Disperse(vector<Individual> &floaters) {
 
 /* BECOME BREEDER */
 
-void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
+void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
     //    Select a random sample from the floaters
     int i = 0;
     int sumage = 0;
@@ -162,7 +162,7 @@ void Group::NewBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
 
 /* INCREASE AGE*/
-void Group::IncreaseAge() {
+void Group::increaseAge() {
     vector<Individual, std::allocator<Individual>>::iterator ageIt;
     for (ageIt = helpers.begin(); ageIt < helpers.end(); ++ageIt) {
         ageIt->age++;
@@ -177,7 +177,7 @@ void Group::IncreaseAge() {
 
 /* REPRODUCTION */
 
-void Group::Reproduction() // populate offspring generation
+void Group::reproduce() // populate offspring generation
 {
     //Calculate fecundity
     if (!parameters.isNoRelatedness()) {
@@ -213,7 +213,7 @@ void Group::GroupSize() {
     }
 }
 
-void Group::SurvivalGroup(int &deaths) {
+void Group::survival(int &deaths) {
     GroupSize(); //update group size after dispersal
 
     //Calculate the survival of the helpers

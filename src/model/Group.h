@@ -25,19 +25,19 @@ struct Group {
     std::vector<Individual> helpers; // create a vector of helpers inside each group
 
 //Functions inside Group
-    void Disperse(std::vector<Individual> &floaters);
+    void disperse(std::vector<Individual> &floaters);
 
     void CumHelp();
 
-    void SurvivalGroup(int &deaths);
+    void survival(int &deaths);
 
-    void NewBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
+    void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
-    void IncreaseAge();
+    void increaseAge();
 
     void GroupSize();
 
-    void Reproduction();
+    void reproduce();
 };
 
 

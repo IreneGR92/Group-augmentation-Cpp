@@ -32,7 +32,7 @@ struct Individual {
 
     double calcSurvival(int groupSize);
 
-    void Mutate(int generation);
+    void mutate(int generation);
 
 };
 

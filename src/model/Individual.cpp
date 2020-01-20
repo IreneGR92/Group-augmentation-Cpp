@@ -23,7 +23,7 @@ Individual::Individual(Individual &individual, Classes fishType, Parameters &par
 
 
         if (generation != 0) {
-        Mutate(generation);
+            mutate(generation);
     }
     this->fishType = fishType;
     age = 1;
@@ -50,7 +50,7 @@ Individual::Individual(double drift_, Classes fishType_, Parameters &parameters,
 
 
         if (generation != 0) {
-        Mutate(generation);
+            mutate(generation);
     }
     fishType = fishType_;
     age = 1;
@@ -127,7 +127,7 @@ double Individual::calcSurvival(int groupSize) {
 
 
 
-void Individual::Mutate(int generation) // mutate genome of offspring
+void Individual::mutate(int generation) // mutate genome of offspring
 {
     normal_distribution<double> NormalA(0,
                                         parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
