@@ -70,11 +70,14 @@ class Parameters {
     double STEP_DRIFT; // mutation step size in the neutral genetic value to track level of relatedness
 
 //
-    std::string mainWriter, lastGenerationWriter;
+
 
     std::string getName(std::string url);
 
     void print(std::ofstream &outputStream);
+
+    std::ofstream *mainWriter;
+    std::ofstream *lastGenerationWriter;
 
 public:
 
@@ -161,9 +164,9 @@ public:
 
     static const int NO_VALUE = -1;
 
-    const std::string &getMainWriter() const;
+    std::ofstream *getMainWriter() const;
 
-    const std::string &getLastGenerationWriter() const;
+    std::ofstream *getLastGenerationWriter() const;
 
 };
 

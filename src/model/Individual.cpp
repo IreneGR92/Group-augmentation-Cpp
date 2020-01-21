@@ -174,7 +174,7 @@ void Individual::mutate(int generation) // mutate genome of offspring
 
 
 /* INCREASE AGE */
-//TODO: is this for breeders?
+//for breeders
 void Individual::increaseAge(bool alive) {
     if (alive) {
         this->age++;
@@ -183,7 +183,7 @@ void Individual::increaseAge(bool alive) {
     }
 }
 
-//TODO: individuals that are not breeders do not have a alive value, for breeders this is a variable of group
+//for helpers and floaters
 void Individual::increaseAge() {
     this->increaseAge(true);
 }

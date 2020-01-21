@@ -20,7 +20,6 @@
 
 #include <iostream>
 #include "Parameters.h"
-#include "Statistics.h"
 #include "Simulation.h"
 
 using namespace std;
@@ -38,13 +37,8 @@ int main(int count, char **argv) {
 
     default_random_engine generator(seed);
 
-    Statistics statistics(parameters);
 
-
-    parameters.print(); //TODO: this needs to be printed to both files
-
-    statistics.printHeadersToFile();
-
+    parameters.print();
 
     for (int replica = 0; replica < parameters.getMaxNumReplicates(); replica++) {
 

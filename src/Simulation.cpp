@@ -5,8 +5,6 @@
 void Simulation::run() {
 
     // Output file
-    std::ofstream mainWriter(parameters.getMainWriter());
-    std::ofstream lastGenerationiWriter(parameters.getLastGenerationWriter());
 
     statistics.calculateStatistics(groups, floaters);
     statistics.printHeadersToConsole();

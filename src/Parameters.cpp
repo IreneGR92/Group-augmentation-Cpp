@@ -14,9 +14,6 @@ Parameters::Parameters(string url) {
 
     YAML::Node config = YAML::LoadFile(url);
 
-    this->mainWriter = "main_" + this->getName(url) + ".txt";
-    this->lastGenerationWriter = "last_generation_" + this->getName(url) + ".txt";
-
     this->name = this->getName(url);
     this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
@@ -53,16 +50,17 @@ Parameters::Parameters(string url) {
     this->MUTATION_DRIFT = config["MUTATION_DRIFT"].as<double>();
     this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
 
-
     this->driftUniform = uniform_real_distribution<double>(0, 100);
     this->uniform = uniform_real_distribution<double>(0, 1);
 
+    this->mainWriter = new std::ofstream("main_" + this->name + ".txt");
+    this->lastGenerationWriter = new std::ofstream("last_generation_" + this->name + ".txt");
 
 }
 
 void Parameters::print() {
-//    this->print(std::ofstream(mainWriter));
-//    this->print(std::ofstream(lastGenerationWriter));
+    this->print(*mainWriter);
+    this->print(*lastGenerationWriter);
 }
 
 void Parameters::print(std::ofstream &outputStream) {
@@ -251,16 +249,19 @@ std::string Parameters::getName(std::string url) {
     unsigned last = url.find(".yml");
     string name = url.substr(first, last - first);
     replace(name.begin(), name.end(), '/', '_');
-    return std::string();
+
+    return name;
 }
 
-const string &Parameters::getMainWriter() const {
+ofstream *Parameters::getMainWriter() const {
     return mainWriter;
 }
 
-const string &Parameters::getLastGenerationWriter() const {
+ofstream *Parameters::getLastGenerationWriter() const {
     return lastGenerationWriter;
 }
+
+
 
 
 
