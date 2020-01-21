@@ -11,10 +11,10 @@ Individual::Individual(Individual &individual, FishType fishType, Parameters &pa
                        std::default_random_engine &generator, int &generation) :
         Individual(individual.alpha, individual.alphaAge, individual.beta, individual.betaAge, individual.drift,
                    fishType,
-                   generator, parameters, generation) {
+                   generator, parameters, generation) {  // TODO: is the order correct?
 
     if (individual.fishType != BREEDER) {
-        cout << "ERROR fishtype is not BREEDER";
+        cout << "ERROR fishtype is not BREEDER" << endl;
     }
     this->mutate(generation);
 }
@@ -37,18 +37,36 @@ Individual::Individual(double alpha, double alphaAge, double beta, double betaAg
     this->betaAge = betaAge;
     this->drift = drift;
 
-    this->fishType = fishType;
-
-    this->inherit = true;
-    this->age = 1;
+    this->dispersal = Parameters::NO_VALUE;
     this->help = 0;
     this->survival = Parameters::NO_VALUE;
-    this->dispersal = Parameters::NO_VALUE;
+    this->fishType = fishType;
+    this->inherit = true;
+    this->age = 1;
 }
 
 
+/* BECOME FLOATER (STAY VS DISPERSE) */
+
+double Individual::calcDispersal() {
+    if (parameters.isNoRelatedness() && age == 1) {
+        dispersal = 1;
+
+    } else {
+        if (!parameters.isReactionNormDispersal()) {
+
+            dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
+        } else {
+            dispersal = 1 / (1 + exp(betaAge * age - beta));
+        }
+    }
+
+    return dispersal;
+}
+
 /*DISPLAY LEVEL OF HELP*/
-void Individual::calculateHelp() {
+
+void Individual::calcHelp() {
     if (fishType == HELPER) {
         if (!parameters.isReactionNormHelp()) {
             help = alpha;
@@ -122,8 +140,8 @@ void Individual::mutate(int generation) // mutate genome of offspring
             parameters.setMutationAlpha(0);
             parameters.setMutationAlphaAge(0);
         } else {
-            parameters.setMutationAlpha(0.05);
-            parameters.setMutationAlphaAge(0.05);
+            parameters.setMutationAlpha(parameters.getMutationAlpha()); //TODO: is this correct, it should be the value of the parameter mutationAlpha?
+            parameters.setMutationAlphaAge(parameters.getMutationAlphaAge());
         }
     }
 
@@ -155,24 +173,8 @@ void Individual::mutate(int generation) // mutate genome of offspring
 }
 
 
-/* BECOME FLOATER (STAY VS DISPERSE) */
-
-double Individual::calcDispersal() {
-    if (parameters.isNoRelatedness() && age == 1) {
-        dispersal = 1;
-
-    } else {
-        if (!parameters.isReactionNormDispersal()) {
-
-            dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
-        } else {
-            dispersal = 1 / (1 + exp(betaAge * age - beta));
-        }
-    }
-
-    return dispersal;
-}
-
+/* INCREASE AGE */
+//TODO: is this for breeders?
 void Individual::increaseAge(bool alive) {
     if (alive) {
         this->age++;
@@ -181,45 +183,57 @@ void Individual::increaseAge(bool alive) {
     }
 }
 
+//TODO: individuals that are not breeders do not have a alive value, for breeders this is a variable of group
 void Individual::increaseAge() {
     this->increaseAge(true);
 }
 
 
-double Individual::getSurvival() const {
-    return survival;
-}
 
-double Individual::getHelp() const {
-    return help;
-}
+/* GETTERS AND SETTERS */
 
-double Individual::getDispersal() const {
-    return dispersal;
-}
-
-double Individual::getDrift() const {
-    return drift;
-}
-
-double Individual::getBetaAge() const {
-    return betaAge;
-}
-
-double Individual::getBeta() const {
-    return beta;
+double Individual::getAlpha() const {
+    return alpha;
 }
 
 double Individual::getAlphaAge() const {
     return alphaAge;
 }
 
-double Individual::getAlpha() const {
-    return alpha;
+double Individual::getBeta() const {
+    return beta;
+}
+
+double Individual::getBetaAge() const {
+    return betaAge;
+}
+
+double Individual::getDrift() const {
+    return drift;
+}
+
+double Individual::getDispersal() const {
+    return dispersal;
+}
+
+double Individual::getHelp() const {
+    return help;
+}
+
+void Individual::setHelp(double help) {
+    Individual::help = help;
+}
+
+double Individual::getSurvival() const {
+    return survival;
 }
 
 FishType Individual::getFishType() const {
     return fishType;
+}
+
+void Individual::setFishType(FishType fishType) {
+    Individual::fishType = fishType;
 }
 
 int Individual::getAge() const {
@@ -230,17 +244,10 @@ bool Individual::isInherit() const {
     return inherit;
 }
 
-void Individual::setHelp(double help) {
-    Individual::help = help;
-}
-
 void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-void Individual::setFishType(FishType fishType) {
-    Individual::fishType = fishType;
-}
 
 
 

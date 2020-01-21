@@ -15,21 +15,19 @@ class Individual {
 
     std::default_random_engine generator;
 
-    double survival;
-    double help;
-    double dispersal;
-    double drift;
-    double betaAge;
-    double beta;
-    double alphaAge;
     double alpha;
+    double alphaAge;
+    double beta;
+    double betaAge;
+    double drift;
 
+    double dispersal;
+    double help;
+    double survival;
 
     FishType fishType;                                                // possible classes: breeder, helper, floater
     int age;
     bool inherit;                                                    //did the new breeder inherit the territory or did it disperse?
-
-
 
     void mutate(int generation);
 
@@ -40,44 +38,33 @@ public:
     Individual(double drift, FishType fishType, Parameters &parameters, std::default_random_engine &generator,
                int &generation);
 
-    void calculateHelp();
 
     //Functions inside Individual
     double calcDispersal();
-
+    void calcHelp();
     double calcSurvival(int groupSize);
 
-    double getSurvival() const;
-
-    double getHelp() const;
-
-    double getDispersal() const;
-
+    //Getters and setters
+    double getAlpha() const;
+    double getAlphaAge() const;
+    double getBeta() const;
+    double getBetaAge() const;
     double getDrift() const;
 
-    double getBetaAge() const;
-
-    double getBeta() const;
-
-    double getAlphaAge() const;
-
-    double getAlpha() const;
+    double getDispersal() const;
+    double getHelp() const;
+    void setHelp(double help);
+    double getSurvival() const;
 
     FishType getFishType() const;
-
-    int getAge() const;
-
-    bool isInherit() const;
-
-    void setHelp(double help);
-
-    void setInherit(bool inherit);
-
     void setFishType(FishType fishType);
 
-    void increaseAge(bool alive);
+    int getAge() const;
+    void increaseAge(bool alive); //TODO: for the breeder?
+    void increaseAge(); // TODO: For helpers and floaters?
 
-    void increaseAge();
+    bool isInherit() const;
+    void setInherit(bool inherit);
 };
 
 

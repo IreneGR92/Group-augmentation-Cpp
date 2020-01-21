@@ -16,7 +16,6 @@ class Statistics {
 
     int totalFloaters;
 
-
     int driftGroupSize, maxGroupSize, countGroupWithHelpers, countHelpers, countBreeders; //counters
     double relatedness;
     double meanGroupSize, stdevGroupSize, sumGroupSize, sumsqGroupSize, varGroupSize,
@@ -53,9 +52,8 @@ public:
 
     void printToConsole(int generation, int deaths);
 
-
-    void printToFile(int replica, int generation, int deaths, int newbreederFloater,
-                     int newbreederHelper, int inheritance);
+    void printToFile(int replica, int generation, int deaths, int newBreederFloater,
+                     int newBreederHelper, int inheritance);
 
     void printToFileLastGeneration(const std::vector<Group> &groups, int replica, int generation);
 };

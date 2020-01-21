@@ -41,7 +41,7 @@ int main(int count, char **argv) {
     Statistics statistics(parameters);
 
 
-    parameters.print();
+    parameters.print(); //TODO: this needs to be printed to both files
 
     statistics.printHeadersToFile();
 

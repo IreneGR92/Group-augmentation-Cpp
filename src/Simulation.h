@@ -8,28 +8,26 @@
 
 class Simulation {
 
-    const int replica;
+    Parameters parameters;
 
     Statistics statistics;
 
     std::default_random_engine generator;
 
-    int generation = 0;
-
     std::vector<Individual> floaters;
 
     std::vector<Group> groups;
+
+    const int replica;
+
+    int generation = 0;
 
     int deaths = 0;
 
     int newbreederFloater = 0, newbreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
-    Parameters parameters;
-
 
 public:
-
-    Simulation(Parameters &parameters, std::default_random_engine &generator, const int replica);
 
     void run();
 
@@ -39,15 +37,21 @@ public:
 
     void reassignFloaters(std::vector<Individual> &floaters, std::vector<Group> &groups);
 
-    const std::vector<Group> &getGroups() const;
+    Simulation(Parameters &parameters, std::default_random_engine &generator, const int replica);
 
-    int getGeneration() const;
+    const Parameters &getParameters() const;
 
-    const int getReplica() const;
+    //TODO: stats?
 
     const std::default_random_engine &getGenerator() const;
 
     const std::vector<Individual> &getFloaters() const;
+
+    const std::vector<Group> &getGroups() const;
+
+    const int getReplica() const;
+
+    int getGeneration() const;
 
     int getDeaths() const;
 
@@ -56,9 +60,6 @@ public:
     int getNewbreederHelper() const;
 
     int getInheritance() const;
-
-    const Parameters &getParameters() const;
-
 
 };
 

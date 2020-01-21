@@ -4,14 +4,14 @@
 
 void Simulation::run() {
 
-    statistics.printHeadersToConsole();
-
-    statistics.calculateStatistics(groups, floaters);
-//
-    statistics.printToConsole(generation, deaths);
     // Output file
     std::ofstream mainWriter(parameters.getMainWriter());
     std::ofstream lastGenerationiWriter(parameters.getLastGenerationWriter());
+
+    statistics.calculateStatistics(groups, floaters);
+    statistics.printHeadersToConsole();
+    statistics.printToConsole(generation, deaths);
+    statistics.printHeadersToFile();
     statistics.printToFile(replica, generation, deaths, newbreederFloater, newbreederHelper, inheritance);
 
     for (generation = 1; generation <= parameters.getNumGenerations(); generation++) {
@@ -31,14 +31,13 @@ void Simulation::run() {
         std::vector<Group, std::allocator<Group>>::iterator itHelpSurvival;
         for (itHelpSurvival = groups.begin(); itHelpSurvival < groups.end(); ++itHelpSurvival) {
             //Calculate help
-            itHelpSurvival->CumHelp();
+            itHelpSurvival->calcCumHelp();
 
             //Calculate survival for the helpers
-            itHelpSurvival->GroupSize();
+            itHelpSurvival->calcGroupSize();
             std::vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
-            for (helperStatsIt = itHelpSurvival->helpers.begin();
-                 helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
-                helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
+            for (helperStatsIt = itHelpSurvival->helpers.begin(); helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
+                 helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
             }
 
             //Calculate the survival of the breeder
@@ -78,7 +77,7 @@ void Simulation::run() {
             }
         }
 
-        //reassignFloaters floaters to groups for later philopatry vs dispersal
+        //Reassign floaters floaters to groups for later philopatry vs dispersal
         reassignFloaters(floaters, groups);
         /*if (!floaters.empty()) {
             cout << "Not all floaters were reassigned!" << endl;
@@ -101,17 +100,14 @@ void Simulation::run() {
                 generation == parameters.getNumGenerations() / 2 || generation == parameters.getNumGenerations()) {
 
                 statistics.printToFileLastGeneration(groups, replica, generation);
-
-            }
-
-            //Reproduction
-            std::vector<Group, std::allocator<Group>>::iterator itReproduction;
-            for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-                itReproduction->reproduce();
             }
         }
 
-
+        //Reproduction
+        std::vector<Group, std::allocator<Group>>::iterator itReproduction;
+        for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
+            itReproduction->reproduce();
+        }
     }
 }
 
@@ -124,10 +120,8 @@ std::vector<Group> Simulation::initializeGroups() {
 }
 
 
-void
-Simulation::survivalFloaters(std::vector<Individual> &floaters,
-                             int &deaths) //Calculate the survival of the floaters
-{
+void Simulation::survivalFloaters(std::vector<Individual> &floaters,
+                             int &deaths){ //Calculate the survival of the floaters
 
     std::vector<Individual, std::allocator<Individual>>::iterator survFIt;
     survFIt = floaters.begin();
@@ -144,7 +138,6 @@ Simulation::survivalFloaters(std::vector<Individual> &floaters,
         } else
             ++survFIt, ++counting; //go to next individual
     }
-
 }
 
 
@@ -228,16 +221,13 @@ Simulation::Simulation(Parameters &parameters, std::default_random_engine &gener
         : replica(replica), statistics(parameters) {
     this->generator = generator;
     this->parameters = parameters;
-
     this->groups = initializeGroups();
-
 }
 
 
-const int Simulation::getReplica() const {
-    return replica;
+const Parameters &Simulation::getParameters() const {
+    return parameters;
 }
-
 
 const std::default_random_engine &Simulation::getGenerator() const {
     return generator;
@@ -245,6 +235,19 @@ const std::default_random_engine &Simulation::getGenerator() const {
 
 const std::vector<Individual> &Simulation::getFloaters() const {
     return floaters;
+}
+
+const std::vector<Group> &Simulation::getGroups() const {
+    return groups;
+}
+
+
+const int Simulation::getReplica() const {
+    return replica;
+}
+
+int Simulation::getGeneration() const {
+    return generation;
 }
 
 int Simulation::getDeaths() const {
@@ -263,6 +266,3 @@ int Simulation::getInheritance() const {
     return inheritance;
 }
 
-const Parameters &Simulation::getParameters() const {
-    return parameters;
-}
