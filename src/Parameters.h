@@ -159,10 +159,6 @@ public:
 
     double getStepDrift() const;
 
-    void setMutationAlpha(double mutationAlpha);
-
-    void setMutationAlphaAge(double mutationAlphaAge);
-
     static const int NO_VALUE = -1;
 
     const std::string &getMainWriter() const;

@@ -134,22 +134,22 @@ void Individual::mutate(int generation) // mutate genome of offspring
                                         parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
     normal_distribution<double> NormalB(0, parameters.getStepBeta());
     normal_distribution<double> NormalD(0, parameters.getStepDrift());
+    double mutationAlpha;
+    double mutationAlphaAge;
 
-    if (parameters.isEvolutionHelpAfterDispersal()) {
-        if (generation < parameters.getNumGenerations() / 4) {
-            parameters.setMutationAlpha(0);
-            parameters.setMutationAlphaAge(0);
-        } else {
-            parameters.setMutationAlpha(parameters.getMutationAlpha()); //TODO: is this correct, it should be the value of the parameter mutationAlpha?
-            parameters.setMutationAlphaAge(parameters.getMutationAlphaAge());
-        }
+    if (parameters.isEvolutionHelpAfterDispersal() && generation < parameters.getNumGenerations() / 4) {
+        mutationAlpha = 0;
+        mutationAlphaAge = 0;
+    } else {
+        mutationAlpha = parameters.getMutationAlpha();
+        mutationAlphaAge = parameters.getMutationAlphaAge();
     }
 
-    if (parameters.uniform(generator) < parameters.getMutationAlpha()) {
+    if (parameters.uniform(generator) < mutationAlpha) {
         alpha += NormalA(generator);
     }
     if (parameters.isReactionNormHelp()) {
-        if (parameters.uniform(generator) < parameters.getMutationAlphaAge()) {
+        if (parameters.uniform(generator) < mutationAlphaAge) {
             alphaAge += NormalA(generator);
         }
     }
@@ -187,7 +187,6 @@ void Individual::increaseAge(bool alive) {
 void Individual::increaseAge() {
     this->increaseAge(true);
 }
-
 
 
 /* GETTERS AND SETTERS */

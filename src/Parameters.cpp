@@ -243,14 +243,6 @@ double Parameters::getStepDrift() const {
     return STEP_DRIFT;
 }
 
-void Parameters::setMutationAlpha(double mutationAlpha) {
-    MUTATION_ALPHA = mutationAlpha;
-}
-
-void Parameters::setMutationAlphaAge(double mutationAlphaAge) {
-    MUTATION_ALPHA_AGE = mutationAlphaAge;
-}
-
 
 std::string Parameters::getName(std::string url) {
 
