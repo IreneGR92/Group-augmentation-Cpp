@@ -233,13 +233,6 @@ Simulation::Simulation(Parameters &parameters, std::default_random_engine &gener
 
 }
 
-const std::vector<Group> &Simulation::getGroups() const {
-    return groups;
-}
-
-int Simulation::getGeneration() const {
-    return generation;
-}
 
 const int Simulation::getReplica() const {
     return replica;
