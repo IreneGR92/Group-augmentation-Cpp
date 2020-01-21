@@ -92,7 +92,7 @@ void Group::calcCumHelp() //Calculate accumulative help of all individuals insid
 
 /*  MORTALITY */
 
-void Group::survival(int &deaths) {
+void Group::mortality(int &deaths) {
 
     calcGroupSize(); //update group size after dispersal
 
@@ -118,7 +118,6 @@ void Group::survival(int &deaths) {
         deaths++;
     }
 }
-
 
 
 /* BECOME BREEDER */
@@ -226,7 +225,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 }
 
 
-/* INCREASE AGE*/
+/* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
     vector<Individual, std::allocator<Individual>>::iterator ageIt;
     for (ageIt = helpers.begin(); ageIt < helpers.end(); ++ageIt) {
@@ -263,6 +262,30 @@ void Group::reproduce() // populate offspring generation
                                  generation); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
+}
+
+const Individual &Group::getBreeder() const {
+    return breeder;
+}
+
+const vector<Individual> &Group::getHelpers() const {
+    return helpers;
+}
+
+int Group::getGroupSize() const {
+    return groupSize;
+}
+
+bool Group::isBreederAlive() const {
+    return breederAlive;
+}
+
+double Group::getCumHelp() const {
+    return cumHelp;
+}
+
+bool Group::isHelpersPresent() const {
+    return helpersPresent;
 }
 
 

@@ -6,9 +6,8 @@
 #include "Individual.h"
 #include "../Parameters.h"
 
-struct Group {
+class Group {
 
-    Group(Parameters &parameters, std::default_random_engine &generator, int &generation);
 
     std::default_random_engine generator;
     Parameters parameters;
@@ -21,10 +20,15 @@ struct Group {
 
     int generation;
 
+
+
+
+
+public:
     Individual breeder;
     std::vector<Individual> helpers; // create a vector of helpers inside each group
 
-//Functions inside Group
+    Group(Parameters &parameters, std::default_random_engine &generator, int &generation);
 
     void calcGroupSize();
 
@@ -32,13 +36,27 @@ struct Group {
 
     void calcCumHelp();
 
-    void survival(int &deaths);
+    void mortality(int &deaths);
 
     void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
     void increaseAge();
 
     void reproduce();
+
+    const std::vector<Individual> &getHelpers() const;
+
+    const Individual &getBreeder() const;
+
+    int getGroupSize() const;
+
+    bool isBreederAlive() const;
+
+    double getCumHelp() const;
+
+    bool isHelpersPresent() const;
+
+
 };
 
 

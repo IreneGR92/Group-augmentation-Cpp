@@ -59,7 +59,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
             sumsqBetaAge += helperStatsIt->getBetaAge() * helperStatsIt->getBetaAge();
 
             //Relatedness
-            if (groupStatsIt->breederAlive) {
+            if (groupStatsIt->isBreederAlive()) {
                 sumDriftB += groupStatsIt->breeder.getDrift();
                 sumDriftH += helperStatsIt->getDrift();
                 sumDriftBH += helperStatsIt->getDrift() * groupStatsIt->breeder.getDrift();
@@ -92,7 +92,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
         countHelpers += groupStatsIt->helpers.size();
 
         //BREEDERS
-        if (groupStatsIt->breederAlive) {
+        if (groupStatsIt->isBreederAlive()) {
 
             //Genes
             sumAlpha += groupStatsIt->breeder.getAlpha();
@@ -119,17 +119,17 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
 
         //Group
         groupStatsIt->calcGroupSize();
-        sumGroupSize += groupStatsIt->groupSize;
-        sumsqGroupSize += groupStatsIt->groupSize * groupStatsIt->groupSize;
-        if (groupStatsIt->groupSize > maxGroupSize) maxGroupSize = groupStatsIt->groupSize;
+        sumGroupSize += groupStatsIt->getGroupSize();
+        sumsqGroupSize += groupStatsIt->getGroupSize() * groupStatsIt->getGroupSize();
+        if (groupStatsIt->getGroupSize() > maxGroupSize) maxGroupSize = groupStatsIt->getGroupSize();
 
 
-        if (groupStatsIt->helpersPresent) {
-            sumCumHelp += groupStatsIt->cumHelp;
-            sumsqCumHelp += groupStatsIt->cumHelp * groupStatsIt->cumHelp;
-            sumGroupSizeHelp += groupStatsIt->groupSize;
-            sumsqGroupSizeHelp += groupStatsIt->groupSize * groupStatsIt->groupSize;
-            sumprodHelpGroup += groupStatsIt->cumHelp * groupStatsIt->groupSize;
+        if (groupStatsIt->isHelpersPresent()) {
+            sumCumHelp += groupStatsIt->getCumHelp();
+            sumsqCumHelp += groupStatsIt->getCumHelp() * groupStatsIt->getCumHelp();
+            sumGroupSizeHelp += groupStatsIt->getGroupSize();
+            sumsqGroupSizeHelp += groupStatsIt->getGroupSize() * groupStatsIt->getGroupSize();
+            sumprodHelpGroup += groupStatsIt->getCumHelp() * groupStatsIt->getGroupSize();
 
             countGroupWithHelpers++;
         }

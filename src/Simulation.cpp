@@ -34,8 +34,9 @@ void Simulation::run() {
             //Calculate survival for the helpers
             itHelpSurvival->calcGroupSize();
             std::vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
-            for (helperStatsIt = itHelpSurvival->helpers.begin(); helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
-                 helperStatsIt->calcSurvival(itHelpSurvival->groupSize);
+            for (helperStatsIt = itHelpSurvival->helpers.begin();
+                 helperStatsIt < itHelpSurvival->helpers.end(); ++helperStatsIt) {
+                helperStatsIt->calcSurvival(itHelpSurvival->getGroupSize());
             }
 
             //Calculate the survival of the breeder
@@ -43,7 +44,7 @@ void Simulation::run() {
                 itHelpSurvival->breeder.calcSurvival(0); //survival for breeder does not include group size benefits
             } // TODO:Change to 1?
             else {
-                itHelpSurvival->breeder.calcSurvival(itHelpSurvival->groupSize);
+                itHelpSurvival->breeder.calcSurvival(itHelpSurvival->getGroupSize());
             }
         }
 
@@ -61,7 +62,7 @@ void Simulation::run() {
         //Mortality of helpers and breeders
         std::vector<Group, std::allocator<Group>>::iterator itSurvival;
         for (itSurvival = groups.begin(); itSurvival < groups.end(); ++itSurvival) {
-            itSurvival->survival(deaths);
+            itSurvival->mortality(deaths);
         }
 
         //Mortality of floaters
@@ -70,7 +71,7 @@ void Simulation::run() {
         //Become a breeder
         std::vector<Group, std::allocator<Group>>::iterator itBreeder;
         for (itBreeder = groups.begin(); itBreeder < groups.end(); ++itBreeder) {
-            if (!itBreeder->breederAlive) {
+            if (!itBreeder->isBreederAlive()) {
                 itBreeder->newBreeder(floaters, newbreederFloater, newbreederHelper, inheritance);
             }
         }
@@ -112,14 +113,14 @@ void Simulation::run() {
 /* INITIALISE POPULATION */
 std::vector<Group> Simulation::initializeGroups() {
 
-    std::vector<Group> groups(this->parameters.getMaxColonies(), Group(this->parameters, generator, generation));
+    std::vector<Group> createdGroups(this->parameters.getMaxColonies(), Group(this->parameters, generator, generation));
 
-    return groups;
+    return createdGroups;
 }
 
 
 void Simulation::survivalFloaters(std::vector<Individual> &floaters,
-                             int &deaths){ //Calculate the survival of the floaters
+                                  int &deaths) { //Calculate the survival of the floaters
 
     std::vector<Individual, std::allocator<Individual>>::iterator survFIt;
     survFIt = floaters.begin();
@@ -166,8 +167,8 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
 
         std::vector<Group, std::allocator<Group>>::iterator groupIt;
         for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-            sumcumHelp += 1 + groupIt->cumHelp; //add all the cumHelp from the std::vector Groups
-            if (groupIt->cumHelp !=
+            sumcumHelp += 1 + groupIt->getCumHelp(); //add all the cumHelp from the std::vector Groups
+            if (groupIt->getCumHelp() !=
                 parameters.getMaxColonies()) { allNoHelp++; } //to check if all groups display cumhelp 0
 
             //if (sumcumHelp != 0) { cout << "sumcumHelp =" << sumcumHelp << '\t' << "allNoHelp =" << allNoHelp << endl; } //track
@@ -176,7 +177,7 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
         if (allNoHelp != 0) {
 
             for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-                position.push_back(static_cast<double>(1 + (groupIt)->cumHelp) / static_cast<double>(sumcumHelp) +
+                position.push_back(static_cast<double>(1 + (groupIt)->getCumHelp()) / static_cast<double>(sumcumHelp) +
                                    currentposition); //creates a std::vector with proportional segments to the cumHelp of each group
                 currentposition = position[position.size() - 1];
             }
