@@ -8,9 +8,9 @@
 
 class Simulation {
 
-    Parameters parameters;
-
     Statistics statistics;
+
+    Parameters *parameters;
 
     std::vector<Individual> floaters;
 
@@ -35,13 +35,11 @@ public:
 
     void reassignFloaters(std::vector<Individual> &floaters, std::vector<Group> &groups);
 
-    Simulation(Parameters &parameters,const int replica);
+    Simulation(const int replica);
 
     const Parameters &getParameters() const;
 
     //TODO: stats?
-
-    const std::default_random_engine &getGenerator() const;
 
     const std::vector<Individual> &getFloaters() const;
 

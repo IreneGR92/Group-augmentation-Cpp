@@ -8,7 +8,7 @@
 
 class Statistics {
 
-    Parameters &parameters;
+    Parameters *parameters;
 
     //Population parameters and Statistics
 
@@ -42,7 +42,7 @@ class Statistics {
 
 
 public:
-    Statistics(Parameters &parameters);
+    Statistics();
 
     void calculateStatistics(std::vector<Group> groups, std::vector<Individual> floaters);
 

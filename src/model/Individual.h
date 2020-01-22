@@ -8,10 +8,7 @@
 
 class Individual {
 
-    Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
-                Parameters &parameters, int &generation);
-
-    Parameters parameters;
+    Parameters *parameters;
 
     double alpha;
     double alphaAge;
@@ -29,39 +26,51 @@ class Individual {
 
     void mutate(int generation);
 
-public:
-    Individual(Individual &individual, FishType fishType, Parameters &parameters,
-               int &generation);
+    void initializeIndividual(FishType fishType, int &generation);
 
-    Individual(double drift, FishType fishType, Parameters &parameters,
-               int &generation);
+public:
+    Individual(Individual &individual, FishType fishType, int &generation);
+
+    Individual(FishType fishType, int &generation);
 
 
     //Functions inside Individual
     double calcDispersal();
+
     void calcHelp();
+
     double calcSurvival(int groupSize);
 
     //Getters and setters
     double getAlpha() const;
+
     double getAlphaAge() const;
+
     double getBeta() const;
+
     double getBetaAge() const;
+
     double getDrift() const;
 
     double getDispersal() const;
+
     double getHelp() const;
+
     void setHelp(double help);
+
     double getSurvival() const;
 
     FishType getFishType() const;
+
     void setFishType(FishType fishType);
 
     int getAge() const;
+
     void increaseAge(bool alive); //for the breeder
     void increaseAge(); // For helpers and floaters
 
     bool isInherit() const;
+
     void setInherit(bool inherit);
 };
 

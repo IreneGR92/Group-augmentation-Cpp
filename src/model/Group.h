@@ -9,7 +9,7 @@
 class Group {
 
 
-    Parameters parameters;
+    Parameters *parameters;
     double cumHelp;
     bool breederAlive;                                     // for the breeder: 1 alive, 0 dead
     bool helpersPresent;                                   //helpers present in group before reassign?
@@ -24,7 +24,7 @@ public:
     Individual breeder;
     std::vector<Individual> helpers; // create a vector of helpers inside each group
 
-    Group(Parameters &parameters, int &generation);
+    Group(int &generation);
 
     void calcGroupSize();
 

@@ -7,8 +7,11 @@
 #include <fstream>
 #include <random>
 
-
+//Singleton
 class Parameters {
+
+    explicit Parameters(std::string url);
+
 
 
     std::string name;
@@ -80,10 +83,6 @@ class Parameters {
 
 public:
 
-
-    Parameters(std::string url);
-
-    Parameters();
 
     std::uniform_real_distribution<double> driftUniform;
     std::uniform_real_distribution<double> uniform;
@@ -168,6 +167,11 @@ public:
     std::ofstream *getLastGenerationWriter() const;
 
     std::default_random_engine *getGenerator() const;
+
+    static Parameters *instance();
+
+    static Parameters *instance(std::string url);
+
 };
 
 

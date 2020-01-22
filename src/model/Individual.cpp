@@ -7,35 +7,38 @@
 
 using namespace std;
 
-Individual::Individual(Individual &individual, FishType fishType, Parameters &parameters,
-                       int &generation) :
-        Individual(individual.alpha, individual.alphaAge, individual.beta, individual.betaAge, individual.drift,
-                   fishType,
-                   parameters, generation) {  // TODO: is the order correct?
-
+Individual::Individual(Individual &individual, FishType fishType, int &generation) {
     if (individual.fishType != BREEDER) {
-        cout << "ERROR fishtype is not BREEDER" << endl;
+        cout << "ERROR fishtype is not BREEDER" <<
+             endl;
     }
+
+
+    this->alpha = individual.alpha;
+    this->alphaAge = individual.alphaAge;
+    this->beta = individual.beta;
+    this->betaAge = individual.betaAge;
+    this->drift = individual.getDrift();
+
+    this->initializeIndividual(fishType, generation);
+
     this->mutate(generation);
 }
 
-Individual::Individual(double drift, FishType fishType, Parameters &parameters,
-                       int &generation) :
-        Individual(parameters.getInitAlpha(), parameters.getInitAlphaAge(), parameters.getInitBeta(),
-                   parameters.getInitBetaAge(), drift, fishType, parameters, generation) {
+Individual::Individual(FishType fishType, int &generation) {
+
+    auto param = Parameters::instance();
+
+    this->alpha = param->getInitAlpha();
+    this->alphaAge = param->getInitAlphaAge();
+    this->beta = param->getInitBeta();
+    this->betaAge = param->getInitBetaAge();
+    this->drift = param->driftUniform(*param->getGenerator());
+    this->initializeIndividual(fishType, generation);
 }
 
-//PRIVATE
-Individual::Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
-                       Parameters &parameters, int &generation) {
-    this->parameters = parameters;
-
-    this->alpha = alpha;
-    this->alphaAge = alphaAge;
-    this->beta = beta;
-    this->betaAge = betaAge;
-    this->drift = drift;
-
+void Individual::initializeIndividual(FishType fishType, int &generation) {
+    this->parameters = Parameters::instance();
     this->dispersal = Parameters::NO_VALUE;
     this->help = 0;
     this->survival = Parameters::NO_VALUE;
@@ -44,15 +47,14 @@ Individual::Individual(double alpha, double alphaAge, double beta, double betaAg
     this->age = 1;
 }
 
-
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
-    if (parameters.isNoRelatedness() && age == 1) {
+    if (parameters->isNoRelatedness() && age == 1) {
         dispersal = 1;
 
     } else {
-        if (!parameters.isReactionNormDispersal()) {
+        if (!parameters->isReactionNormDispersal()) {
 
             dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
         } else {
@@ -67,7 +69,7 @@ double Individual::calcDispersal() {
 
 void Individual::calcHelp() {
     if (fishType == HELPER) {
-        if (!parameters.isReactionNormHelp()) {
+        if (!parameters->isReactionNormHelp()) {
             help = alpha;
 
         } else {
@@ -87,34 +89,34 @@ void Individual::calcHelp() {
 
 double Individual::calcSurvival(int groupSize) {
 
-    if (parameters.isLogisticSurvival()) {
-        if (parameters.isNoGroupAugmentation()) {
-            survival = (1 - parameters.getM()) / (1 + exp(-parameters.getX0() -
-                                                          parameters.getXsn() * parameters.getFixedGroupSize() +
-                                                          parameters.getXsh() * help));
+    if (parameters->isLogisticSurvival()) {
+        if (parameters->isNoGroupAugmentation()) {
+            survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() -
+                                                           parameters->getXsn() * parameters->getFixedGroupSize() +
+                                                           parameters->getXsh() * help));
 
         } else {
-            if (parameters.isLowSurvivalFloater() && fishType == FLOATER) {
-                survival = (1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
-                                                                                  parameters.getXsn() * groupSize +
-                                                                                  parameters.getXsh() *
-                                                                                  help));
+            if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
+                survival = (1 - parameters->getM() * parameters->getN()) / (1 + exp(-parameters->getX0() -
+                                                                                    parameters->getXsn() * groupSize +
+                                                                                    parameters->getXsh() *
+                                                                                    help));
             } else {
-                survival = (1 - parameters.getM()) / (1 + exp(-parameters.getX0() - parameters.getXsn() * groupSize +
-                                                              parameters.getXsh() * help));
+                survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                                               parameters->getXsh() * help));
             }
         }
     } else {
-        if (parameters.isNoGroupAugmentation()) {
-            survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(parameters.getFixedGroupSize()))) -
-                       parameters.getXsh() / (1 + exp(-help));
+        if (parameters->isNoGroupAugmentation()) {
+            survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(parameters->getFixedGroupSize()))) -
+                       parameters->getXsh() / (1 + exp(-help));
 
         } else {
-            if (parameters.isLowSurvivalFloater() && fishType == FLOATER) {
-                survival = parameters.getX0(); //TODO:change?
+            if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
+                survival = parameters->getX0(); //TODO:change?
             } else {
-                survival = parameters.getX0() + parameters.getXsn() / (1 + exp(-(groupSize))) -
-                           parameters.getXsh() / (1 + exp(-help));
+                survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(groupSize))) -
+                           parameters->getXsh() / (1 + exp(-help));
             }
         }
         if (survival > 0.95) {
@@ -129,45 +131,45 @@ double Individual::calcSurvival(int groupSize) {
 
 void Individual::mutate(int generation) // mutate genome of offspring
 {
-    auto rng = *parameters.getGenerator();
+    auto rng = *parameters->getGenerator();
     normal_distribution<double> NormalA(0,
-                                        parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
-    normal_distribution<double> NormalB(0, parameters.getStepBeta());
-    normal_distribution<double> NormalD(0, parameters.getStepDrift());
+                                        parameters->getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
+    normal_distribution<double> NormalB(0, parameters->getStepBeta());
+    normal_distribution<double> NormalD(0, parameters->getStepDrift());
     double mutationAlpha;
     double mutationAlphaAge;
 
-    if (parameters.isEvolutionHelpAfterDispersal() && generation < parameters.getNumGenerations() / 4) {
+    if (parameters->isEvolutionHelpAfterDispersal() && generation < parameters->getNumGenerations() / 4) {
         mutationAlpha = 0;
         mutationAlphaAge = 0;
     } else {
-        mutationAlpha = parameters.getMutationAlpha();
-        mutationAlphaAge = parameters.getMutationAlphaAge();
+        mutationAlpha = parameters->getMutationAlpha();
+        mutationAlphaAge = parameters->getMutationAlphaAge();
     }
 
-    if (parameters.uniform(rng) < mutationAlpha) {
+    if (parameters->uniform(rng) < mutationAlpha) {
         alpha += NormalA(rng);
     }
-    if (parameters.isReactionNormHelp()) {
-        if (parameters.uniform(rng) < mutationAlphaAge) {
+    if (parameters->isReactionNormHelp()) {
+        if (parameters->uniform(rng) < mutationAlphaAge) {
             alphaAge += NormalA(rng);
         }
     }
 
-    if (parameters.uniform(rng) < parameters.getMutationBeta()) {
+    if (parameters->uniform(rng) < parameters->getMutationBeta()) {
         beta += NormalB(rng);
-        if (!parameters.isReactionNormDispersal()) {
+        if (!parameters->isReactionNormDispersal()) {
             if (beta < 0) { beta = 0; }
             else if (beta > 1) { beta = 1; }
         }
     }
-    if (parameters.isReactionNormDispersal()) {
-        if (parameters.uniform(rng) < parameters.getMutationBetaAge()) {
+    if (parameters->isReactionNormDispersal()) {
+        if (parameters->uniform(rng) < parameters->getMutationBetaAge()) {
             betaAge += NormalB(rng);
         }
     }
 
-    if (parameters.uniform(rng) < parameters.getMutationDrift()) {
+    if (parameters->uniform(rng) < parameters->getMutationDrift()) {
         drift += NormalD(rng);
     }
 }

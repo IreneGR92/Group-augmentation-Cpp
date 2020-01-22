@@ -5,10 +5,6 @@
 
 using namespace std;
 
-Parameters::Parameters() {
-
-}
-
 Parameters::Parameters(string url) {
 
 
@@ -265,6 +261,20 @@ ofstream *Parameters::getLastGenerationWriter() const {
 
 default_random_engine *Parameters::getGenerator() const {
     return generator;
+}
+
+static Parameters *singletonInstance;
+
+Parameters *Parameters::instance() {
+    return singletonInstance;
+}
+
+Parameters *Parameters::instance(std::string url) {
+
+    if (!singletonInstance) {
+        singletonInstance = new Parameters(url);
+    }
+    return singletonInstance;
 }
 
 

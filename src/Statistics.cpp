@@ -180,7 +180,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     //MEANS
     population = countBreeders + countHelpers + totalFloaters;
 
-    meanGroupSize = sumGroupSize / parameters.getMaxColonies();
+    meanGroupSize = sumGroupSize / parameters->getMaxColonies();
     countGroupWithHelpers == 0 ? meanGroupSizeHelp = 0 : meanGroupSizeHelp = sumGroupSizeHelp / countGroupWithHelpers;
 
     meanAlpha = sumAlpha / population;
@@ -215,7 +215,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
 
 
     //Variance
-    varGroupSize = sumsqGroupSize / parameters.getMaxColonies() - meanGroupSize * meanGroupSize;
+    varGroupSize = sumsqGroupSize / parameters->getMaxColonies() - meanGroupSize * meanGroupSize;
     varGroupSizeHelp = sumsqGroupSizeHelp / countGroupWithHelpers - meanGroupSizeHelp * meanGroupSizeHelp;
 
     varAlpha = sumsqAlpha / population - meanAlpha * meanAlpha;
@@ -313,7 +313,7 @@ void Statistics::printToConsole(int generation, int deaths) {
 
 void Statistics::printHeadersToFile() {
     // column headings in output file main
-    *parameters.getMainWriter() << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t"
+    *parameters->getMainWriter() << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t"
                                 << "Deaths" << "\t" << "Floaters" << "\t"
                                 << "Group_size" << "\t" << "Age" << "\t" << "Age_H" << "\t" << "Age_F"
                                 << "\t" << "Age_B" << "\t"
@@ -334,7 +334,7 @@ void Statistics::printHeadersToFile() {
                                 << "inheritance" << endl;
 
     // column headings in output file last generation
-    *parameters.getLastGenerationWriter() << "replica" << "\t" << "generation" << "\t" << "groupID"
+    *parameters->getLastGenerationWriter() << "replica" << "\t" << "generation" << "\t" << "groupID"
                                           << "\t" << "type" << "\t" << "age" << "\t"
                                           << "alpha" << "\t" << "alphaAge" << "\t" << "beta" << "\t"
                                           << "betaAge" << "\t" << "drift"
@@ -348,7 +348,7 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
     // Output file
 
     // write values to output file
-    *parameters.getMainWriter() << fixed << showpoint
+    *parameters->getMainWriter() << fixed << showpoint
                                 << replica << 1
                                 << "\t" << generation
                                 << "\t" << population
@@ -403,7 +403,7 @@ void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int
 
     for (auto const &group: groups) {
         if (counter < 100) {
-            *parameters.getLastGenerationWriter() << fixed << showpoint
+            *parameters->getLastGenerationWriter() << fixed << showpoint
                                                   << replica + 1
                                                   << "\t" << generation
                                                   << "\t" << groupID
@@ -423,7 +423,7 @@ void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int
 
             for (auto const &helper: group.helpers) { //TODO: floaters are missing in the output
 
-                *parameters.getLastGenerationWriter() << fixed << showpoint
+                *parameters->getLastGenerationWriter() << fixed << showpoint
                                                       << replica + 1
                                                       << "\t" << generation
                                                       << "\t" << groupID
@@ -446,7 +446,10 @@ void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int
     }
 }
 
-Statistics::Statistics(Parameters &parameters) : parameters(parameters) {}
+Statistics::Statistics() {
+    this->parameters = Parameters::instance();
+
+}
 
 
 

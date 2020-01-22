@@ -8,9 +8,8 @@
 using namespace std;
 
 
-Group::Group(Parameters &parameters, int &generation) : breeder(
-        parameters.driftUniform(*parameters.getGenerator()), BREEDER, parameters, generation) {
-    this->parameters = parameters;
+Group::Group(int &generation) : breeder(BREEDER, generation) {
+    this->parameters = Parameters::instance();
     this->generation = generation;
 
 
@@ -20,10 +19,10 @@ Group::Group(Parameters &parameters, int &generation) : breeder(
     fecundity = Parameters::NO_VALUE;
     realFecundity = Parameters::NO_VALUE;
 
-    for (int i = 0; i < parameters.getInitNumHelpers(); ++i) {
+    for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
 
         helpers.emplace_back(
-                Individual(parameters.driftUniform(*parameters.getGenerator()), HELPER, parameters, generation));
+                Individual(HELPER, generation));
     }
 
     calcGroupSize();
@@ -51,7 +50,7 @@ void Group::disperse(vector<Individual> &floaters) {
     while (!helpers.empty() && sizevec > counting) {
         dispersalIt->calcDispersal();
 
-        if (parameters.uniform(*parameters.getGenerator()) < dispersalIt->isInherit()) {
+        if (parameters->uniform(*parameters->getGenerator()) < dispersalIt->isInherit()) {
             dispersalIt->setInherit(false);; //the location of the individual is not the natal territory
             floaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
             floaters[floaters.size() - 1].setFishType(FLOATER);
@@ -101,7 +100,7 @@ void Group::mortality(int &deaths) {
     while (!helpers.empty() && sizevec > counting) {
 
         //Mortality helpers
-        if (parameters.uniform(*parameters.getGenerator()) > survHIt->getSurvival()) {
+        if (parameters->uniform(*parameters->getGenerator()) > survHIt->getSurvival()) {
             *survHIt = helpers[helpers.size() - 1];
             helpers.pop_back();
             ++counting;
@@ -111,7 +110,7 @@ void Group::mortality(int &deaths) {
     }
 
     //Mortality breeder
-    if (parameters.uniform(*parameters.getGenerator()) > breeder.getSurvival()) {
+    if (parameters->uniform(*parameters->getGenerator()) > breeder.getSurvival()) {
         breederAlive = false;
         deaths++;
     }
@@ -126,9 +125,9 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     int sumAge = 0;
     double currentPosition = 0; //age of the previous ind taken from Candidates
     int floaterSampledID;
-    double RandP = parameters.uniform(*parameters.getGenerator());
+    double RandP = parameters->uniform(*parameters->getGenerator());
     int proportionFloaters;
-    proportionFloaters = round(floaters.size() * parameters.getBiasFloatBreeder() / parameters.getMaxColonies());
+    proportionFloaters = round(floaters.size() * parameters->getBiasFloatBreeder() / parameters->getMaxColonies());
 
     vector<Individual *> Candidates;
     vector<double> position; //vector of age to choose with higher likelihood the ind with higher age
@@ -137,7 +136,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     if (!floaters.empty() && floaters.size() > proportionFloaters) {
         while (i < proportionFloaters) {
             uniform_int_distribution<int> UniformFloat(0, floaters.size() - 1); //random floater ID taken in the sample
-            floaterSampledID = UniformFloat(*parameters.getGenerator());
+            floaterSampledID = UniformFloat(*parameters->getGenerator());
             TemporaryCandidates.push_back(floaterSampledID); //add references of the floaters sampled to a vector
             sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
             i++;
@@ -240,22 +239,22 @@ void Group::increaseAge() {
 void Group::reproduce() // populate offspring generation
 {
     //Calculate fecundity
-    if (!parameters.isNoRelatedness()) {
-        fecundity = parameters.getK0() + parameters.getK1() * cumHelp / (1 + cumHelp * parameters.getK1());
+    if (!parameters->isNoRelatedness()) {
+        fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
         //fecundity function of cumulative help in the group. If cumHelp bigger than 2, no effect on fecundity
     } else {
-        fecundity = parameters.getK0();
+        fecundity = parameters->getK0();
     }
 
 
     poisson_distribution<int> PoissonFecundity(fecundity);
-    realFecundity = PoissonFecundity(*parameters.getGenerator()); //integer number
+    realFecundity = PoissonFecundity(*parameters->getGenerator()); //integer number
 
     //Reproduction
     if (breederAlive) {
         for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
         {
-            helpers.emplace_back(breeder, HELPER, parameters,
+            helpers.emplace_back(breeder, HELPER,
                                  generation); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
