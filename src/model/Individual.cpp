@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <cassert>
 
 #include "Individual.h"
 #include "FishType.h"
@@ -7,12 +8,10 @@
 
 using namespace std;
 
+//Constructor for reproduction of a Breeder
 Individual::Individual(Individual &individual, FishType fishType, int &generation) {
-    if (individual.fishType != BREEDER) {
-        cout << "ERROR fishtype is not BREEDER" <<
-             endl;
-    }
 
+    assert(individual.fishType == BREEDER);
 
     this->alpha = individual.alpha;
     this->alphaAge = individual.alphaAge;
@@ -25,6 +24,7 @@ Individual::Individual(Individual &individual, FishType fishType, int &generatio
     this->mutate(generation);
 }
 
+//Constructor for initial creation
 Individual::Individual(FishType fishType, int &generation) {
 
     auto param = Parameters::instance();
