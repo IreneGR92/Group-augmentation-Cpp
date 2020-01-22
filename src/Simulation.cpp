@@ -2,6 +2,13 @@
 #include "Simulation.h"
 
 
+Simulation::Simulation(Parameters &parameters, const int replica)
+        : replica(replica), statistics(parameters) {
+    this->parameters = parameters;
+    this->groups = initializeGroups();
+}
+
+
 void Simulation::run() {
 
     // Output file
@@ -113,7 +120,8 @@ void Simulation::run() {
 /* INITIALISE POPULATION */
 std::vector<Group> Simulation::initializeGroups() {
 
-    std::vector<Group> createdGroups(this->parameters.getMaxColonies(), Group(this->parameters, generator, generation));
+    std::vector<Group> createdGroups(this->parameters.getMaxColonies(),
+                                     Group(this->parameters, generation));
 
     return createdGroups;
 }
@@ -129,7 +137,7 @@ void Simulation::survivalFloaters(std::vector<Individual> &floaters,
     while (!floaters.empty() && sizevec > counting) {
 
         //Mortality floaters
-        if (parameters.uniform(generator) > survFIt->getSurvival()) {
+        if (parameters.uniform(*parameters.getGenerator()) > survFIt->getSurvival()) {
             *survFIt = floaters[floaters.size() - 1];
             floaters.pop_back();
             ++counting;
@@ -150,7 +158,7 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
         while (!floaters.empty()) {
             indIt = floaters.end() - 1;
             indIt->setHelp(0);
-            selectGroup = UniformMaxCol(generator);
+            selectGroup = UniformMaxCol(*parameters.getGenerator());
             //indIt->getFishType() = HELPER; //modify the class
             groups[selectGroup].helpers.push_back(
                     *indIt); //add the floater to the helper std::vector in a randomly selected group
@@ -160,7 +168,7 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
 
         double sumcumHelp = 0;
         double currentposition = 0;
-        double RandP = parameters.uniform(generator);
+        double RandP = parameters.uniform(*parameters.getGenerator());
         int allNoHelp = 0;
 
         std::vector<double> position; //std::vector of cumHelp to choose with higher likelihood the ind with higher age
@@ -206,7 +214,7 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
             std::vector<Individual>::iterator floatIt;
             while (!floaters.empty()) {
                 floatIt = floaters.end() - 1;
-                selectGroup = UniformMaxCol(generator);
+                selectGroup = UniformMaxCol(*parameters.getGenerator());
                 //floatIt->getFishType() = HELPER; //modify the class
                 groups[selectGroup].helpers.push_back(
                         *floatIt); //add the floater to the helper std::vector in a randomly selected group
@@ -216,20 +224,9 @@ void Simulation::reassignFloaters(std::vector<Individual> &floaters, std::vector
     }
 }
 
-Simulation::Simulation(Parameters &parameters, std::default_random_engine &generator, const int replica)
-        : replica(replica), statistics(parameters) {
-    this->generator = generator;
-    this->parameters = parameters;
-    this->groups = initializeGroups();
-}
-
 
 const Parameters &Simulation::getParameters() const {
     return parameters;
-}
-
-const std::default_random_engine &Simulation::getGenerator() const {
-    return generator;
 }
 
 const std::vector<Individual> &Simulation::getFloaters() const {

@@ -30,21 +30,13 @@ int main(int count, char **argv) {
 
     cout << "reading file " << argv[1] << "\n";
 
-    unsigned seed = 0;
 
     Parameters parameters(argv[1]);
-
-
-    default_random_engine generator(seed);
-
-
     parameters.print();
 
     for (int replica = 0; replica < parameters.getMaxNumReplicates(); replica++) {
 
-        Simulation simulation(parameters, generator, replica);
-
-
+        Simulation simulation(parameters, replica);
         simulation.run();
 
     }

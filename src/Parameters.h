@@ -69,8 +69,7 @@ class Parameters {
     double MUTATION_DRIFT;            // mutation rate in the neutral selected value to track level of relatedness
     double STEP_DRIFT; // mutation step size in the neutral genetic value to track level of relatedness
 
-//
-
+    std::default_random_engine *generator;
 
     std::string getName(std::string url);
 
@@ -168,6 +167,7 @@ public:
 
     std::ofstream *getLastGenerationWriter() const;
 
+    std::default_random_engine *getGenerator() const;
 };
 
 

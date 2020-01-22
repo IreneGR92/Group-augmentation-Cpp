@@ -9,11 +9,9 @@
 class Individual {
 
     Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
-               std::default_random_engine &generator, Parameters &parameters, int &generation);
+                Parameters &parameters, int &generation);
 
     Parameters parameters;
-
-    std::default_random_engine generator;
 
     double alpha;
     double alphaAge;
@@ -32,10 +30,10 @@ class Individual {
     void mutate(int generation);
 
 public:
-    Individual(Individual &individual, FishType fishType, Parameters &parameters, std::default_random_engine &generator,
+    Individual(Individual &individual, FishType fishType, Parameters &parameters,
                int &generation);
 
-    Individual(double drift, FishType fishType, Parameters &parameters, std::default_random_engine &generator,
+    Individual(double drift, FishType fishType, Parameters &parameters,
                int &generation);
 
 

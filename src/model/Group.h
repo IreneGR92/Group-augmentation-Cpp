@@ -9,7 +9,6 @@
 class Group {
 
 
-    std::default_random_engine generator;
     Parameters parameters;
     double cumHelp;
     bool breederAlive;                                     // for the breeder: 1 alive, 0 dead
@@ -21,14 +20,11 @@ class Group {
     int generation;
 
 
-
-
-
 public:
     Individual breeder;
     std::vector<Individual> helpers; // create a vector of helpers inside each group
 
-    Group(Parameters &parameters, std::default_random_engine &generator, int &generation);
+    Group(Parameters &parameters, int &generation);
 
     void calcGroupSize();
 

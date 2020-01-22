@@ -56,6 +56,8 @@ Parameters::Parameters(string url) {
     this->mainWriter = new std::ofstream("main_" + this->name + ".txt");
     this->lastGenerationWriter = new std::ofstream("last_generation_" + this->name + ".txt");
 
+    const int seed = 0;
+    this->generator = new std::default_random_engine(seed);
 }
 
 void Parameters::print() {
@@ -259,6 +261,10 @@ ofstream *Parameters::getMainWriter() const {
 
 ofstream *Parameters::getLastGenerationWriter() const {
     return lastGenerationWriter;
+}
+
+default_random_engine *Parameters::getGenerator() const {
+    return generator;
 }
 
 

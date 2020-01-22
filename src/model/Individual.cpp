@@ -8,10 +8,10 @@
 using namespace std;
 
 Individual::Individual(Individual &individual, FishType fishType, Parameters &parameters,
-                       std::default_random_engine &generator, int &generation) :
+                       int &generation) :
         Individual(individual.alpha, individual.alphaAge, individual.beta, individual.betaAge, individual.drift,
                    fishType,
-                   generator, parameters, generation) {  // TODO: is the order correct?
+                   parameters, generation) {  // TODO: is the order correct?
 
     if (individual.fishType != BREEDER) {
         cout << "ERROR fishtype is not BREEDER" << endl;
@@ -20,16 +20,15 @@ Individual::Individual(Individual &individual, FishType fishType, Parameters &pa
 }
 
 Individual::Individual(double drift, FishType fishType, Parameters &parameters,
-                       std::default_random_engine &generator, int &generation) :
+                       int &generation) :
         Individual(parameters.getInitAlpha(), parameters.getInitAlphaAge(), parameters.getInitBeta(),
-                   parameters.getInitBetaAge(), drift, fishType, generator, parameters, generation) {
+                   parameters.getInitBetaAge(), drift, fishType, parameters, generation) {
 }
 
 //PRIVATE
 Individual::Individual(double alpha, double alphaAge, double beta, double betaAge, double drift, FishType fishType,
-                       std::default_random_engine &generator, Parameters &parameters, int &generation) {
+                       Parameters &parameters, int &generation) {
     this->parameters = parameters;
-    this->generator = generator;
 
     this->alpha = alpha;
     this->alphaAge = alphaAge;
@@ -130,6 +129,7 @@ double Individual::calcSurvival(int groupSize) {
 
 void Individual::mutate(int generation) // mutate genome of offspring
 {
+    auto rng = *parameters.getGenerator();
     normal_distribution<double> NormalA(0,
                                         parameters.getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
     normal_distribution<double> NormalB(0, parameters.getStepBeta());
@@ -145,30 +145,30 @@ void Individual::mutate(int generation) // mutate genome of offspring
         mutationAlphaAge = parameters.getMutationAlphaAge();
     }
 
-    if (parameters.uniform(generator) < mutationAlpha) {
-        alpha += NormalA(generator);
+    if (parameters.uniform(rng) < mutationAlpha) {
+        alpha += NormalA(rng);
     }
     if (parameters.isReactionNormHelp()) {
-        if (parameters.uniform(generator) < mutationAlphaAge) {
-            alphaAge += NormalA(generator);
+        if (parameters.uniform(rng) < mutationAlphaAge) {
+            alphaAge += NormalA(rng);
         }
     }
 
-    if (parameters.uniform(generator) < parameters.getMutationBeta()) {
-        beta += NormalB(generator);
+    if (parameters.uniform(rng) < parameters.getMutationBeta()) {
+        beta += NormalB(rng);
         if (!parameters.isReactionNormDispersal()) {
             if (beta < 0) { beta = 0; }
             else if (beta > 1) { beta = 1; }
         }
     }
     if (parameters.isReactionNormDispersal()) {
-        if (parameters.uniform(generator) < parameters.getMutationBetaAge()) {
-            betaAge += NormalB(generator);
+        if (parameters.uniform(rng) < parameters.getMutationBetaAge()) {
+            betaAge += NormalB(rng);
         }
     }
 
-    if (parameters.uniform(generator) < parameters.getMutationDrift()) {
-        drift += NormalD(generator);
+    if (parameters.uniform(rng) < parameters.getMutationDrift()) {
+        drift += NormalD(rng);
     }
 }
 

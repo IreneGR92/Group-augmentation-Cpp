@@ -12,8 +12,6 @@ class Simulation {
 
     Statistics statistics;
 
-    std::default_random_engine generator;
-
     std::vector<Individual> floaters;
 
     std::vector<Group> groups;
@@ -37,7 +35,7 @@ public:
 
     void reassignFloaters(std::vector<Individual> &floaters, std::vector<Group> &groups);
 
-    Simulation(Parameters &parameters, std::default_random_engine &generator, const int replica);
+    Simulation(Parameters &parameters,const int replica);
 
     const Parameters &getParameters() const;
 
