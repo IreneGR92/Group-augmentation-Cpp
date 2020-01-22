@@ -99,7 +99,7 @@ double Individual::calcSurvival(int groupSize) {
                 survival = (1 - parameters.getM() * parameters.getN()) / (1 + exp(-parameters.getX0() -
                                                                                   parameters.getXsn() * groupSize +
                                                                                   parameters.getXsh() *
-                                                                                  help)); //TODO: change?
+                                                                                  help));
             } else {
                 survival = (1 - parameters.getM()) / (1 + exp(-parameters.getX0() - parameters.getXsn() * groupSize +
                                                               parameters.getXsh() * help));

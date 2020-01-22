@@ -60,8 +60,8 @@ public:
     void setFishType(FishType fishType);
 
     int getAge() const;
-    void increaseAge(bool alive); //TODO: for the breeder?
-    void increaseAge(); // TODO: For helpers and floaters?
+    void increaseAge(bool alive); //for the breeder
+    void increaseAge(); // For helpers and floaters
 
     bool isInherit() const;
     void setInherit(bool inherit);

@@ -345,7 +345,7 @@ void Statistics::printHeadersToFile() {
 void Statistics::printToFile(int replica, int generation, int deaths, int newBreederFloater,
                              int newBreederHelper, int inheritance) {
 
-    // Output file //TODO: Should not this be implemented before print parameters is executed?
+    // Output file
 
     // write values to output file
     *parameters.getMainWriter() << fixed << showpoint
@@ -400,7 +400,6 @@ void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int
 
     int groupID = 0;
     int counter = 0;
-//TODO: this is the output data for lastGen, not a repetition of the one in main
 
     for (auto const &group: groups) {
         if (counter < 100) {
