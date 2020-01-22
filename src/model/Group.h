@@ -24,13 +24,15 @@ public:
     Individual breeder;
     std::vector<Individual> helpers; // create a vector of helpers inside each group
 
-    Group(int &generation);
+    explicit Group(int &generation);
 
     void calcGroupSize();
 
     void disperse(std::vector<Individual> &floaters);
 
-    void calcCumHelp();
+    void calculateCumulativeHelp();
+
+    void survival();
 
     void mortality(int &deaths);
 
@@ -39,6 +41,8 @@ public:
     void increaseAge();
 
     void reproduce();
+
+    void evaluateNewBreeder();
 
     const std::vector<Individual> &getHelpers() const;
 

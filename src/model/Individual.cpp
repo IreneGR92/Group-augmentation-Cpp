@@ -19,7 +19,7 @@ Individual::Individual(Individual &individual, FishType fishType, int &generatio
     this->betaAge = individual.betaAge;
     this->drift = individual.getDrift();
 
-    this->initializeIndividual(fishType, generation);
+    this->initializeIndividual(fishType);
 
     this->mutate(generation);
 }
@@ -34,10 +34,10 @@ Individual::Individual(FishType fishType, int &generation) {
     this->beta = param->getInitBeta();
     this->betaAge = param->getInitBetaAge();
     this->drift = param->driftUniform(*param->getGenerator());
-    this->initializeIndividual(fishType, generation);
+    this->initializeIndividual(fishType);
 }
 
-void Individual::initializeIndividual(FishType fishType, int &generation) {
+void Individual::initializeIndividual(FishType fishType) {
     this->parameters = Parameters::instance();
     this->dispersal = Parameters::NO_VALUE;
     this->help = 0;
@@ -87,7 +87,7 @@ void Individual::calcHelp() {
 
 /*SURVIVAL*/
 
-double Individual::calcSurvival(int groupSize) {
+double Individual::calculateSurvival(int groupSize) {
 
     if (parameters->isLogisticSurvival()) {
         if (parameters->isNoGroupAugmentation()) {

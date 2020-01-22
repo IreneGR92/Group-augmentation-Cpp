@@ -10,6 +10,7 @@ using namespace std;
 /* CALCULATE STATISTICS */
 void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> floaters) {
 
+
     population = 0, totalFloaters = 0, countGroupWithHelpers = 0, countHelpers = 0, countBreeders = 0,
     relatedness = 0.0, driftGroupSize = 0,
     meanGroupSize = 0.0, stdevGroupSize = 0.0, maxGroupSize = 0, sumGroupSize = 0.0, sumsqGroupSize = 0.0, varGroupSize = 0.0,
@@ -314,32 +315,32 @@ void Statistics::printToConsole(int generation, int deaths) {
 void Statistics::printHeadersToFile() {
     // column headings in output file main
     *parameters->getMainWriter() << "Replica" << "\t" << "Generation" << "\t" << "Population" << "\t"
-                                << "Deaths" << "\t" << "Floaters" << "\t"
-                                << "Group_size" << "\t" << "Age" << "\t" << "Age_H" << "\t" << "Age_F"
-                                << "\t" << "Age_B" << "\t"
-                                << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanBeta" << "\t"
-                                << "meanBetaAge" << "\t"
-                                << "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t"
-                                << "meanSurvival" << "\t" << "meanSurvival_H" << "\t" << "meanSurvival_F" << "\t"
-                                << "meanSurvival_B" << "\t" << "Relatedness" << "\t"
-                                << "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Age_H" << "\t"
-                                << "SD_Age_F" << "\t" << "SD_Age_B" << "\t"
-                                << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_Beta" << "\t"
-                                << "SD_BetaAge" << "\t"
-                                << "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t"
-                                << "SD_Survival" << "\t" << "SD_Survival_H" << "\t" << "SD_Survival_F"
-                                << "\t" << "SD_Survival_B" << "\t"
-                                << "corr_Help_Disp" << "\t" << "corr_Help_Group" << "\t"
-                                << "newBreederFloater" << "\t" << "newBreederHelper" << "\t"
-                                << "inheritance" << endl;
+                                 << "Deaths" << "\t" << "Floaters" << "\t"
+                                 << "Group_size" << "\t" << "Age" << "\t" << "Age_H" << "\t" << "Age_F"
+                                 << "\t" << "Age_B" << "\t"
+                                 << "meanAlpha" << "\t" << "meanAlphaAge" << "\t" << "meanBeta" << "\t"
+                                 << "meanBetaAge" << "\t"
+                                 << "meanHelp" << "\t" << "meanCumHelp" << "\t" << "meanDispersal" << "\t"
+                                 << "meanSurvival" << "\t" << "meanSurvival_H" << "\t" << "meanSurvival_F" << "\t"
+                                 << "meanSurvival_B" << "\t" << "Relatedness" << "\t"
+                                 << "SD_GroupSize" << "\t" << "SD_Age" << "\t" << "SD_Age_H" << "\t"
+                                 << "SD_Age_F" << "\t" << "SD_Age_B" << "\t"
+                                 << "SD_Alpha" << "\t" << "SD_AlphaAge" << "\t" << "SD_Beta" << "\t"
+                                 << "SD_BetaAge" << "\t"
+                                 << "SD_Help" << "\t" << "SD_CumHelp" << "\t" << "SD_Dispersal" << "\t"
+                                 << "SD_Survival" << "\t" << "SD_Survival_H" << "\t" << "SD_Survival_F"
+                                 << "\t" << "SD_Survival_B" << "\t"
+                                 << "corr_Help_Disp" << "\t" << "corr_Help_Group" << "\t"
+                                 << "newBreederFloater" << "\t" << "newBreederHelper" << "\t"
+                                 << "inheritance" << endl;
 
     // column headings in output file last generation
     *parameters->getLastGenerationWriter() << "replica" << "\t" << "generation" << "\t" << "groupID"
-                                          << "\t" << "type" << "\t" << "age" << "\t"
-                                          << "alpha" << "\t" << "alphaAge" << "\t" << "beta" << "\t"
-                                          << "betaAge" << "\t" << "drift"
-                                          << "\t" << "help" << "\t" << "dispersal" << "\t" << "survival"
-                                          << endl;
+                                           << "\t" << "type" << "\t" << "age" << "\t"
+                                           << "alpha" << "\t" << "alphaAge" << "\t" << "beta" << "\t"
+                                           << "betaAge" << "\t" << "drift"
+                                           << "\t" << "help" << "\t" << "dispersal" << "\t" << "survival"
+                                           << endl;
 }
 
 void Statistics::printToFile(int replica, int generation, int deaths, int newBreederFloater,
@@ -349,50 +350,50 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
 
     // write values to output file
     *parameters->getMainWriter() << fixed << showpoint
-                                << replica << 1
-                                << "\t" << generation
-                                << "\t" << population
-                                << "\t" << deaths
-                                << "\t" << totalFloaters
-                                << "\t" << setprecision(4) << meanGroupSize
-                                << "\t" << setprecision(4) << meanAge
-                                << "\t" << setprecision(4) << meanAgeHelper
-                                << "\t" << setprecision(4) << meanAgeFloater
-                                << "\t" << setprecision(4) << meanAgeBreeder
-                                << "\t" << setprecision(4) << meanAlpha
-                                << "\t" << setprecision(4) << meanAlphaAge
-                                << "\t" << setprecision(4) << meanBeta
-                                << "\t" << setprecision(4) << meanBetaAge
-                                << "\t" << setprecision(4) << meanHelp
-                                << "\t" << setprecision(4) << meanCumHelp
-                                << "\t" << setprecision(4) << meanDispersal
-                                << "\t" << setprecision(4) << meanSurvival
-                                << "\t" << setprecision(4) << meanSurvivalHelper
-                                << "\t" << setprecision(4) << meanSurvivalFloater
-                                << "\t" << setprecision(4) << meanSurvivalBreeder
-                                << "\t" << setprecision(4) << relatedness
-                                << "\t" << setprecision(4) << stdevGroupSize
-                                << "\t" << setprecision(4) << stdevAge
-                                << "\t" << setprecision(4) << stdevAgeHelper
-                                << "\t" << setprecision(4) << stdevAgeFloater
-                                << "\t" << setprecision(4) << stdevAgeBreeder
-                                << "\t" << setprecision(4) << stdevAlpha
-                                << "\t" << setprecision(4) << stdevAlphaAge
-                                << "\t" << setprecision(4) << stdevBeta
-                                << "\t" << setprecision(4) << stdevBetaAge
-                                << "\t" << setprecision(4) << stdevHelp
-                                << "\t" << setprecision(4) << stdevCumHelp
-                                << "\t" << setprecision(4) << stdevDispersal
-                                << "\t" << setprecision(4) << stdevSurvival
-                                << "\t" << setprecision(4) << stdevSurvivalHelper
-                                << "\t" << setprecision(4) << stdevSurvivalFloater
-                                << "\t" << setprecision(4) << stdevSurvivalBreeder
-                                << "\t" << setprecision(4) << corr_HelpDispersal
-                                << "\t" << setprecision(4) << corr_HelpGroup
-                                << "\t" << newBreederFloater
-                                << "\t" << newBreederHelper
-                                << "\t" << inheritance
-                                << endl;
+                                 << replica << 1
+                                 << "\t" << generation
+                                 << "\t" << population
+                                 << "\t" << deaths
+                                 << "\t" << totalFloaters
+                                 << "\t" << setprecision(4) << meanGroupSize
+                                 << "\t" << setprecision(4) << meanAge
+                                 << "\t" << setprecision(4) << meanAgeHelper
+                                 << "\t" << setprecision(4) << meanAgeFloater
+                                 << "\t" << setprecision(4) << meanAgeBreeder
+                                 << "\t" << setprecision(4) << meanAlpha
+                                 << "\t" << setprecision(4) << meanAlphaAge
+                                 << "\t" << setprecision(4) << meanBeta
+                                 << "\t" << setprecision(4) << meanBetaAge
+                                 << "\t" << setprecision(4) << meanHelp
+                                 << "\t" << setprecision(4) << meanCumHelp
+                                 << "\t" << setprecision(4) << meanDispersal
+                                 << "\t" << setprecision(4) << meanSurvival
+                                 << "\t" << setprecision(4) << meanSurvivalHelper
+                                 << "\t" << setprecision(4) << meanSurvivalFloater
+                                 << "\t" << setprecision(4) << meanSurvivalBreeder
+                                 << "\t" << setprecision(4) << relatedness
+                                 << "\t" << setprecision(4) << stdevGroupSize
+                                 << "\t" << setprecision(4) << stdevAge
+                                 << "\t" << setprecision(4) << stdevAgeHelper
+                                 << "\t" << setprecision(4) << stdevAgeFloater
+                                 << "\t" << setprecision(4) << stdevAgeBreeder
+                                 << "\t" << setprecision(4) << stdevAlpha
+                                 << "\t" << setprecision(4) << stdevAlphaAge
+                                 << "\t" << setprecision(4) << stdevBeta
+                                 << "\t" << setprecision(4) << stdevBetaAge
+                                 << "\t" << setprecision(4) << stdevHelp
+                                 << "\t" << setprecision(4) << stdevCumHelp
+                                 << "\t" << setprecision(4) << stdevDispersal
+                                 << "\t" << setprecision(4) << stdevSurvival
+                                 << "\t" << setprecision(4) << stdevSurvivalHelper
+                                 << "\t" << setprecision(4) << stdevSurvivalFloater
+                                 << "\t" << setprecision(4) << stdevSurvivalBreeder
+                                 << "\t" << setprecision(4) << corr_HelpDispersal
+                                 << "\t" << setprecision(4) << corr_HelpGroup
+                                 << "\t" << newBreederFloater
+                                 << "\t" << newBreederHelper
+                                 << "\t" << inheritance
+                                 << endl;
 }
 
 
@@ -404,41 +405,41 @@ void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int
     for (auto const &group: groups) {
         if (counter < 100) {
             *parameters->getLastGenerationWriter() << fixed << showpoint
-                                                  << replica + 1
-                                                  << "\t" << generation
-                                                  << "\t" << groupID
-                                                  << "\t" << group.breeder.getFishType()
-                                                  << "\t" << setprecision(4) << group.breeder.getAge()
-                                                  << "\t" << setprecision(4) << group.breeder.getAlpha()
-                                                  << "\t" << setprecision(4)
-                                                  << group.breeder.getAlphaAge()
-                                                  << "\t" << setprecision(4) << group.breeder.getBeta()
-                                                  << "\t" << setprecision(4) << group.breeder.getBetaAge()
-                                                  << "\t" << setprecision(4) << group.breeder.getDrift()
-                                                  << "\t" << setprecision(4) << "NA"
-                                                  << "\t" << setprecision(4) << "NA"
-                                                  << "\t" << setprecision(4)
-                                                  << group.breeder.getSurvival()
-                                                  << endl;
+                                                   << replica + 1
+                                                   << "\t" << generation
+                                                   << "\t" << groupID
+                                                   << "\t" << group.breeder.getFishType()
+                                                   << "\t" << setprecision(4) << group.breeder.getAge()
+                                                   << "\t" << setprecision(4) << group.breeder.getAlpha()
+                                                   << "\t" << setprecision(4)
+                                                   << group.breeder.getAlphaAge()
+                                                   << "\t" << setprecision(4) << group.breeder.getBeta()
+                                                   << "\t" << setprecision(4) << group.breeder.getBetaAge()
+                                                   << "\t" << setprecision(4) << group.breeder.getDrift()
+                                                   << "\t" << setprecision(4) << "NA"
+                                                   << "\t" << setprecision(4) << "NA"
+                                                   << "\t" << setprecision(4)
+                                                   << group.breeder.getSurvival()
+                                                   << endl;
 
             for (auto const &helper: group.helpers) { //TODO: floaters are missing in the output
 
                 *parameters->getLastGenerationWriter() << fixed << showpoint
-                                                      << replica + 1
-                                                      << "\t" << generation
-                                                      << "\t" << groupID
-                                                      << "\t" << helper.getFishType()
-                                                      << "\t" << setprecision(4) << helper.getAge()
-                                                      << "\t" << setprecision(4) << helper.getAlpha()
-                                                      << "\t" << setprecision(4) << helper.getAlphaAge()
-                                                      << "\t" << setprecision(4) << helper.getBeta()
-                                                      << "\t" << setprecision(4) << helper.getBetaAge()
-                                                      << "\t" << setprecision(4) << helper.getDrift()
-                                                      << "\t" << setprecision(4)
-                                                      << helper.getHelp() // TODO: for floaters is 0 no NA!
-                                                      << "\t" << setprecision(4) << helper.getDispersal()
-                                                      << "\t" << setprecision(4) << helper.getSurvival()
-                                                      << endl;
+                                                       << replica + 1
+                                                       << "\t" << generation
+                                                       << "\t" << groupID
+                                                       << "\t" << helper.getFishType()
+                                                       << "\t" << setprecision(4) << helper.getAge()
+                                                       << "\t" << setprecision(4) << helper.getAlpha()
+                                                       << "\t" << setprecision(4) << helper.getAlphaAge()
+                                                       << "\t" << setprecision(4) << helper.getBeta()
+                                                       << "\t" << setprecision(4) << helper.getBetaAge()
+                                                       << "\t" << setprecision(4) << helper.getDrift()
+                                                       << "\t" << setprecision(4)
+                                                       << helper.getHelp() // TODO: for floaters is 0 no NA!
+                                                       << "\t" << setprecision(4) << helper.getDispersal()
+                                                       << "\t" << setprecision(4) << helper.getSurvival()
+                                                       << endl;
             }
             counter++;
         }

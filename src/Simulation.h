@@ -25,19 +25,31 @@ class Simulation {
     int newbreederFloater = 0, newbreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 
-public:
+    void survivalFloaters();
 
-    void run();
+
+    void mortalityFloaters();
+
+public:
 
     std::vector<Group> initializeGroups();
 
-    void survivalFloaters(std::vector<Individual> &floaters, int &deaths);
+    void run();
 
-    void reassignFloaters(std::vector<Individual> &floaters, std::vector<Group> &groups);
+    void disperse();
+
+    void help();
+
+    void survival();
+
+    void mortality();
+
+
+
+
+    void reassignFloaters();
 
     Simulation(const int replica);
-
-    const Parameters &getParameters() const;
 
     //TODO: stats?
 

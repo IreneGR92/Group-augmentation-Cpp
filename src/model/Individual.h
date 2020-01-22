@@ -26,7 +26,7 @@ class Individual {
 
     void mutate(int generation);
 
-    void initializeIndividual(FishType fishType, int &generation);
+    void initializeIndividual(FishType fishType);
 
 public:
     Individual(Individual &individual, FishType fishType, int &generation);
@@ -39,7 +39,7 @@ public:
 
     void calcHelp();
 
-    double calcSurvival(int groupSize);
+    double calculateSurvival(int groupSize);
 
     //Getters and setters
     double getAlpha() const;

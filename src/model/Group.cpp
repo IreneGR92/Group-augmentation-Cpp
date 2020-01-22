@@ -41,33 +41,32 @@ void Group::calcGroupSize() {
 /*  DISPERSAL (STAY VS DISPERSE) */
 
 void Group::disperse(vector<Individual> &floaters) {
-    vector<Individual, std::allocator<Individual >>::iterator
-            dispersalIt;
-    dispersalIt = helpers.begin();
+    vector<Individual, std::allocator<Individual >>::iterator helper;
+    helper = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
 
     while (!helpers.empty() && sizevec > counting) {
-        dispersalIt->calcDispersal();
+        helper->calcDispersal();
 
-        if (parameters->uniform(*parameters->getGenerator()) < dispersalIt->isInherit()) {
-            dispersalIt->setInherit(false);; //the location of the individual is not the natal territory
-            floaters.push_back(*dispersalIt); //add the individual to the vector floaters in the last position
+        if (parameters->uniform(*parameters->getGenerator()) < helper->isInherit()) {
+            helper->setInherit(false);; //the location of the individual is not the natal territory
+            floaters.push_back(*helper); //add the individual to the vector floaters in the last position
             floaters[floaters.size() - 1].setFishType(FLOATER);
-            *dispersalIt = helpers[helpers.size() -
-                                   1]; // this and next line removes the individual from the helpers vector
+            *helper = helpers[helpers.size() -
+                              1]; // this and next line removes the individual from the helpers vector
             helpers.pop_back();
             ++counting;
         } else {
-            dispersalIt->setFishType(HELPER); //individuals that stay or disperse to this group become floaters
-            ++dispersalIt, ++counting;
+            helper->setFishType(HELPER); //individuals that stay or disperse to this group become floaters
+            ++helper, ++counting;
         }
     }
 }
 
 /*  CALCULATE CUMULATIVE LEVEL OF HELP */
 
-void Group::calcCumHelp() //Calculate accumulative help of all individuals inside of each group.
+void Group::calculateCumulativeHelp() //Calculate accumulative help of all individuals inside of each group.
 {
     cumHelp = 0;
 
@@ -282,6 +281,25 @@ double Group::getCumHelp() const {
 
 bool Group::isHelpersPresent() const {
     return helpersPresent;
+}
+
+void Group::survival() {
+    //Calculate survival for the helpers
+    this->calcGroupSize();
+    std::vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
+    for (helperStatsIt = this->helpers.begin();
+         helperStatsIt < this->helpers.end(); ++helperStatsIt) {
+        helperStatsIt->calculateSurvival(groupSize);
+    }
+
+    //Calculate the survival of the breeder
+    if (parameters->isLowSurvivalBreeder()) {
+        this->breeder.calculateSurvival(0); //survival for breeder does not include group size benefits
+    } // TODO:Change to 1?
+    else {
+        this->breeder.calculateSurvival(groupSize);
+    }
+
 }
 
 
