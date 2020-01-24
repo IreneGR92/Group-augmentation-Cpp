@@ -42,8 +42,6 @@ public:
 
     void reproduce();
 
-    void evaluateNewBreeder();
-
     const std::vector<Individual> &getHelpers() const;
 
     const Individual &getBreeder() const;
