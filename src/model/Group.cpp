@@ -1,6 +1,7 @@
 
 #include <iomanip>
 #include <algorithm>
+#include <cassert>
 #include "Group.h"
 #include "FishType.h"
 #include "../Parameters.h"
@@ -25,12 +26,14 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
                 Individual(HELPER, generation));
     }
 
-    calcGroupSize();
+    calculateGroupSize();
 }
 
 /* TOTAL NUMBER OF INDIVIDUALS PER GROUP*/
 
-void Group::calcGroupSize() {
+void Group::calculateGroupSize() {
+
+
     if (breederAlive) {
         groupSize = helpers.size() + 1;
     } else {
@@ -90,7 +93,7 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 
 void Group::mortality(int &deaths) {
 
-    calcGroupSize(); //update group size after dispersal
+    calculateGroupSize(); //update group size after dispersal
 
     vector<Individual, std::allocator<Individual>>::iterator survHIt;
     survHIt = helpers.begin();
@@ -285,11 +288,13 @@ bool Group::isHelpersPresent() const {
 
 void Group::survival() {
     //Calculate survival for the helpers
-    this->calcGroupSize();
-    std::vector<Individual, std::allocator<Individual>>::iterator helperStatsIt; //helpers
-    for (helperStatsIt = this->helpers.begin();
-         helperStatsIt < this->helpers.end(); ++helperStatsIt) {
-        helperStatsIt->calculateSurvival(groupSize);
+    this->calculateGroupSize();
+    std::vector<Individual, std::allocator<Individual>>::iterator helperIt; //helpers
+    for (helperIt = this->helpers.begin();
+         helperIt < this->helpers.end(); helperIt++) {
+
+        assert(helperIt->getFishType() == HELPER);
+        helperIt->calculateSurvival(groupSize);
     }
 
     //Calculate the survival of the breeder

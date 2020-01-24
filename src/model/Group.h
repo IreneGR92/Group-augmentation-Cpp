@@ -26,7 +26,7 @@ public:
 
     explicit Group(int &generation);
 
-    void calcGroupSize();
+    void calculateGroupSize();
 
     void disperse(std::vector<Individual> &floaters);
 

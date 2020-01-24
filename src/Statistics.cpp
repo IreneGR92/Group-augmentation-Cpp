@@ -119,7 +119,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
         }
 
         //Group
-        groupStatsIt->calcGroupSize();
+        groupStatsIt->calculateGroupSize();
         sumGroupSize += groupStatsIt->getGroupSize();
         sumsqGroupSize += groupStatsIt->getGroupSize() * groupStatsIt->getGroupSize();
         if (groupStatsIt->getGroupSize() > maxGroupSize) maxGroupSize = groupStatsIt->getGroupSize();

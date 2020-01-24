@@ -31,13 +31,6 @@ void Simulation::run() {
         this->disperse();
         this->help();
         this->survival();
-
-        //Calculate stats
-        if (generation % parameters->getSkip() == 0) {
-            statistics.calculateStatistics(groups, floaters); // Statistics calculated before survival
-        }
-
-
         this->mortality();
 
         //Become a breeder
@@ -62,6 +55,8 @@ void Simulation::run() {
 
         //Print stats
         if (generation % parameters->getSkip() == 0) {
+            //Calculate stats
+            statistics.calculateStatistics(groups, floaters); // Statistics calculated before survival
             statistics.printToConsole(generation, deaths);
             statistics.printToFile(replica, generation, deaths, newbreederFloater, newbreederHelper, inheritance);
 
