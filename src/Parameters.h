@@ -2,11 +2,16 @@
 #ifndef CPP_PARAMETERS_H
 #define CPP_PARAMETERS_H
 
-
+#include <iomanip>
 #include <string>
 #include <fstream>
+#include <random>
 
+//Singleton
 class Parameters {
+
+    explicit Parameters(std::string url);
+
 
 
     std::string name;
@@ -14,9 +19,9 @@ class Parameters {
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
-	bool LOW_SURVIVAL_BREEDER;
+    bool LOW_SURVIVAL_BREEDER;
     bool LOW_SURVIVAL_FLOATER;
-	bool NO_GROUP_AUGMENTATION;
+    bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
     bool LOGISTIC_SURVIVAL;
 
@@ -29,7 +34,7 @@ class Parameters {
 //Fix values
     int INIT_NUM_HELPERS;     //initial number of helpers per group
     double BIAS_FLOAT_BREEDER; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
-	int FIXED_GROUP_SIZE;	   //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
+    int FIXED_GROUP_SIZE;       //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 // Modifiers in survival. X0 + Xsn - Xsh =< 1
     double m;
@@ -65,30 +70,39 @@ class Parameters {
 
 //For relatedness
     double MUTATION_DRIFT;            // mutation rate in the neutral selected value to track level of relatedness
-    double STEP_DRIFT;            // mutation step size in the neutral genetic value to track level of relatedness
+    double STEP_DRIFT; // mutation step size in the neutral genetic value to track level of relatedness
 
+    std::default_random_engine *generator;
 
+    std::string getName(std::string url);
 
+    void print(std::ofstream &outputStream);
+
+    std::ofstream *mainWriter;
+    std::ofstream *lastGenerationWriter;
 
 public:
 
-    Parameters();
 
-    Parameters(std::string url);
+    std::uniform_real_distribution<double> driftUniform;
+    std::uniform_real_distribution<double> uniform;
+
+    void print();
+
 
     const std::string &getName() const;
 
     bool isReactionNormHelp() const;
 
-	bool isReactionNormDispersal() const;
+    bool isReactionNormDispersal() const;
 
     bool isEvolutionHelpAfterDispersal() const;
 
-	bool isLowSurvivalBreeder() const;
+    bool isLowSurvivalBreeder() const;
 
     bool isLowSurvivalFloater() const;
 
-	bool isNoGroupAugmentation() const;
+    bool isNoGroupAugmentation() const;
 
     bool isNoRelatedness() const;
 
@@ -106,7 +120,7 @@ public:
 
     double getBiasFloatBreeder() const;
 
-	int getFixedGroupSize() const;
+    int getFixedGroupSize() const;
 
     double getM() const;
 
@@ -146,9 +160,17 @@ public:
 
     double getStepDrift() const;
 
-    void setMutationAlpha(double mutationAlpha);
+    static const int NO_VALUE = -1;
 
-    void setMutationAlphaAge(double mutationAlphaAge);
+    std::ofstream *getMainWriter() const;
+
+    std::ofstream *getLastGenerationWriter() const;
+
+    std::default_random_engine *getGenerator() const;
+
+    static Parameters *instance();
+
+    static Parameters *instance(std::string url);
 
 };
 

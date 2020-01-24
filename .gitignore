@@ -52,6 +52,8 @@ fabric.properties
 *.xlsx
 *.iobj
 *.docx
+cmake-build-debug
+cmake-build-release
 
 *.tlog
 *.log

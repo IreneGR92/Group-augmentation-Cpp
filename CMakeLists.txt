@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
 
-set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp)
+set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Individual.cpp src/model/Individual.h src/model/FishType.h src/model/Group.cpp src/model/Group.h src/Simulation.cpp src/Simulation.cpp src/Simulation.h src/Statistics.cpp src/Statistics.h)
 #set(YAML_DIR ../yaml-cpp)
 
 

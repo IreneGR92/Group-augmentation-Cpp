@@ -5,25 +5,16 @@
 
 using namespace std;
 
-Parameters::Parameters() {
-
-}
-
 Parameters::Parameters(string url) {
 
 
     YAML::Node config = YAML::LoadFile(url);
 
-    unsigned first = url.find("parameters/");
-    unsigned last = url.find(".yml");
-    string name = url.substr(first, last - first);
-    replace(name.begin(), name.end(), '/', '_');
-
-    this->name = name;
+    this->name = this->getName(url);
     this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
-	this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
+    this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
     this->LOW_SURVIVAL_FLOATER = config["LOW_SURVIVAL_FLOATER"].as<bool>();
     this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
@@ -55,9 +46,58 @@ Parameters::Parameters(string url) {
     this->MUTATION_DRIFT = config["MUTATION_DRIFT"].as<double>();
     this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
 
+    this->driftUniform = uniform_real_distribution<double>(0, 100);
+    this->uniform = uniform_real_distribution<double>(0, 1);
 
+    this->mainWriter = new std::ofstream("main_" + this->name + ".txt");
+    this->lastGenerationWriter = new std::ofstream("last_generation_" + this->name + ".txt");
 
+    const int seed = 0;
+    this->generator = new std::default_random_engine(seed);
 }
+
+void Parameters::print() {
+    this->print(*mainWriter);
+    this->print(*lastGenerationWriter);
+}
+
+void Parameters::print(std::ofstream &outputStream) {
+    outputStream << "PARAMETER VALUES" << endl
+
+                 << "Reaction_norm_help?: " << "\t" << this->isReactionNormHelp() << endl
+                 << "Reaction_norm_dispersal?: " << "\t" << this->isReactionNormDispersal() << endl
+                 << "Evolution_help_after_dispersal?: " << "\t" << this->isEvolutionHelpAfterDispersal() << endl
+                 << "Low_survival_breeder?: " << "\t" << this->isLowSurvivalBreeder() << endl
+                 << "Low_survival_floater?: " << "\t" << this->isLowSurvivalFloater() << endl
+                 << "No_group_augmentation?: " << "\t" << this->isNoGroupAugmentation() << endl
+                 << "No_effect_relatedness?: " << "\t" << this->isNoRelatedness() << endl
+                 << "Logistic_survival?: " << "\t" << this->isLogisticSurvival() << endl
+                 << "Initial_population: " << "\t" << this->getMaxColonies() * (this->getInitNumHelpers() + 1) << endl
+                 << "Number_of_colonies: " << "\t" << this->getMaxColonies() << endl
+                 << "Number_generations: " << "\t" << this->getNumGenerations() << endl
+                 << "Number_replicates: " << "\t" << this->getMaxNumReplicates() << endl
+                 << "Bias_float_breeder: " << "\t" << this->getBiasFloatBreeder() << endl
+                 << "m(predation): " << "\t" << this->getM() << endl
+                 << "n(effect_size_mortality_dispersal): " << "\t" << this->getN() << endl
+                 << "X0(intercept): " << "\t" << this->getX0() << endl
+                 << "Xh(Cost_help_survival): " << "\t" << this->getXsh() << endl
+                 << "Xn(Benefit_group_size_survival): " << "\t" << this->getXsn() << endl
+                 << "K0(Base_fecundity): " << "\t" << this->getK0() << endl
+                 << "K1(Benefit_help_fecundity): " << "\t" << this->getK1() << endl
+                 << "initAlpha: " << "\t" << this->getInitAlpha() << endl
+                 << "initAlphaAge: " << "\t" << this->getInitAlphaAge() << endl
+                 << "initBeta: " << "\t" << this->getInitBeta() << endl
+                 << "initBetaAge: " << "\t" << this->getInitBetaAge() << endl
+                 << "mutAlpha: " << "\t" << this->getMutationAlpha() << endl
+                 << "mutAlphaAge: " << "\t" << this->getMutationAlphaAge() << endl
+                 << "mutBeta: " << "\t" << this->getMutationBeta() << endl
+                 << "mutBetaAge: " << "\t" << this->getMutationBetaAge() << endl
+                 << "mutDrift: " << "\t" << this->getMutationDrift() << endl
+                 << "stepAlpha: " << "\t" << this->getStepAlpha() << endl
+                 << "stepBeta: " << "\t" << this->getStepBeta() << endl
+                 << "stepDrift: " << "\t" << this->getStepDrift() << endl << endl;
+}
+
 
 const string &Parameters::getName() const {
     return name;
@@ -76,7 +116,7 @@ bool Parameters::isEvolutionHelpAfterDispersal() const {
 }
 
 bool Parameters::isLowSurvivalBreeder() const {
-	return LOW_SURVIVAL_BREEDER;
+    return LOW_SURVIVAL_BREEDER;
 }
 
 bool Parameters::isLowSurvivalFloater() const {
@@ -84,7 +124,7 @@ bool Parameters::isLowSurvivalFloater() const {
 }
 
 bool Parameters::isNoGroupAugmentation() const {
-	return NO_GROUP_AUGMENTATION;
+    return NO_GROUP_AUGMENTATION;
 }
 
 bool Parameters::isNoRelatedness() const {
@@ -199,13 +239,47 @@ double Parameters::getStepDrift() const {
     return STEP_DRIFT;
 }
 
-void Parameters::setMutationAlpha(double mutationAlpha) {
-    MUTATION_ALPHA = mutationAlpha;
+
+std::string Parameters::getName(std::string url) {
+
+
+    unsigned first = url.find("parameters/");
+    unsigned last = url.find(".yml");
+    string name = url.substr(first, last - first);
+    replace(name.begin(), name.end(), '/', '_');
+
+    return name;
 }
 
-void Parameters::setMutationAlphaAge(double mutationAlphaAge) {
-    MUTATION_ALPHA_AGE = mutationAlphaAge;
+ofstream *Parameters::getMainWriter() const {
+    return mainWriter;
 }
+
+ofstream *Parameters::getLastGenerationWriter() const {
+    return lastGenerationWriter;
+}
+
+default_random_engine *Parameters::getGenerator() const {
+    return generator;
+}
+
+static Parameters *singletonInstance;
+
+Parameters *Parameters::instance() {
+    return singletonInstance;
+}
+
+Parameters *Parameters::instance(std::string url) {
+
+    if (!singletonInstance) {
+        singletonInstance = new Parameters(url);
+    }
+    return singletonInstance;
+}
+
+
+
+
 
 
 
