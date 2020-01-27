@@ -5,6 +5,7 @@
 
 #include "model/Group.h"
 #include "model/Individual.h"
+#include "Simulation.h"
 
 class Statistics {
 
@@ -40,6 +41,7 @@ class Statistics {
             corr_HelpDispersal, sumprodHelpDispersal,
             corr_HelpGroup, sumprodHelpGroup;
 
+    void printIndividual(Individual individual, int generation, int groupID, int replica);
 
 public:
     Statistics();
@@ -55,7 +57,7 @@ public:
     void printToFile(int replica, int generation, int deaths, int newBreederFloater,
                      int newBreederHelper, int inheritance);
 
-    void printToFileLastGeneration(const std::vector<Group> &groups, int replica, int generation);
+    void printToFileLastGeneration(Simulation *simulation);
 };
 
 

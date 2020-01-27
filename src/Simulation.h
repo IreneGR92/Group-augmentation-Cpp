@@ -4,11 +4,8 @@
 
 #include "Parameters.h"
 #include "model/Group.h"
-#include "Statistics.h"
 
 class Simulation {
-
-    Statistics statistics;
 
     Parameters *parameters;
 
@@ -52,8 +49,6 @@ public:
     void increaseAge();
 
     void reproduce();
-
-
 
 
     Simulation(const int replica);

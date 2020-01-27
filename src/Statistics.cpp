@@ -397,59 +397,50 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
 }
 
 
-void Statistics::printToFileLastGeneration(const std::vector<Group> &groups, int replica, int generation) {
+void Statistics::printToFileLastGeneration(Simulation *simulation) {
 
     int groupID = 0;
     int counter = 0;
 
-    for (auto const &group: groups) {
+    for (auto const &group: simulation->getGroups()) {
         if (counter < 100) {
-            *parameters->getLastGenerationWriter() << fixed << showpoint
-                                                   << replica + 1
-                                                   << "\t" << generation
-                                                   << "\t" << groupID
-                                                   << "\t" << group.breeder.getFishType()
-                                                   << "\t" << setprecision(4) << group.breeder.getAge()
-                                                   << "\t" << setprecision(4) << group.breeder.getAlpha()
-                                                   << "\t" << setprecision(4)
-                                                   << group.breeder.getAlphaAge()
-                                                   << "\t" << setprecision(4) << group.breeder.getBeta()
-                                                   << "\t" << setprecision(4) << group.breeder.getBetaAge()
-                                                   << "\t" << setprecision(4) << group.breeder.getDrift()
-                                                   << "\t" << setprecision(4) << "NA"
-                                                   << "\t" << setprecision(4) << "NA"
-                                                   << "\t" << setprecision(4)
-                                                   << group.breeder.getSurvival()
-                                                   << endl;
+            this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
 
-            for (auto const &helper: group.helpers) { //TODO: floaters are missing in the output
-
-                *parameters->getLastGenerationWriter() << fixed << showpoint
-                                                       << replica + 1
-                                                       << "\t" << generation
-                                                       << "\t" << groupID
-                                                       << "\t" << helper.getFishType()
-                                                       << "\t" << setprecision(4) << helper.getAge()
-                                                       << "\t" << setprecision(4) << helper.getAlpha()
-                                                       << "\t" << setprecision(4) << helper.getAlphaAge()
-                                                       << "\t" << setprecision(4) << helper.getBeta()
-                                                       << "\t" << setprecision(4) << helper.getBetaAge()
-                                                       << "\t" << setprecision(4) << helper.getDrift()
-                                                       << "\t" << setprecision(4)
-                                                       << helper.getHelp() // TODO: for floaters is 0 no NA!
-                                                       << "\t" << setprecision(4) << helper.getDispersal()
-                                                       << "\t" << setprecision(4) << helper.getSurvival()
-                                                       << endl;
+            for (auto const &helper: group.helpers) {
+                this->printIndividual(helper, simulation->getGeneration(), groupID, simulation->getReplica());
             }
             counter++;
         }
         groupID++;
     }
+    for (auto const &floater: simulation->getFloaters()) {
+        this->printIndividual(floater, simulation->getGeneration(), groupID, simulation->getReplica());
+    }
+
+
 }
 
 Statistics::Statistics() {
     this->parameters = Parameters::instance();
 
+}
+
+void Statistics::printIndividual(Individual individual, int generation, int groupID, int replica) {
+    *parameters->getLastGenerationWriter() << fixed << showpoint
+                                           << replica + 1
+                                           << "\t" << generation
+                                           << "\t" << groupID
+                                           << "\t" << individual.getFishType()
+                                           << "\t" << setprecision(4) << individual.getAge()
+                                           << "\t" << setprecision(4) << individual.getAlpha()
+                                           << "\t" << setprecision(4) << individual.getAlphaAge()
+                                           << "\t" << setprecision(4) << individual.getBeta()
+                                           << "\t" << setprecision(4) << individual.getBetaAge()
+                                           << "\t" << setprecision(4) << individual.getDrift()
+                                           << "\t" << setprecision(4) << individual.getHelp()
+                                           << "\t" << setprecision(4) << individual.getDispersal()
+                                           << "\t" << setprecision(4) << individual.getSurvival()
+                                           << endl;
 }
 
 

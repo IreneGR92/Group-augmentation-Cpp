@@ -19,6 +19,9 @@ Individual::Individual(Individual &individual, FishType fishType, int &generatio
     this->betaAge = individual.betaAge;
     this->drift = individual.getDrift();
 
+    this->dispersal = Parameters::NO_VALUE;
+    this->help = Parameters::NO_VALUE;
+
     this->initializeIndividual(fishType);
 
     this->mutate(generation);
@@ -79,7 +82,7 @@ void Individual::calcHelp() {
         if (help < 0) { help = 0; }
 
     } else {
-        help = NAN;
+        help = Parameters::NO_VALUE;
         cout << "Error: floaters get a help value" << endl;
     }
 }
@@ -235,6 +238,12 @@ FishType Individual::getFishType() const {
 
 void Individual::setFishType(FishType fishType) {
     Individual::fishType = fishType;
+    if (fishType == BREEDER) {
+        this->dispersal = Parameters::NO_VALUE;
+        this->help = Parameters::NO_VALUE;
+    }
+
+
 }
 
 int Individual::getAge() const {

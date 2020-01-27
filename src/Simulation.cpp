@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "Simulation.h"
+#include "Statistics.h"
 
 
 Simulation::Simulation(const int replica)
@@ -14,6 +15,7 @@ Simulation::Simulation(const int replica)
 void Simulation::run() {
 
     // Output file
+    Statistics statistics;
 
     statistics.calculateStatistics(groups, floaters);
     statistics.printHeadersToConsole();
@@ -49,14 +51,13 @@ void Simulation::run() {
                 generation == parameters->getNumGenerations() / 4 ||
                 generation == parameters->getNumGenerations() / 2 || generation == parameters->getNumGenerations()) {
 
-                statistics.printToFileLastGeneration(groups, replica, generation);
+                statistics.printToFileLastGeneration(this);
             }
         }
 
         this->reproduce();
     }
 }
-
 
 
 /* INITIALISE POPULATION */
@@ -238,8 +239,6 @@ void Simulation::reproduce() {
         group->reproduce(generation);
     }
 }
-
-
 
 
 const std::vector<Individual> &Simulation::getFloaters() const {
