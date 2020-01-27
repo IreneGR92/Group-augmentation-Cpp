@@ -31,6 +31,7 @@ int main(int count, char **argv) {
     cout << "reading file " << argv[1] << "\n";
     auto parameters = Parameters::instance(argv[1]);
 
+    parameters->print();
 
     for (int replica = 0; replica < parameters->getMaxNumReplicates(); replica++) {
 
