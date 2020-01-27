@@ -22,7 +22,7 @@ class Simulation {
 
     int deaths = 0;
 
-    int newbreederFloater = 0, newbreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
+    int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 
     void survivalFloaters();

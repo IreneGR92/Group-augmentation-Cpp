@@ -19,13 +19,13 @@ void Simulation::run() {
     statistics.printHeadersToConsole();
     statistics.printToConsole(generation, deaths);
     statistics.printHeadersToFile();
-    statistics.printToFile(replica, generation, deaths, newbreederFloater, newbreederHelper, inheritance);
+    statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {
 
         deaths = 0; // to keep track of how many individuals die each generation
-        newbreederFloater = 0;
-        newbreederHelper = 0;
+        newBreederFloater = 0;
+        newBreederHelper = 0;
         inheritance = 0;
 
         this->disperse();
@@ -37,7 +37,7 @@ void Simulation::run() {
         std::vector<Group, std::allocator<Group>>::iterator itBreeder;
         for (itBreeder = groups.begin(); itBreeder < groups.end(); ++itBreeder) {
             if (!itBreeder->isBreederAlive()) {
-                itBreeder->newBreeder(floaters, newbreederFloater, newbreederHelper, inheritance);
+                itBreeder->newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
             }
         }
 
@@ -58,7 +58,7 @@ void Simulation::run() {
             //Calculate stats
             statistics.calculateStatistics(groups, floaters); // Statistics calculated before survival
             statistics.printToConsole(generation, deaths);
-            statistics.printToFile(replica, generation, deaths, newbreederFloater, newbreederHelper, inheritance);
+            statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
 
 
             //Print last generation
@@ -73,10 +73,12 @@ void Simulation::run() {
         //Reproduction
         std::vector<Group, std::allocator<Group>>::iterator itReproduction;
         for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-            itReproduction->reproduce();
+            itReproduction->reproduce(generation);
         }
     }
 }
+
+
 
 /* INITIALISE POPULATION */
 std::vector<Group> Simulation::initializeGroups() {
@@ -242,11 +244,11 @@ int Simulation::getDeaths() const {
 }
 
 int Simulation::getNewbreederFloater() const {
-    return newbreederFloater;
+    return newBreederFloater;
 }
 
 int Simulation::getNewbreederHelper() const {
-    return newbreederHelper;
+    return newBreederHelper;
 }
 
 int Simulation::getInheritance() const {

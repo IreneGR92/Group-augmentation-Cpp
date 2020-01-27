@@ -238,7 +238,7 @@ void Group::increaseAge() {
 
 /* REPRODUCTION */
 
-void Group::reproduce() // populate offspring generation
+void Group::reproduce(int generation) // populate offspring generation
 {
     //Calculate fecundity
     if (!parameters->isNoRelatedness()) {

@@ -40,7 +40,7 @@ public:
 
     void increaseAge();
 
-    void reproduce();
+    void reproduce(int generation);
 
     const std::vector<Individual> &getHelpers() const;
 
