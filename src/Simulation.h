@@ -27,14 +27,17 @@ class Simulation {
 
     void survivalFloaters();
 
-
     void mortalityFloaters();
+
+    void increaseAgeFloaters();
 
 public:
 
     std::vector<Group> initializeGroups();
 
     void run();
+
+    void reassignFloaters();
 
     void disperse();
 
@@ -44,10 +47,14 @@ public:
 
     void mortality();
 
+    void newBreeder();
+
+    void increaseAge();
+
+    void reproduce();
 
 
 
-    void reassignFloaters();
 
     Simulation(const int replica);
 

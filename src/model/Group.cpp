@@ -91,7 +91,28 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 
 /*  MORTALITY */
 
-void Group::mortality(int &deaths) {
+void Group::survivalGroup() {
+    //Calculate survival for the helpers
+    this->calculateGroupSize();
+    std::vector<Individual, std::allocator<Individual>>::iterator helperIt; //helpers
+    for (helperIt = this->helpers.begin();
+         helperIt < this->helpers.end(); helperIt++) {
+
+        assert(helperIt->getFishType() == HELPER);
+        helperIt->calculateSurvival(groupSize);
+    }
+
+    //Calculate the survival of the breeder
+    if (parameters->isLowSurvivalBreeder()) {
+        this->breeder.calculateSurvival(0); //survival for breeder does not include group size benefits
+    } // TODO:Change to 1?
+    else {
+        this->breeder.calculateSurvival(groupSize);
+    }
+
+}
+
+void Group::mortalityGroup(int &deaths) {
 
     calculateGroupSize(); //update group size after dispersal
 
@@ -117,6 +138,8 @@ void Group::mortality(int &deaths) {
         deaths++;
     }
 }
+
+
 
 
 /* BECOME BREEDER */
@@ -162,14 +185,11 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
         }
     }
 
-
     //    Join the helpers in the group to the sample of floaters
-
     vector<Individual, std::allocator<Individual>>::iterator helpIt;
     for (helpIt = helpers.begin(); helpIt < helpers.end(); ++helpIt) {
         Candidates.push_back(&(*helpIt));
     }
-
 
 //     Choose breeder with higher likelihood for the highest age
     vector<Individual *, std::allocator<Individual *>>::iterator ageIt;
@@ -286,25 +306,6 @@ bool Group::isHelpersPresent() const {
     return helpersPresent;
 }
 
-void Group::survival() {
-    //Calculate survival for the helpers
-    this->calculateGroupSize();
-    std::vector<Individual, std::allocator<Individual>>::iterator helperIt; //helpers
-    for (helperIt = this->helpers.begin();
-         helperIt < this->helpers.end(); helperIt++) {
 
-        assert(helperIt->getFishType() == HELPER);
-        helperIt->calculateSurvival(groupSize);
-    }
-
-    //Calculate the survival of the breeder
-    if (parameters->isLowSurvivalBreeder()) {
-        this->breeder.calculateSurvival(0); //survival for breeder does not include group size benefits
-    } // TODO:Change to 1?
-    else {
-        this->breeder.calculateSurvival(groupSize);
-    }
-
-}
 
 

@@ -28,30 +28,13 @@ void Simulation::run() {
         newBreederHelper = 0;
         inheritance = 0;
 
+        reassignFloaters();
         this->disperse();
         this->help();
         this->survival();
         this->mortality();
-
-        //Become a breeder
-        std::vector<Group, std::allocator<Group>>::iterator itBreeder;
-        for (itBreeder = groups.begin(); itBreeder < groups.end(); ++itBreeder) {
-            if (!itBreeder->isBreederAlive()) {
-                itBreeder->newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
-            }
-        }
-
-        //Reassign floaters floaters to groups for later philopatry vs dispersal
-        reassignFloaters();
-        /*if (!floaters.empty()) {
-            cout << "Not all floaters were reassigned!" << endl;
-        }*/
-
-        //Increase age
-        std::vector<Group, std::allocator<Group>>::iterator itAge;
-        for (itAge = groups.begin(); itAge < groups.end(); ++itAge) {
-            itAge->increaseAge(); //add 1 rank or age to all individuals alive
-        }
+        this->newBreeder();
+        this->increaseAge();
 
         //Print stats
         if (generation % parameters->getSkip() == 0) {
@@ -70,11 +53,7 @@ void Simulation::run() {
             }
         }
 
-        //Reproduction
-        std::vector<Group, std::allocator<Group>>::iterator itReproduction;
-        for (itReproduction = groups.begin(); itReproduction < groups.end(); ++itReproduction) {
-            itReproduction->reproduce(generation);
-        }
+        this->reproduce();
     }
 }
 
@@ -92,27 +71,6 @@ std::vector<Group> Simulation::initializeGroups() {
 }
 
 
-void Simulation::mortalityFloaters() { //Calculate the survival of the floaters
-
-    std::vector<Individual, std::allocator<Individual>>::iterator floater;
-    floater = floaters.begin();
-    int size = floaters.size();
-    for (int count = 0; !floaters.empty() && size > count; count++) {
-
-        //Mortality floaters
-        if (parameters->uniform(*parameters->getGenerator()) > floater->getSurvival()) {
-            *floater = floaters[floaters.size() - 1];
-            floaters.pop_back();
-            deaths++;
-        } else {
-            floater++; //go to next individual
-        }
-    }
-}
-
-
-/*REASSIGN FLOATERS*/
-
 void Simulation::reassignFloaters() {
     if (!parameters->isNoRelatedness()) {
         std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
@@ -129,8 +87,8 @@ void Simulation::reassignFloaters() {
         }
     } else {
 
-        double sumcumHelp = 0;
-        double currentposition = 0;
+        double sumCumHelp = 0;
+        double currentPosition = 0;
         double RandP = parameters->uniform(*parameters->getGenerator());
         int allNoHelp = 0;
 
@@ -138,7 +96,7 @@ void Simulation::reassignFloaters() {
 
         std::vector<Group, std::allocator<Group>>::iterator groupIt;
         for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-            sumcumHelp += 1 + groupIt->getCumHelp(); //add all the cumHelp from the std::vector Groups
+            sumCumHelp += 1 + groupIt->getCumHelp(); //add all the cumHelp from the std::vector Groups
             if (groupIt->getCumHelp() !=
                 parameters->getMaxColonies()) { allNoHelp++; } //to check if all groups display cumhelp 0
 
@@ -148,9 +106,9 @@ void Simulation::reassignFloaters() {
         if (allNoHelp != 0) {
 
             for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-                position.push_back(static_cast<double>(1 + (groupIt)->getCumHelp()) / static_cast<double>(sumcumHelp) +
-                                   currentposition); //creates a std::vector with proportional segments to the cumHelp of each group
-                currentposition = position[position.size() - 1];
+                position.push_back(static_cast<double>(1 + (groupIt)->getCumHelp()) / static_cast<double>(sumCumHelp) +
+                                   currentPosition); //creates a vector with proportional segments to the cumHelp of each group
+                currentPosition = position[position.size() - 1];
             }
 
             /*std::vector<Individual, std::allocator<Individual>>::iterator floatIt;
@@ -188,6 +146,102 @@ void Simulation::reassignFloaters() {
 }
 
 
+void Simulation::disperse() {
+    //Dispersal
+    std::vector<Group, std::allocator<Group>>::iterator group;
+    for (group = groups.begin(); group < groups.end(); ++group) {
+        group->disperse(floaters);
+    }
+}
+
+void Simulation::help() {
+    //Help & Survival
+    std::vector<Group, std::allocator<Group>>::iterator groupIt;
+    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+        //Calculate help
+        groupIt->calculateCumulativeHelp();
+    }
+}
+
+void Simulation::survival() {
+    //Survival
+    std::vector<Group, std::allocator<Group>>::iterator groupIt;
+    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+        groupIt->survivalGroup();
+    }
+    this->survivalFloaters();
+}
+
+void Simulation::survivalFloaters() {
+    //Calculate survival for floaters
+    std::vector<Individual, std::allocator<Individual>>::iterator floatersIt;
+    for (floatersIt = floaters.begin(); floatersIt < floaters.end(); ++floatersIt) {
+        floatersIt->calculateSurvival(0); // TODO:Change to 1?
+    }
+}
+
+void Simulation::mortality() {
+    //Mortality of helpers and breeders
+    std::vector<Group, std::allocator<Group>>::iterator groupIt;
+    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+        groupIt->mortalityGroup(deaths);
+    }
+    this->mortalityFloaters();
+
+}
+
+void Simulation::mortalityFloaters() { //Calculate the survival of the floaters
+
+    std::vector<Individual, std::allocator<Individual>>::iterator floaterIt;
+    floaterIt = floaters.begin();
+    int size = floaters.size();
+    for (int count = 0; !floaters.empty() && size > count; count++) {
+
+        //Mortality floaters
+        if (parameters->uniform(*parameters->getGenerator()) > floaterIt->getSurvival()) {
+            *floaterIt = floaters[floaters.size() - 1];
+            floaters.pop_back();
+            deaths++;
+        } else {
+            floaterIt++; //go to next individual
+        }
+    }
+}
+
+void Simulation::newBreeder() {
+    std::vector<Group, std::allocator<Group>>::iterator groupIt;
+    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+        if (!groupIt->isBreederAlive()) {
+            groupIt->newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
+        }
+    }
+}
+
+void Simulation::increaseAge() {
+    std::vector<Group, std::allocator<Group>>::iterator groupIt;
+    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+        groupIt->increaseAge();
+    }
+    this->increaseAgeFloaters();
+}
+
+void Simulation::increaseAgeFloaters() {
+    std::vector<Individual, std::allocator<Individual>>::iterator floatersIt;
+    for (floatersIt = floaters.begin(); floatersIt < floaters.end(); ++floatersIt) {
+        floatersIt->increaseAge();
+    }
+}
+
+void Simulation::reproduce() {
+    std::vector<Group, std::allocator<Group>>::iterator group;
+    for (group = groups.begin(); group < groups.end(); ++group) {
+        group->reproduce(generation);
+    }
+}
+
+
+
+
 const std::vector<Individual> &Simulation::getFloaters() const {
     return floaters;
 }
@@ -199,40 +253,6 @@ const std::vector<Group> &Simulation::getGroups() const {
 
 const int Simulation::getReplica() const {
     return replica;
-}
-
-void Simulation::disperse() {
-    //Dispersal
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        group->disperse(floaters);
-    }
-}
-
-void Simulation::help() {
-    //Help & Survival
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        //Calculate help
-        group->calculateCumulativeHelp();
-    }
-}
-
-void Simulation::survival() {
-    //Survival
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        group->survival();
-    }
-    this->survivalFloaters();
-}
-
-void Simulation::survivalFloaters() {
-    //Calculate survival for floaters
-    std::vector<Individual, std::allocator<Individual>>::iterator floatIt;
-    for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-        floatIt->calculateSurvival(0); // TODO:Change to 1?
-    }
 }
 
 int Simulation::getGeneration() const {
@@ -255,15 +275,6 @@ int Simulation::getInheritance() const {
     return inheritance;
 }
 
-void Simulation::mortality() {
-    //Mortality of helpers and breeders
-    std::vector<Group, std::allocator<Group>>::iterator itSurvival;
-    for (itSurvival = groups.begin(); itSurvival < groups.end(); ++itSurvival) {
-        itSurvival->mortality(deaths);
-    }
-    this->mortalityFloaters();
-
-}
 
 
 

@@ -32,9 +32,9 @@ public:
 
     void calculateCumulativeHelp();
 
-    void survival();
+    void survivalGroup();
 
-    void mortality(int &deaths);
+    void mortalityGroup(int &deaths);
 
     void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
