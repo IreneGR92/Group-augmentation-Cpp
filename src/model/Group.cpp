@@ -52,7 +52,7 @@ void Group::disperse(vector<Individual> &floaters) {
     while (!helpers.empty() && sizevec > counting) {
         helper->calcDispersal();
 
-        if (parameters->uniform(*parameters->getGenerator()) < helper->isInherit()) {
+        if (parameters->uniform(*parameters->getGenerator()) < helper->getDispersal()) {
             helper->setInherit(false);; //the location of the individual is not the natal territory
             floaters.push_back(*helper); //add the individual to the vector floaters in the last position
             floaters[floaters.size() - 1].setFishType(FLOATER);
