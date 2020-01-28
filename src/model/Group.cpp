@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include "Group.h"
 #include "FishType.h"
 #include "../Parameters.h"
@@ -53,7 +54,7 @@ void Group::disperse(vector<Individual> &floaters) {
         helper->calcDispersal();
 
         if (parameters->uniform(*parameters->getGenerator()) < helper->getDispersal()) {
-            helper->setInherit(false);; //the location of the individual is not the natal territory
+            helper->setInherit(false); //the location of the individual is not the natal territory
             floaters.push_back(*helper); //add the individual to the vector floaters in the last position
             floaters[floaters.size() - 1].setFishType(FLOATER);
             *helper = helpers[helpers.size() -
@@ -79,10 +80,10 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
     }
 
     //Level of help for helpers
-    vector<Individual, std::allocator<Individual>>::iterator helpIt;
-    for (helpIt = helpers.begin(); helpIt < helpers.end(); ++helpIt) {
-        helpIt->calcHelp();
-        cumHelp += helpIt->getHelp();
+    vector<Individual, std::allocator<Individual>>::iterator helperIt;
+    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
+        helperIt->calcHelp();
+        cumHelp += helperIt->getHelp();
     }
     //Level of help for breeders
     //breeder.calcHelp();
@@ -95,9 +96,7 @@ void Group::survivalGroup() {
     //Calculate survival for the helpers
     this->calculateGroupSize();
     std::vector<Individual, std::allocator<Individual>>::iterator helperIt; //helpers
-    for (helperIt = this->helpers.begin();
-         helperIt < this->helpers.end(); helperIt++) {
-
+    for (helperIt = this->helpers.begin(); helperIt < this->helpers.end(); helperIt++) {
         assert(helperIt->getFishType() == HELPER);
         helperIt->calculateSurvival(groupSize);
     }
@@ -116,20 +115,20 @@ void Group::mortalityGroup(int &deaths) {
 
     calculateGroupSize(); //update group size after dispersal
 
-    vector<Individual, std::allocator<Individual>>::iterator survHIt;
-    survHIt = helpers.begin();
+    vector<Individual, std::allocator<Individual>>::iterator helperIt;
+    helperIt = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
     while (!helpers.empty() && sizevec > counting) {
 
         //Mortality helpers
-        if (parameters->uniform(*parameters->getGenerator()) > survHIt->getSurvival()) {
-            *survHIt = helpers[helpers.size() - 1];
+        if (parameters->uniform(*parameters->getGenerator()) > helperIt->getSurvival()) {
+            *helperIt = helpers[helpers.size() - 1];
             helpers.pop_back();
             ++counting;
             deaths++;
         } else
-            ++survHIt, ++counting; //go to next individual
+            ++helperIt, ++counting; //go to next individual
     }
 
     //Mortality breeder
@@ -177,61 +176,55 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                 temp = *itTempCandidates;
             }
         }
-    } else if (!floaters.empty() && floaters.size() <
-                                    proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
-        vector<Individual, std::allocator<Individual>>::iterator floatIt;
-        for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-            Candidates.push_back(&(*floatIt));
+    } else if (!floaters.empty() && floaters.size() < proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+        vector<Individual, std::allocator<Individual>>::iterator floaterIt;
+        for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
+            Candidates.push_back(&(*floaterIt));
         }
     }
 
     //    Join the helpers in the group to the sample of floaters
-    vector<Individual, std::allocator<Individual>>::iterator helpIt;
-    for (helpIt = helpers.begin(); helpIt < helpers.end(); ++helpIt) {
-        Candidates.push_back(&(*helpIt));
+    vector<Individual, std::allocator<Individual>>::iterator helperIt;
+    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
+        Candidates.push_back(&(*helperIt));
     }
 
-//     Choose breeder with higher likelihood for the highest age
-    vector<Individual *, std::allocator<Individual *>>::iterator ageIt;
-    for (ageIt = Candidates.begin();
-         ageIt < Candidates.end(); ++ageIt) //ageIt creates a vector of pointers to an individual
-    {
-        sumAge += (*ageIt)->getAge(); //add all the age from the vector Candidates
+    //    Choose breeder with higher likelihood for the highest age
+    vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
+    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+        sumAge += (*candidateIt)->getAge(); //add all the age from the vector Candidates
     }
 
-    vector<Individual *, std::allocator<Individual *>>::iterator age2It;
-    for (age2It = Candidates.begin(); age2It < Candidates.end(); ++age2It) {
-        position.push_back(static_cast<double>((*age2It)->getAge()) / static_cast<double>(sumAge) +
-                           currentPosition); //creates a vector with proportional segments to the age of each individual
+    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+        position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) + currentPosition); //creates a vector with proportional segments to the age of each individual
         currentPosition = position[position.size() - 1];
     }
 
-    if (floaters.empty() && Candidates.size() != helpers.size()) {
-        //cout << "Error assigning empty floaters to Breeder" << endl;
-    }
+//    if (floaters.empty() && Candidates.size() != helpers.size()) {
+//        std::cout << "Error assigning empty floaters to Breeder" << endl;
+//    }
 
-    vector<Individual *, std::allocator<Individual *>>::iterator age3It;
-    age3It = Candidates.begin();
+    candidateIt = Candidates.begin();
     int counting = 0;
     while (counting < Candidates.size()) {
-        if (RandP < position[age3It - Candidates.begin()]) //to access the same ind in the candidates vector
+        if (RandP < position[candidateIt - Candidates.begin()]) //to access the same ind in the candidates vector
         {
-            breeder = **age3It; //substitute the previous dead breeder
+            breeder = **candidateIt; //substitute the previous dead breeder
             breederAlive = true;
 
-            if ((*age3It)->getFishType() == FLOATER) //delete the ind from the vector floaters
+            if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
             {
-                **age3It = floaters[floaters.size() - 1];
+                **candidateIt = floaters[floaters.size() - 1];
                 floaters.pop_back();
                 newBreederFloater++;
-//                if ((*age3It)->inherit == 1) {
-//                    cout << "error in inheritance" << endl;
+//                if ((*candidate3It)->inherit == 1) {
+//                    std::cout << "error in inheritance" << endl;
 //                }
             } else {
-                **age3It = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
+                **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
                 helpers.pop_back();
                 newBreederHelper++;
-                if ((*age3It)->isInherit() == 1) {
+                if ((*candidateIt)->isInherit() == 1) {
                     inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
                 }
             }
@@ -239,16 +232,16 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
             breeder.setFishType(BREEDER); //modify the class
             counting = Candidates.size();//end loop
         } else
-            ++age3It, ++counting;
+            ++candidateIt, ++counting;
     }
 }
 
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
-    vector<Individual, std::allocator<Individual>>::iterator ageIt;
-    for (ageIt = helpers.begin(); ageIt < helpers.end(); ++ageIt) {
-        ageIt->increaseAge();
+    vector<Individual, std::allocator<Individual>>::iterator helperIt;
+    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
+        helperIt->increaseAge();
     }
     if (breederAlive) {
         breeder.increaseAge(breederAlive);
@@ -263,7 +256,6 @@ void Group::reproduce(int generation) // populate offspring generation
     //Calculate fecundity
     if (!parameters->isNoRelatedness()) {
         fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
-        //fecundity function of cumulative help in the group. If cumHelp bigger than 2, no effect on fecundity
     } else {
         fecundity = parameters->getK0();
     }

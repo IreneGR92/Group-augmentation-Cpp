@@ -36,13 +36,11 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     corr_HelpGroup = 0.0, sumprodHelpGroup = 0.0;
 
 
-    vector<Group, std::allocator<Group >>::iterator
-            groupStatsIt;
+    vector<Group, std::allocator<Group >>::iterator groupStatsIt;
     for (groupStatsIt = groups.begin(); groupStatsIt < groups.end(); ++groupStatsIt) {
 
         // HELPERS
-        vector<Individual, std::allocator<Individual >>::iterator
-                helperStatsIt; //helpers
+        vector<Individual, std::allocator<Individual >>::iterator helperStatsIt; //helpers
         for (helperStatsIt = groupStatsIt->helpers.begin();
              helperStatsIt < groupStatsIt->helpers.end(); ++helperStatsIt) {
 
@@ -268,19 +266,13 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     varSurvivalBreeder > 0 ? stdevSurvivalBreeder = sqrt(varSurvivalBreeder) : stdevSurvivalBreeder = 0;
 
     //Correlations
-    (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ? corr_HelpDispersal =
-                                                                        (sumprodHelpDispersal / countHelpers -
-                                                                         meanHelp * meanDispersal) /
-                                                                        (stdevHelp * stdevDispersal)
-                                                              : corr_HelpDispersal = 0;
+    (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ?
+        corr_HelpDispersal = (sumprodHelpDispersal / countHelpers - meanHelp * meanDispersal) / (stdevHelp * stdevDispersal):
+                corr_HelpDispersal = 0;
 
-    (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSize > 0) ? corr_HelpGroup =
-                                                                                    (sumprodHelpGroup /
-                                                                                     countGroupWithHelpers -
-                                                                                     meanCumHelp * meanGroupSizeHelp) /
-                                                                                    (stdevCumHelp * stdevGroupSizeHelp)
-                                                                          : corr_HelpGroup = 0;
-
+    (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSize > 0) ?
+        corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSizeHelp) / (stdevCumHelp * stdevGroupSizeHelp):
+                corr_HelpGroup = 0;
 }
 
 void Statistics::printHeadersToConsole() {

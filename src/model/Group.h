@@ -11,8 +11,8 @@ class Group {
 
     Parameters *parameters;
     double cumHelp;
-    bool breederAlive;                                     // for the breeder: 1 alive, 0 dead
-    bool helpersPresent;                                   //helpers present in group before reassign?
+    bool breederAlive;      // for the breeder: 1 alive, 0 dead
+    bool helpersPresent;    //helpers present in group before reassign?
     int groupSize;
     double fecundity;
     int realFecundity;

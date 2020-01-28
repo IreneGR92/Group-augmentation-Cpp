@@ -62,8 +62,7 @@ void Simulation::run() {
 /* INITIALISE POPULATION */
 std::vector<Group> Simulation::initializeGroups() {
 
-    std::vector<Group> createdGroups(this->parameters->getMaxColonies(),
-                                     Group(generation));
+    std::vector<Group> createdGroups(this->parameters->getMaxColonies(),Group(generation));
 
     assert(createdGroups.size() == Parameters::instance()->getMaxColonies());
 
@@ -75,14 +74,14 @@ void Simulation::reassignFloaters() {
     if (!parameters->isNoRelatedness()) {
         std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
         int selectGroup;
-        std::vector<Individual>::iterator indIt;
+        std::vector<Individual>::iterator floaterIt;
         while (!floaters.empty()) {
-            indIt = floaters.end() - 1;
-            indIt->setHelp(0);
+            floaterIt = floaters.end() - 1;
+            floaterIt->setHelp(0);
             selectGroup = UniformMaxCol(*parameters->getGenerator());
-            //indIt->getFishType() = HELPER; //modify the class
+            //floaterIt->getFishType() = HELPER; //modify the class
             groups[selectGroup].helpers.push_back(
-                    *indIt); //add the floater to the helper std::vector in a randomly selected group
+                    *floaterIt); //add the floater to the helper std::vector in a randomly selected group
             floaters.pop_back(); //remove the floater from its std::vector
         }
     } else {
