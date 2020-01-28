@@ -46,7 +46,7 @@ Parameters::Parameters(string url) {
     this->MUTATION_DRIFT = config["MUTATION_DRIFT"].as<double>();
     this->STEP_DRIFT = config["STEP_DRIFT"].as<double>();
 
-    this->driftUniform = uniform_real_distribution<double>(0, 100);
+    this->driftUniform = uniform_real_distribution<double>(100, 200);
     this->uniform = uniform_real_distribution<double>(0, 1);
 
     this->mainWriter = new std::ofstream("main_" + this->name + ".txt");

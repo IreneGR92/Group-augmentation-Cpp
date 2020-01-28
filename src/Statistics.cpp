@@ -60,7 +60,7 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
             sumsqBetaAge += helperStatsIt->getBetaAge() * helperStatsIt->getBetaAge();
 
             //Relatedness
-            if (groupStatsIt->isBreederAlive()) {
+            if (groupStatsIt->isBreederAlive() && !groupStatsIt->helpers.empty()) {
                 sumDriftB += groupStatsIt->breeder.getDrift();
                 sumDriftH += helperStatsIt->getDrift();
                 sumDriftBH += helperStatsIt->getDrift() * groupStatsIt->breeder.getDrift();
@@ -209,10 +209,11 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     meanSurvivalFloater = sumSurvivalFloater / totalFloaters;
     meanSurvivalBreeder = sumSurvivalBreeder / countBreeders;
 
-    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
-                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
-    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 ||
-        driftGroupSize == 0) { relatedness = Parameters::NO_VALUE; } //prevent to divide by 0
+    relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
+    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
+        relatedness = Parameters::NO_VALUE;
+    } //prevent to divide by 0
+
 
 
     //Variance
