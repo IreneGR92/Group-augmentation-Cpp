@@ -20,7 +20,6 @@ void Simulation::run() {
     statistics.calculateStatistics(groups, floaters);
     statistics.printHeadersToConsole();
     statistics.printToConsole(generation, deaths);
-    statistics.printHeadersToFile(); //TODO: Print only ones!
     statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {

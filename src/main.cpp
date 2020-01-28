@@ -21,6 +21,7 @@
 #include <iostream>
 #include "Parameters.h"
 #include "Simulation.h"
+#include "Statistics.h"
 
 using namespace std;
 
@@ -32,6 +33,10 @@ int main(int count, char **argv) {
     auto parameters = Parameters::instance(argv[1]);
 
     parameters->print();
+
+    Statistics statistics;
+    statistics.printHeadersToFile();
+
 
     for (int replica = 0; replica < parameters->getMaxNumReplicates(); replica++) {
 
