@@ -64,38 +64,38 @@ void Parameters::print() {
 void Parameters::print(std::ofstream &outputStream) {
     outputStream << "PARAMETER VALUES" << endl
 
-                 << "Reaction_norm_help?: " << "\t" << this->isReactionNormHelp() << endl
-                 << "Reaction_norm_dispersal?: " << "\t" << this->isReactionNormDispersal() << endl
-                 << "Evolution_help_after_dispersal?: " << "\t" << this->isEvolutionHelpAfterDispersal() << endl
-                 << "Low_survival_breeder?: " << "\t" << this->isLowSurvivalBreeder() << endl
-                 << "Low_survival_floater?: " << "\t" << this->isLowSurvivalFloater() << endl
-                 << "No_group_augmentation?: " << "\t" << this->isNoGroupAugmentation() << endl
-                 << "No_effect_relatedness?: " << "\t" << this->isNoRelatedness() << endl
-                 << "Logistic_survival?: " << "\t" << this->isLogisticSurvival() << endl
-                 << "Initial_population: " << "\t" << this->getMaxColonies() * (this->getInitNumHelpers() + 1) << endl
-                 << "Number_of_colonies: " << "\t" << this->getMaxColonies() << endl
-                 << "Number_generations: " << "\t" << this->getNumGenerations() << endl
-                 << "Number_replicates: " << "\t" << this->getMaxNumReplicates() << endl
-                 << "Bias_float_breeder: " << "\t" << this->getBiasFloatBreeder() << endl
-                 << "m(predation): " << "\t" << this->getM() << endl
-                 << "n(effect_size_mortality_dispersal): " << "\t" << this->getN() << endl
-                 << "X0(intercept): " << "\t" << this->getX0() << endl
-                 << "Xh(Cost_help_survival): " << "\t" << this->getXsh() << endl
-                 << "Xn(Benefit_group_size_survival): " << "\t" << this->getXsn() << endl
-                 << "K0(Base_fecundity): " << "\t" << this->getK0() << endl
-                 << "K1(Benefit_help_fecundity): " << "\t" << this->getK1() << endl
-                 << "initAlpha: " << "\t" << this->getInitAlpha() << endl
-                 << "initAlphaAge: " << "\t" << this->getInitAlphaAge() << endl
-                 << "initBeta: " << "\t" << this->getInitBeta() << endl
-                 << "initBetaAge: " << "\t" << this->getInitBetaAge() << endl
-                 << "mutAlpha: " << "\t" << this->getMutationAlpha() << endl
-                 << "mutAlphaAge: " << "\t" << this->getMutationAlphaAge() << endl
-                 << "mutBeta: " << "\t" << this->getMutationBeta() << endl
-                 << "mutBetaAge: " << "\t" << this->getMutationBetaAge() << endl
-                 << "mutDrift: " << "\t" << this->getMutationDrift() << endl
-                 << "stepAlpha: " << "\t" << this->getStepAlpha() << endl
-                 << "stepBeta: " << "\t" << this->getStepBeta() << endl
-                 << "stepDrift: " << "\t" << this->getStepDrift() << endl << endl;
+                 << "Reaction_norm_help?:" << "\t" << this->isReactionNormHelp() << endl
+                 << "Reaction_norm_dispersal?:" << "\t" << this->isReactionNormDispersal() << endl
+                 << "Evolution_help_after_dispersal?:" << "\t" << this->isEvolutionHelpAfterDispersal() << endl
+                 << "Low_survival_breeder?:" << "\t" << this->isLowSurvivalBreeder() << endl
+                 << "Low_survival_floater?:" << "\t" << this->isLowSurvivalFloater() << endl
+                 << "No_group_augmentation?:" << "\t" << this->isNoGroupAugmentation() << endl
+                 << "No_effect_relatedness?:" << "\t" << this->isNoRelatedness() << endl
+                 << "Logistic_survival?:" << "\t" << this->isLogisticSurvival() << endl
+                 << "Initial_population:" << "\t" << this->getMaxColonies() * (this->getInitNumHelpers() + 1) << endl
+                 << "Number_of_colonies:" << "\t" << this->getMaxColonies() << endl
+                 << "Number_generations:" << "\t" << this->getNumGenerations() << endl
+                 << "Number_replicates:" << "\t" << this->getMaxNumReplicates() << endl
+                 << "Bias_float_breeder:" << "\t" << this->getBiasFloatBreeder() << endl
+                 << "m(predation):" << "\t" << this->getM() << endl
+                 << "n(effect_size_mortality_dispersal):" << "\t" << this->getN() << endl
+                 << "X0(intercept):" << "\t" << this->getX0() << endl
+                 << "Xh(Cost_help_survival):" << "\t" << this->getXsh() << endl
+                 << "Xn(Benefit_group_size_survival):" << "\t" << this->getXsn() << endl
+                 << "K0(Base_fecundity):" << "\t" << this->getK0() << endl
+                 << "K1(Benefit_help_fecundity):" << "\t" << this->getK1() << endl
+                 << "initAlpha:" << "\t" << this->getInitAlpha() << endl
+                 << "initAlphaAge:" << "\t" << this->getInitAlphaAge() << endl
+                 << "initBeta:" << "\t" << this->getInitBeta() << endl
+                 << "initBetaAge:" << "\t" << this->getInitBetaAge() << endl
+                 << "mutAlpha:" << "\t" << this->getMutationAlpha() << endl
+                 << "mutAlphaAge:" << "\t" << this->getMutationAlphaAge() << endl
+                 << "mutBeta:" << "\t" << this->getMutationBeta() << endl
+                 << "mutBetaAge:" << "\t" << this->getMutationBetaAge() << endl
+                 << "mutDrift:" << "\t" << this->getMutationDrift() << endl
+                 << "stepAlpha:" << "\t" << this->getStepAlpha() << endl
+                 << "stepBeta:" << "\t" << this->getStepBeta() << endl
+                 << "stepDrift:" << "\t" << this->getStepDrift() << endl << endl;
 }
 
 
