@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 module load CMake
-module load make
 
 rm -rf build
 mkdir build
@@ -15,11 +14,13 @@ make
 #SBATCH --mail-type=end,fail
 #SBATCH --job-name=group-augmentation
 #
-#SBATCH --ntasks=1
+#SBATCH --ntasks=6
 #SBATCH --cpus-per-task=1
 #SBATCH --time=10:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --test-only
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 declare -a arr=(
 
