@@ -1,94 +1,101 @@
 #!/bin/bash
 #
+
+#SBATCH --mail-user=irene.garcia@iee.unibe.ch
+#SBATCH --mail-type=end,fail
 #SBATCH --job-name=group-augmentation
-#SBATCH --output=res_omp.txt
-#
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --time=10:00
-#SBATCH --mem-per-cpu=100
+#SBATCH --time=10:00 //TODO: 10 min seem too short
+#SBATCH --mem-per-cpu=100 //TODO: correct? no specify the unit
+#SBATCH --ntasks=1 //TODO: correct? don't we need one per configuration?
+#SBATCH --cpus-per-task=4 //TODO: correct even it is not multithreaded?
+#SBATCH --output=res_omp.txt //TODO: correct?
 
 
-declare -a arr=("init-No_relatedness.yml"
-#		"07-Xh04-Xn02-No_relatedness.yml"
-#		"X07-Xh02-Xn02-No_relatedness.yml"
-#		"X07-Xh02-Xn0-No_relatedness.yml"
-#		"X05-Xh04-Xn04-No_relatedness.yml"
-#		"X05-Xh02-Xn04-No_relatedness.yml"
-#		"K2-No_relatedness.yml"
-#		"K2-Xn02-No_relatedness.yml"
-#		"K2-Xh02-Xn02-No_relatedness.yml"
-#		"K2-Xh02-Xn0-No_relatedness.yml"
-#		"K2-X05-No_relatedness.yml"
-#		"K2-X05-Xh02-No_relatedness.yml"
-#		"bias10-No_relatedness.yml"
-#		"bias10-Xn02-No_relatedness.yml"
-#		"bias10-Xh02-Xn02-No_relatedness.yml"
-#		"bias10-Xh02-Xn0-No_relatedness.yml"
-#		"bias10-X05-No_relatedness.yml"
-#		"bias10-X05-Xh02-No_relatedness.yml"
-#		"bias10-X05-Xh02-Xn02-No_relatedness.yml"
-#		"bias10-K2-No_relatedness.yml"
-#		"bias10-K2-Xn02-No_relatedness.yml"
-#		"bias10-K2-Xh02-Xn02-No_relatedness.yml"
-#		"bias10-K2-Xh02-Xn0-No_relatedness.yml"
-#		"bias10-K2-X05-No_relatedness.yml"
-#		"bias10-K2-X05-Xh02-No_relatedness.yml"
-#		"bias10-K2-X05-Xh02-Xn02-No_relatedness.yml"
-#
-#		"init-NRN.yml"
-#		"X07-Xh04-Xn02-NRN.yml"
-#		"X07-Xh02-Xn02-NRN.yml"
-#		"X07-Xh02-Xn0-NRN.yml"
-#		"X05-Xh04-Xn04-NRN.yml"
-#		"X05-Xh02-Xn04-NRN.yml"
-#		"K2-NRN.yml"
-#		"K2-Xn02-NRN.yml"
-#		"K2-Xh02-Xn02-NRN.yml"
-#		"K2-Xh02-Xn0-NRN.yml"
-#		"K2-X05-NRN.yml"
-#		"K2-X05-Xh02-NRN.yml"
-#		"bias10-NRN.yml"
-#		"bias10-Xn02-NRN.yml"
-#		"bias10-Xh02-Xn02-NRN.yml"
-#		"bias10-Xh02-Xn0-NRN.yml"
-#		"bias10-X05-NRN.yml"
-#		"bias10-X05-Xh02-NRN.yml"
-#		"bias10-X05-Xh02-Xn02-NRN.yml"
-#		"bias10-K2-NRN.yml"
-#		"bias10-K2-Xn02-NRN.yml"
-#		"bias10-K2-Xh02-Xn02-NRN.yml"
-#		"bias10-K2-Xh02-Xn0-NRN.yml"
-#		"bias10-K2-X05-NRN.yml"
-#		"bias10-K2-X05-Xh02-NRN.yml"
-#		"bias10-K2-X05-Xh02-Xn02-NRN.yml"
-#
-#		"init-RN.yml"
-#		"X07-Xh04-Xn02-RN.yml"
-#		"X07-Xh02-Xn02-RN.yml"
-#		"X07-Xh02-Xn0-RN.yml"
-#		"X05-Xh04-Xn04-RN.yml"
-#		"X05-Xh02-Xn04-RN.yml"
-#		"K2-RN.yml"
-#		"K2-Xn02-RN.yml"
-#		"K2-Xh02-Xn02-RN.yml"
-#		"K2-Xh02-Xn0-RN.yml"
-#		"K2-X05-RN.yml"
-#		"K2-X05-Xh02-RN.yml"
-#		"bias10-RN.yml"
-#		"bias10-Xn02-RN.yml"
-#		"bias10-Xh02-Xn02-RN.yml"
-#		"bias10-Xh02-Xn0-RN.yml"
-#		"bias10-X05-RN.yml"
-#		"bias10-X05-Xh02-RN.yml"
-#		"bias10-X05-Xh02-Xn02-RN.yml"
-#		"bias10-K2-RN.yml"
-#		"bias10-K2-Xn02-RN.yml"
-#		"bias10-K2-Xh02-Xn02-RN.yml"
-#		"bias10-K2-Xh02-Xn0-RN.yml"
-#		"bias10-K2-X05-RN.yml"
-#		"bias10-K2-X05-Xh02-RN.yml"
-		"bias10-K2-X05-Xh02-Xn02-RN.yml")
+declare -a arr=(
+
+#   LOGISTIC SURVIVAL DEFAULT  #
+
+#    "bias1.yml"
+#    "bias1-RN.yml"
+#    "bias2.yml"
+#    "bias2-RN.yml"
+#    "bias3.yml"
+#    "bias3-RN.yml"
+#    "bias4.yml"
+#    "bias4-RN.yml"
+#    "bias1-m01.yml"
+#    "bias1-RN-m01.yml"
+#    "bias2-m01.yml"
+#    "bias2-RN-m01.yml"
+#    "bias3-m01.yml"
+#    "bias3-RN-m01.yml"
+#    "bias4-m01.yml"
+#    "bias4-RN-m01.yml"
+#    "bias1-m03.yml"
+#    "bias1-RN-m03.yml"
+#    "bias2-m03.yml"
+#    "bias2-RN-m03.yml"
+#    "bias3-m03.yml"
+#    "bias3-RN-m03.yml"
+#    "bias4-m03.yml"
+#    "bias4-RN-m03.yml"
+#    "K2.yml"
+#    "K2-RN.yml"
+#    "Xh2.yml"
+#    "Xh2-RN.yml"
+#    "Xn1.yml"
+#    "Xn1-RN.yml"
+#    "Xn0-NRN.yml"
+#    "Xn0-RN.yml"
+#    "RN-help.yml"
+#    "RN-dispersal.yml"
+
+
+
+#   NO GROUP AUGMENTATION  #
+
+#    "bias1-NoGA.yml"
+#    "bias1-RN-NoGA.yml"
+#    "bias2-NoGA.yml"
+#    "bias2-RN-NoGA.yml"
+#    "bias3-NoGA.yml"
+#    "bias3-RN-NoGA.yml"
+#    "bias4-NoGA.yml"
+#    "bias4-RN-NoGA.yml"
+#    "bias1-m01-NoGA.yml"
+#    "bias1-RN-m01-NoGA.yml"
+#    "bias2-m01-NoGA.yml"
+#    "bias2-RN-m01-NoGA.yml"
+#    "bias3-m01-NoGA.yml"
+#    "bias3-RN-m01-NoGA.yml"
+#    "bias4-m01-NoGA.yml"
+#    "bias4-RN-m01-NoGA.yml"
+#    "bias1-m03-NoGA.yml"
+#    "bias2-m03-NoGA.yml"
+#    "bias2-RN-m03-NoGA.yml"
+#    "bias3-m03-NoGA.yml"
+#    "bias3-RN-m03-NoGA.yml"
+#    "bias4-m03-NoGA.yml"
+#    "bias4-RN-m03-NoGA.yml"
+#    "K2-NoGA.yml"
+#    "K2-RN-NoGA.yml"
+#    "Xh2-NoGA.yml"
+#    "Xh2-RN-NoGA.yml"
+#    "Xn1-NoGA.yml"
+#    "Xn1-RN-NoGA.yml"
+
+
+#   LOW SURVIVAL FLOATERS  #
+
+#    "LSF-n1-NRN.yml"
+#    "LSF-n2-NRN.yml"
+#    "LSF-n3-NRN.yml"
+#    "LSF-n1-RN.yml"
+#    "LSF-n2-RN.yml"
+#    "LSF-n3-RN.yml"
+
+
+		)
 
 
 
