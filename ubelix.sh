@@ -1,15 +1,25 @@
 #!/bin/bash
 #
+module load CMake
+module load make
+
+rm -rf build
+mkdir build
+
+cd build
+cmake ..
+make
+
 
 #SBATCH --mail-user=irene.garcia@iee.unibe.ch
 #SBATCH --mail-type=end,fail
 #SBATCH --job-name=group-augmentation
-#SBATCH --time=10:00 //TODO: 10 min seem too short
-#SBATCH --mem-per-cpu=100 //TODO: correct? no specify the unit
-#SBATCH --ntasks=1 //TODO: correct? don't we need one per configuration?
-#SBATCH --cpus-per-task=4 //TODO: correct even it is not multithreaded?
-#SBATCH --output=res_omp.txt //TODO: correct?
-
+#
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=10:00:00
+#SBATCH --mem-per-cpu=2G
+#SBATCH --test-only
 
 declare -a arr=(
 
@@ -87,20 +97,19 @@ declare -a arr=(
 
 #   LOW SURVIVAL FLOATERS  #
 
-#    "LSF-n1-NRN.yml"
-#    "LSF-n2-NRN.yml"
-#    "LSF-n3-NRN.yml"
-#    "LSF-n1-RN.yml"
-#    "LSF-n2-RN.yml"
-#    "LSF-n3-RN.yml"
+    "LSF-n1-NRN.yml"
+    "LSF-n2-NRN.yml"
+    "LSF-n3-NRN.yml"
+    "LSF-n1-RN.yml"
+    "LSF-n2-RN.yml"
+    "LSF-n3-RN.yml"
 
 
 		)
 
 
-
-
 for i in "${arr[@]}"
 do
-../bin/App ../parameters/${i}
+
+srun ./App ../parameters/${i}
 done
