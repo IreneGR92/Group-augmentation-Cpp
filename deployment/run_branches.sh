@@ -36,6 +36,9 @@ declare -a arr=(
 #    "Xn1-RN.yml"
 #    "Xn0-NRN.yml"
 #    "Xn0-RN.yml"
+    "RN-help.yml"
+    "RN-dispersal.yml"
+
 
 
 #   NO GROUP AUGMENTATION  #
