@@ -33,14 +33,11 @@ void Simulation::run() {
         this->disperse();
         this->help();
         this->survival();
-        this->mortality();
-        this->newBreeder();
-        this->increaseAge();
 
         //Print stats
         if (generation % parameters->getSkip() == 0) {
             //Calculate stats
-            statistics.calculateStatistics(groups, floaters); // Statistics calculated before survival
+            statistics.calculateStatistics(groups, floaters);
             statistics.printToConsole(generation, deaths);
             statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
 
@@ -54,6 +51,9 @@ void Simulation::run() {
             }
         }
 
+        this->mortality();
+        this->newBreeder();
+        this->increaseAge();
         this->reproduce();
     }
 }
