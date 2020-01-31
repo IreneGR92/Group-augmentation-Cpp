@@ -209,7 +209,8 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     meanSurvivalFloater = sumSurvivalFloater / totalFloaters;
     meanSurvivalBreeder = sumSurvivalBreeder / countBreeders;
 
-    relatedness = (meanDriftBH - meanDriftB * meanDriftH) / (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
+    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
+                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
     if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
         relatedness = Parameters::NO_VALUE; //prevent to divide by 0
     }
@@ -269,12 +270,14 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
 
     //Correlations
     (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ?
-        corr_HelpDispersal = (sumprodHelpDispersal / countHelpers - meanHelp * meanDispersal) / (stdevHelp * stdevDispersal):
-                corr_HelpDispersal = 0;
+            corr_HelpDispersal =
+                    (sumprodHelpDispersal / countHelpers - meanHelp * meanDispersal) / (stdevHelp * stdevDispersal) :
+            corr_HelpDispersal = 0;
 
     (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSize > 0) ?
-        corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSizeHelp) / (stdevCumHelp * stdevGroupSizeHelp):
-                corr_HelpGroup = 0;
+            corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSizeHelp) /
+                             (stdevCumHelp * stdevGroupSizeHelp) :
+            corr_HelpGroup = 0;
 }
 
 void Statistics::printHeadersToConsole() {
@@ -345,7 +348,7 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
 
     // write values to output file
     *parameters->getMainWriter() << fixed << showpoint
-                                 << replica << 1
+                                 << replica
                                  << "\t" << generation
                                  << "\t" << population
                                  << "\t" << deaths
