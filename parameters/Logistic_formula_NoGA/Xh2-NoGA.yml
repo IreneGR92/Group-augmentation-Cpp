@@ -16,10 +16,11 @@ SKIP: 100   # interval between print-outs
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group
 BIAS_FLOAT_BREEDER: 2  # mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
-FIXED_GROUP_SIZE: 6.1559 # in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
+FIXED_GROUP_SIZE: 5.765 # in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 # Modifiers in survival. X0 + Xsn - Xsh :< 1
 m: 0.2    # mortality due to predation
+n: 1      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
 X0: 1.5   # base survival without the effect of help or group size
 Xsh: 2    # cost of help in survival
 Xsn: 3    # benefit of group size in survival
