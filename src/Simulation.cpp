@@ -34,7 +34,6 @@ void Simulation::run() {
         this->help();
         this->survival();
 
-        //Print stats
         if (generation % parameters->getSkip() == 0) {
             //Calculate stats
             statistics.calculateStatistics(groups, floaters);
