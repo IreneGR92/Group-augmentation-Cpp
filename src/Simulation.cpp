@@ -37,9 +37,6 @@ void Simulation::run() {
         if (generation % parameters->getSkip() == 0) {
             //Calculate stats
             statistics.calculateStatistics(groups, floaters);
-            statistics.printToConsole(generation, deaths);
-            statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
-
 
             //Print last generation
             if (generation == parameters->getNumGenerations() / 10 ||
@@ -52,6 +49,13 @@ void Simulation::run() {
 
         this->mortality();
         this->newBreeder();
+
+        // Print main file (separately since we need values of deaths, newBreederFloater, newBreederHelper and inheritance to be calculated)
+        if (generation % parameters->getSkip() == 0) {
+            statistics.printToConsole(generation, deaths);
+            statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+        }
+
         this->increaseAge();
         this->reproduce();
     }
