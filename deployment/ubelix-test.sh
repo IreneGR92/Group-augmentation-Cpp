@@ -44,7 +44,9 @@ declare -a arr=(
 for i in "${arr[@]}"
 do
 
-if[ ${SLURM_ARRAY_TASK_ID} == ${i}]; then
+if (${SLURM_ARRAY_TASK_ID} == ${i}); then
  srun echo ${i}
+
+fi
 
 done
