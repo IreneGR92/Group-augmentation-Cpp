@@ -10,12 +10,12 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=00:00:10
+#SBATCH --time=12:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
 # Partition
-#SBATCH --partition=debug
+#SBATCH --partition=all
 
 # For parallel jobs
 
@@ -118,4 +118,4 @@ declare -a arr=(
 
 		)
 
-srun ./build/App ".parameters/${arr[$SLURM_ARRAY_TASK_ID]}"
+srun ./build/App "parameters/${arr[$SLURM_ARRAY_TASK_ID]}"
