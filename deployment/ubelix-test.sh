@@ -12,7 +12,7 @@
 # Runtime and memory
 #SBATCH --time=12:00:00
 #SBATCH --mem-per-cpu=2G
-##SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=1
 
 # Partition
 #SBATCH --partition=all
@@ -35,6 +35,12 @@
 
 declare -a arr=(
 		"default.yml"
+		"default2.yml"
 )
 
-  srun echo "test_${SLURM_ARRAY_TASK_ID}"
+for i in "${arr[@]}"
+do
+echo $i
+    srun  echo ${i}
+
+done
