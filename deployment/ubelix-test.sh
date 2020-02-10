@@ -42,4 +42,4 @@ declare -a arr=(
 )
 
 
- echo ${arr[$SLURM_ARRAY_TASK_ID]}
+srun echo ${arr[$SLURM_ARRAY_TASK_ID]}
