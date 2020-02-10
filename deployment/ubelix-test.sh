@@ -7,17 +7,18 @@
 #SBATCH --mail-type=end,fail
 
 # Job name
-#SBATCH --job-name="Example Job"
+#SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=01:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem-per-cpu=2G
+##SBATCH --cpus-per-task=1
 
 # Partition
 #SBATCH --partition=all
 
 # For parallel jobs
-##SBATCH --cpus-per-task=8
+
 ##SBATCH --nodes=2
 ##SBATCH --ntasks=8
 ##SBATCH --ntasks-per-node=4
@@ -28,20 +29,12 @@
 
 # For array jobs
 # Array job containing 100 tasks, run max 10 tasks at the same time
-##SBATCH --array=1-100%10
+##SBATCH --array=1-10
 
 #### Your shell commands below this line ####
 
-
-
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-
 declare -a arr=(
-
 		"default.yml"
 )
 
-for i in "${arr[@]}"
-do
-  srun echo "test_${i}"
-done
+  srun echo "test_${SLURM_ARRAY_TASK_ID}"
