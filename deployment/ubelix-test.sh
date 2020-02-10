@@ -41,12 +41,5 @@ declare -a arr=(
 		"1023wafdsf"
 )
 
-for i in "${arr[@]}"
-do
 
-if (${SLURM_ARRAY_TASK_ID} == ${i}); then
- srun echo ${i}
-
-fi
-
-done
+ echo ${arr[$SLURM_ARRAY_TASK_ID]}
