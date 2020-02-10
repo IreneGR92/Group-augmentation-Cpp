@@ -32,7 +32,6 @@
 #SBATCH --array=0-68
 
 #### Your shell commands below this line ####
-cd build
 
 declare -a arr=(
 
@@ -120,4 +119,4 @@ declare -a arr=(
 		)
 
 
-srun ./App "../parameters/${arr[$SLURM_ARRAY_TASK_ID]}"
+srun ./build/App ".parameters/${arr[$SLURM_ARRAY_TASK_ID]}"
