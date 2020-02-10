@@ -10,18 +10,18 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=12:00:00
+#SBATCH --time=00:00:10
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
 # Partition
-#SBATCH --partition=all
+#SBATCH --partition=debug
 
 # For parallel jobs
 
-##SBATCH --nodes=2
-##SBATCH --ntasks=8
-##SBATCH --ntasks-per-node=4
+##SBATCH --nodes=5
+##SBATCH --ntasks=5
+##SBATCH --ntasks-per-node=1
 
 
 ##SBATCH --output=/path/to/outfile
@@ -29,18 +29,22 @@
 
 # For array jobs
 # Array job containing 100 tasks, run max 10 tasks at the same time
-##SBATCH --array=1-10
+#SBATCH --array=0-4
 
 #### Your shell commands below this line ####
 
 declare -a arr=(
 		"default.yml"
 		"default2.yml"
+		"bla"
+		"test"
+		"1023wafdsf"
 )
 
 for i in "${arr[@]}"
 do
-echo $i
-    srun  echo ${i}
+
+if[ ${SLURM_ARRAY_TASK_ID} == ${i}]; then
+ srun echo ${i}
 
 done
