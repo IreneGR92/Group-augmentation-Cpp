@@ -28,7 +28,7 @@
 ##SBATCH --error=/path/to/errfile
 
 # For array jobs
-# Array job containing 100 tasks, run max 10 tasks at the same time
+# Indicate how many input files you have
 #SBATCH --array=0-68
 
 #### Your shell commands below this line ####
@@ -37,40 +37,40 @@ declare -a arr=(
 
 #   LOGISTIC SURVIVAL DEFAULT  #
 
-    "Logistic_formula/bias1.yml"
-    "Logistic_formula/bias1-RN.yml"
-    "Logistic_formula/bias2.yml"
-    "Logistic_formula/bias2-RN.yml"
-    "Logistic_formula/bias3.yml"
-    "Logistic_formula/bias3-RN.yml"
-    "Logistic_formula/bias4.yml"
-    "Logistic_formula/bias4-RN.yml"
-    "Logistic_formula/bias1-m01.yml"
-    "Logistic_formula/bias1-RN-m01.yml"
-    "Logistic_formula/bias2-m01.yml"
-    "Logistic_formula/bias2-RN-m01.yml"
-    "Logistic_formula/bias3-m01.yml"
-    "Logistic_formula/bias3-RN-m01.yml"
-    "Logistic_formula/bias4-m01.yml"
-    "Logistic_formula/bias4-RN-m01.yml"
-    "Logistic_formula/bias1-m03.yml"
-    "Logistic_formula/bias1-RN-m03.yml"
-    "Logistic_formula/bias2-m03.yml"
-    "Logistic_formula/bias2-RN-m03.yml"
-    "Logistic_formula/bias3-m03.yml"
-    "Logistic_formula/bias3-RN-m03.yml"
-    "Logistic_formula/bias4-m03.yml"
-    "Logistic_formula/bias4-RN-m03.yml"
-    "Logistic_formula/K2.yml"
-    "Logistic_formula/K2-RN.yml"
-    "Logistic_formula/Xh2.yml"
-    "Logistic_formula/Xh2-RN.yml"
-    "Logistic_formula/Xn1.yml"
-    "Logistic_formula/Xn1-RN.yml"
-    "Logistic_formula/Xn0-NRN.yml"
-    "Logistic_formula/Xn0-RN.yml"
-    "Logistic_formula/RN-help.yml"
-    "Logistic_formula/RN-dispersal.yml"
+    "default/bias1.yml"
+    "default/bias1-RN.yml"
+    "default/bias2.yml"
+    "default/bias2-RN.yml"
+    "default/bias3.yml"
+    "default/bias3-RN.yml"
+    "default/bias4.yml"
+    "default/bias4-RN.yml"
+    "default/bias1-m01.yml"
+    "default/bias1-RN-m01.yml"
+    "default/bias2-m01.yml"
+    "default/bias2-RN-m01.yml"
+    "default/bias3-m01.yml"
+    "default/bias3-RN-m01.yml"
+    "default/bias4-m01.yml"
+    "default/bias4-RN-m01.yml"
+    "default/bias1-m03.yml"
+    "default/bias1-RN-m03.yml"
+    "default/bias2-m03.yml"
+    "default/bias2-RN-m03.yml"
+    "default/bias3-m03.yml"
+    "default/bias3-RN-m03.yml"
+    "default/bias4-m03.yml"
+    "default/bias4-RN-m03.yml"
+    "default/K2.yml"
+    "default/K2-RN.yml"
+    "default/Xh2.yml"
+    "default/Xh2-RN.yml"
+    "default/Xn1.yml"
+    "default/Xn1-RN.yml"
+    "default/Xn0-NRN.yml"
+    "default/Xn0-RN.yml"
+    "default/RN-help.yml"
+    "default/RN-dispersal.yml"
 
 
 
