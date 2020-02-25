@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-68
+#SBATCH --array=0-1 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -72,11 +72,14 @@ declare -a arr=(
 #    "default/RN-help.yml"
 #    "default/RN-dispersal.yml"
 
-    "default/Xn0-K5-RN.yml"
-    "default/Xn0-K10-RN.yml"
-    "default/Xn0-K5-NRN.yml"
-    "default/Xn0-K10-NRN.yml"
-    "default/bias2-Dispersal05.yml"
+#    "default/Xn0-K5-RN.yml"
+#    "default/Xn0-K10-RN.yml"
+#    "default/Xn0-K5-NRN.yml"
+#    "default/Xn0-K10-NRN.yml"
+#    "default/bias2-Dispersal05.yml"
+    "default/bias3-RN-Dispersal05.yml"
+    "default/RN-help-Dispersal05.yml"
+
 
 
 
