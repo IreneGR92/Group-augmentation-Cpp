@@ -71,12 +71,8 @@ declare -a arr=(
 #    "default/Xn0-RN.yml"
 #    "default/RN-help.yml"
 #    "default/RN-dispersal.yml"
-
-    "default/Xn0-K5-RN.yml"
-    "default/Xn0-K10-RN.yml"
-    "default/Xn0-K5-NRN.yml"
-    "default/Xn0-K10-NRN.yml"
-    "default/bias2-Dispersal05.yml"
+    "default/K05.yml"
+    "default/K05-RN.yml"
 
 
 
