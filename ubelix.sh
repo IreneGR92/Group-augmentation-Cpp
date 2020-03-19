@@ -10,7 +10,7 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=24:00:00
+#SBATCH --time=36:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-39 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-3 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -37,42 +37,42 @@ declare -a arr=(
 
 #   LOGISTIC SURVIVAL DEFAULT  #
 
-    "default/bias1.yml"
-    "default/bias1-RN.yml"
-    "default/bias2.yml"
-    "default/bias2-RN.yml"
-    "default/bias3.yml"
-    "default/bias3-RN.yml"
-    "default/bias4.yml"
-    "default/bias4-RN.yml"
-    "default/bias1-m01.yml"
+#    "default/bias1.yml"
+#    "default/bias1-RN.yml"
+#    "default/bias2.yml"
+#    "default/bias2-RN.yml"
+#    "default/bias3.yml"
+#    "default/bias3-RN.yml"
+#    "default/bias4.yml"
+#    "default/bias4-RN.yml"
+#    "default/bias1-m01.yml"
     "default/bias1-RN-m01.yml"
-    "default/bias2-m01.yml"
+#    "default/bias2-m01.yml"
     "default/bias2-RN-m01.yml"
-    "default/bias3-m01.yml"
+#    "default/bias3-m01.yml"
     "default/bias3-RN-m01.yml"
-    "default/bias4-m01.yml"
+#    "default/bias4-m01.yml"
     "default/bias4-RN-m01.yml"
-    "default/bias1-m03.yml"
-    "default/bias1-RN-m03.yml"
-    "default/bias2-m03.yml"
-    "default/bias2-RN-m03.yml"
-    "default/bias3-m03.yml"
-    "default/bias3-RN-m03.yml"
-    "default/bias4-m03.yml"
-    "default/bias4-RN-m03.yml"
-    "default/K2.yml"
-    "default/K2-RN.yml"
-    "default/K05.yml"
-    "default/K05-RN.yml"
-    "default/Xh2.yml"
-    "default/Xh2-RN.yml"
-    "default/Xn1.yml"
-    "default/Xn1-RN.yml"
-    "default/Xn0-NRN.yml"
-    "default/Xn0-RN.yml"
-    "default/RN-help.yml"
-    "default/RN-dispersal.yml"
+#    "default/bias1-m03.yml"
+#    "default/bias1-RN-m03.yml"
+#    "default/bias2-m03.yml"
+#    "default/bias2-RN-m03.yml"
+#    "default/bias3-m03.yml"
+#    "default/bias3-RN-m03.yml"
+#    "default/bias4-m03.yml"
+#    "default/bias4-RN-m03.yml"
+#    "default/K2.yml"
+#    "default/K2-RN.yml"
+#    "default/K05.yml"
+#    "default/K05-RN.yml"
+#    "default/Xh2.yml"
+#    "default/Xh2-RN.yml"
+#    "default/Xn1.yml"
+#    "default/Xn1-RN.yml"
+#    "default/Xn0-NRN.yml"
+#    "default/Xn0-RN.yml"
+#    "default/RN-help.yml"
+#    "default/RN-dispersal.yml"
 
 
 
@@ -112,11 +112,11 @@ declare -a arr=(
 
 #   LOW SURVIVAL FLOATERS  #
 
-    "LSF/LSF-n1-NRN.yml"
-    "LSF/LSF-n2-NRN.yml"
+#    "LSF/LSF-n1-NRN.yml"
+#    "LSF/LSF-n2-NRN.yml"
 #    "LSF/LSF-n3-NRN.yml"
-    "LSF/LSF-n1-RN.yml"
-    "LSF/LSF-n2-RN.yml"
+#    "LSF/LSF-n1-RN.yml"
+#    "LSF/LSF-n2-RN.yml"
 #    "LSF/LSF-n3-RN.yml"
 
 		)
