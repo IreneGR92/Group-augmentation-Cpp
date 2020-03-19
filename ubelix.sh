@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-3 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-1 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -46,13 +46,13 @@ declare -a arr=(
 #    "default/bias4.yml"
 #    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
-    "default/bias1-RN-m01.yml"
+#    "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
-    "default/bias2-RN-m01.yml"
+#    "default/bias2-RN-m01.yml"
 #    "default/bias3-m01.yml"
-    "default/bias3-RN-m01.yml"
+#    "default/bias3-RN-m01.yml"
 #    "default/bias4-m01.yml"
-    "default/bias4-RN-m01.yml"
+#    "default/bias4-RN-m01.yml"
 #    "default/bias1-m03.yml"
 #    "default/bias1-RN-m03.yml"
 #    "default/bias2-m03.yml"
@@ -65,6 +65,8 @@ declare -a arr=(
 #    "default/K2-RN.yml"
 #    "default/K05.yml"
 #    "default/K05-RN.yml"
+    "default/K02.yml"
+    "default/K02-RN.yml"
 #    "default/Xh2.yml"
 #    "default/Xh2-RN.yml"
 #    "default/Xn1.yml"
