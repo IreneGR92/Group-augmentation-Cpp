@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-1 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-37 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -65,8 +65,8 @@ declare -a arr=(
 #    "default/K2-RN.yml"
 #    "default/K05.yml"
 #    "default/K05-RN.yml"
-    "default/K02.yml"
-    "default/K02-RN.yml"
+#    "default/K02.yml"
+#    "default/K02-RN.yml"
 #    "default/Xh2.yml"
 #    "default/Xh2-RN.yml"
 #    "default/Xn1.yml"
@@ -77,6 +77,46 @@ declare -a arr=(
 #    "default/RN-dispersal.yml"
 
 
+#   NO RELATEDNESS    #
+
+    "noRelatedness/bias1.yml"
+    "noRelatedness/bias1-RN.yml"
+    "noRelatedness/bias2.yml"
+    "noRelatedness/bias2-RN.yml"
+    "noRelatedness/bias3.yml"
+    "noRelatedness/bias3-RN.yml"
+    "noRelatedness/bias4.yml"
+    "noRelatedness/bias4-RN.yml"
+    "noRelatedness/bias1-m01.yml"
+    "noRelatedness/bias1-RN-m01.yml"
+    "noRelatedness/bias2-m01.yml"
+    "noRelatedness/bias2-RN-m01.yml"
+    "noRelatedness/bias3-m01.yml"
+    "noRelatedness/bias3-RN-m01.yml"
+    "noRelatedness/bias4-m01.yml"
+    "noRelatedness/bias4-RN-m01.yml"
+    "noRelatedness/bias1-m03.yml"
+    "noRelatedness/bias1-RN-m03.yml"
+    "noRelatedness/bias2-m03.yml"
+    "noRelatedness/bias2-RN-m03.yml"
+    "noRelatedness/bias3-m03.yml"
+    "noRelatedness/bias3-RN-m03.yml"
+    "noRelatedness/bias4-m03.yml"
+    "noRelatedness/bias4-RN-m03.yml"
+    "noRelatedness/K2.yml"
+    "noRelatedness/K2-RN.yml"
+    "noRelatedness/K05.yml"
+    "noRelatedness/K05-RN.yml"
+    "noRelatedness/K02.yml"
+    "noRelatedness/K02-RN.yml"
+    "noRelatedness/Xh2.yml"
+    "noRelatedness/Xh2-RN.yml"
+    "noRelatedness/Xn1.yml"
+    "noRelatedness/Xn1-RN.yml"
+    "noRelatedness/Xn0-NRN.yml"
+    "noRelatedness/Xn0-RN.yml"
+    "noRelatedness/RN-help.yml"
+    "noRelatedness/RN-dispersal.yml"
 
 
 #   NO GROUP AUGMENTATION  #
