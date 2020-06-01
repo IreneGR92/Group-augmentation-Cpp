@@ -65,7 +65,7 @@ void Simulation::run() {
 /* INITIALISE POPULATION */
 std::vector<Group> Simulation::initializeGroups() {
 
-    std::vector<Group> createdGroups(this->parameters->getMaxColonies(),Group(generation));
+    std::vector<Group> createdGroups(this->parameters->getMaxColonies(), Group(generation));
 
     assert(createdGroups.size() == Parameters::instance()->getMaxColonies());
 
@@ -83,8 +83,8 @@ void Simulation::reassignFloaters() {
         selectGroup = UniformMaxCol(*parameters->getGenerator());
         //floaterIt->getFishType() = HELPER; //modify the class
         groups[selectGroup].helpers.push_back(
-                *floaterIt); //add the floater to the helper std::vector in a randomly selected group
-        floaters.pop_back(); //remove the floater from its std::vector
+                *floaterIt); //add the floater to the helper vector in a randomly selected group
+        floaters.pop_back(); //remove the floater from its vector
     }
 }
 
@@ -93,7 +93,20 @@ void Simulation::disperse() {
     //Dispersal
     std::vector<Group, std::allocator<Group>>::iterator group;
     for (group = groups.begin(); group < groups.end(); ++group) {
-        group->disperse(floaters);
+        std::vector<Individual> noRelatedHelpers = group->disperse(floaters); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
+
+        if (!noRelatedHelpers.empty()) {
+            std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+            int selectGroup;
+            std::vector<Individual>::iterator NoRelatedHelperIt;
+            while (!noRelatedHelpers.empty()) {
+                NoRelatedHelperIt = noRelatedHelpers.end() - 1;
+                selectGroup = UniformMaxCol(*parameters->getGenerator());
+                groups[selectGroup].helpers.push_back(
+                        *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
+                noRelatedHelpers.pop_back(); //remove the no related helper from its vector
+            }
+        }
     }
 }
 

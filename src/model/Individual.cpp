@@ -53,18 +53,11 @@ void Individual::initializeIndividual(FishType fishType) {
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
 double Individual::calcDispersal() {
-    if (parameters->isNoRelatedness() && age == 1) {
-        dispersal = 1;
-
+    if (!parameters->isReactionNormDispersal()) {
+        dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
     } else {
-        if (!parameters->isReactionNormDispersal()) {
-
-            dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
-        } else {
-            dispersal = 1 / (1 + exp(betaAge * age - beta));
-        }
+        dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
-
     return dispersal;
 }
 

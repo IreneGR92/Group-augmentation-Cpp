@@ -28,7 +28,8 @@ public:
 
     void calculateGroupSize();
 
-    void disperse(std::vector<Individual> &floaters);
+    std::vector<Individual> disperse(std::vector<Individual> &floaters);
+
 
     void calculateCumulativeHelp();
 

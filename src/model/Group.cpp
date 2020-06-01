@@ -44,11 +44,13 @@ void Group::calculateGroupSize() {
 
 /*  DISPERSAL (STAY VS DISPERSE) */
 
-void Group::disperse(vector<Individual> &floaters) {
+vector<Individual> Group::disperse(vector<Individual> &floaters) {
     vector<Individual, std::allocator<Individual >>::iterator helper;
     helper = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
+
+    vector<Individual> noRelatedHelpers;
 
     while (!helpers.empty() && sizevec > counting) {
         helper->calcDispersal();
@@ -57,15 +59,24 @@ void Group::disperse(vector<Individual> &floaters) {
             helper->setInherit(false); //the location of the individual is not the natal territory
             floaters.push_back(*helper); //add the individual to the vector floaters in the last position
             floaters[floaters.size() - 1].setFishType(FLOATER);
-            *helper = helpers[helpers.size() -
-                              1]; // this and next line removes the individual from the helpers vector
+            *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
             helpers.pop_back();
             ++counting;
         } else {
-            helper->setFishType(HELPER); //individuals that stay or disperse to this group become floaters
-            ++helper, ++counting;
+            if (parameters->isNoRelatedness() && helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
+                helper->setInherit(false); //the location of the individual is not the natal territory
+                helper->setFishType(HELPER);
+                noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
+                *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
+                helpers.pop_back();
+                ++counting;
+            }else{
+                helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
+                ++helper, ++counting;
+            }
         }
     }
+    return noRelatedHelpers;
 }
 
 /*  CALCULATE CUMULATIVE LEVEL OF HELP */
