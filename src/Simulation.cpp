@@ -74,76 +74,17 @@ std::vector<Group> Simulation::initializeGroups() {
 
 
 void Simulation::reassignFloaters() {
-    if (!parameters->isNoRelatedness()) {
-        std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-        int selectGroup;
-        std::vector<Individual>::iterator floaterIt;
-        while (!floaters.empty()) {
-            floaterIt = floaters.end() - 1;
-            floaterIt->setHelp(0);
-            selectGroup = UniformMaxCol(*parameters->getGenerator());
-            //floaterIt->getFishType() = HELPER; //modify the class
-            groups[selectGroup].helpers.push_back(
-                    *floaterIt); //add the floater to the helper std::vector in a randomly selected group
-            floaters.pop_back(); //remove the floater from its std::vector
-        }
-    } else {
-
-        double sumCumHelp = 0;
-        double currentPosition = 0;
-        double RandP = parameters->uniform(*parameters->getGenerator());
-        int allNoHelp = 0;
-
-        std::vector<double> position; //std::vector of cumHelp to choose with higher likelihood the ind with higher age
-
-        std::vector<Group, std::allocator<Group>>::iterator groupIt;
-        for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-            sumCumHelp += 1 + groupIt->getCumHelp(); //add all the cumHelp from the std::vector Groups
-            if (groupIt->getCumHelp() !=
-                parameters->getMaxColonies()) { allNoHelp++; } //to check if all groups display cumhelp 0
-
-            //if (sumcumHelp != 0) { cout << "sumcumHelp =" << sumcumHelp << '\t' << "allNoHelp =" << allNoHelp << endl; } //track
-        }
-
-        if (allNoHelp != 0) {
-
-            for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-                position.push_back(static_cast<double>(1 + (groupIt)->getCumHelp()) / static_cast<double>(sumCumHelp) +
-                                   currentPosition); //creates a vector with proportional segments to the cumHelp of each group
-                currentPosition = position[position.size() - 1];
-            }
-
-            /*std::vector<Individual, std::allocator<Individual>>::iterator floatIt;
-            for (floatIt = floaters.begin(); floatIt < floaters.end(); ++floatIt) {
-                floatIt->getFishType() = HELPER; //all floaters pass to be helpers
-            }*/
-
-            while (!floaters.empty()) {
-                for (int i = 0; i < groups.size(); i++) {
-                    if (!floaters.empty()) {
-                        if (RandP < position[i]) //to access the same ind in the candidates std::vector
-                        {
-                            groups[i].helpers.push_back(floaters[floaters.size() -
-                                                                 1]); //add the floater to the helper std::vector in a randomly selected group
-                            floaters.pop_back();
-                        }
-                    }
-                }
-            }
-
-        } else {
-            std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-            int selectGroup;
-            std::vector<Individual>::iterator floatIt;
-            while (!floaters.empty()) {
-                floatIt = floaters.end() - 1;
-                selectGroup = UniformMaxCol(*parameters->getGenerator());
-                //floatIt->getFishType() = HELPER; //modify the class
-                groups[selectGroup].helpers.push_back(
-                        *floatIt); //add the floater to the helper std::vector in a randomly selected group
-                floaters.pop_back(); //remove the floater from its std::vector
-            }
-        }
+    std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+    int selectGroup;
+    std::vector<Individual>::iterator floaterIt;
+    while (!floaters.empty()) {
+        floaterIt = floaters.end() - 1;
+        floaterIt->setHelp(0);
+        selectGroup = UniformMaxCol(*parameters->getGenerator());
+        //floaterIt->getFishType() = HELPER; //modify the class
+        groups[selectGroup].helpers.push_back(
+                *floaterIt); //add the floater to the helper std::vector in a randomly selected group
+        floaters.pop_back(); //remove the floater from its std::vector
     }
 }
 

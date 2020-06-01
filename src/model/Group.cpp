@@ -254,12 +254,7 @@ void Group::increaseAge() {
 void Group::reproduce(int generation) // populate offspring generation
 {
     //Calculate fecundity
-    if (!parameters->isNoRelatedness()) {
-        fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
-    } else {
-        fecundity = parameters->getK0();
-    }
-
+    fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
     poisson_distribution<int> PoissonFecundity(fecundity);
     realFecundity = PoissonFecundity(*parameters->getGenerator()); //integer number
