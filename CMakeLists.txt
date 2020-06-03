@@ -20,7 +20,7 @@ add_executable(App ${SOURCE_FILES})
 
 
 
-target_link_libraries(App PUBLIC ~/git/yaml-cpp/libyaml-cpp.so.0.6.2)
+target_link_libraries(App PUBLIC ~/git/yaml-cpp/libyaml-cpp.so)
 
 
 
