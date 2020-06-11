@@ -3,9 +3,9 @@
 #define GROUP_AUGMENTATION_STATISTICS_H
 
 
-#include "model/Group.h"
-#include "model/Individual.h"
-#include "Simulation.h"
+#include "../model/Group.h"
+#include "../model/Individual.h"
+#include "../Simulation.h"
 
 class Statistics {
 

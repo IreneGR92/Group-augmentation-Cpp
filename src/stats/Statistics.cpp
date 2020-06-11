@@ -3,8 +3,8 @@
 #include <assert.h>
 
 #include "Statistics.h"
-#include "model/Group.h"
-#include "model/Individual.h"
+#include "../model/Group.h"
+#include "../model/Individual.h"
 
 using namespace std;
 

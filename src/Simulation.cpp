@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "Simulation.h"
-#include "Statistics.h"
+#include "stats/Statistics.h"
 
 
 Simulation::Simulation(const int replica)

@@ -1,0 +1,15 @@
+#ifndef GROUP_AUGMENTATION_DATAMODEL_H
+#define GROUP_AUGMENTATION_DATAMODEL_H
+
+
+class DataModel {
+
+    int deaths;
+
+
+
+
+};
+
+
+#endif //GROUP_AUGMENTATION_DATAMODEL_H

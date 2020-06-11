@@ -21,7 +21,7 @@
 #include <iostream>
 #include "Parameters.h"
 #include "Simulation.h"
-#include "Statistics.h"
+#include "stats/Statistics.h"
 
 using namespace std;
 
