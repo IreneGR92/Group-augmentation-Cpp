@@ -16,9 +16,7 @@ public:
 
     double calculateMean();
 
-    double calculateCorrelation();
-
-    StatisticalSum merge(StatisticalSum statisticalSum);
+    void merge(StatisticalSum statisticalSum);
 
     int size();
 

@@ -26,14 +26,9 @@ double StatisticalSum::calculateMean() {
     return sum / individualValues.size();
 }
 
-
-double StatisticalSum::calculateCorrelation() {
-
-    return 0;
-}
-
-StatisticalSum StatisticalSum::merge(StatisticalSum statisticalSum) {
-    return StatisticalSum();
+void StatisticalSum::merge(StatisticalSum statisticalSum) {
+    this->individualValues.insert(individualValues.end(), statisticalSum.individualValues.begin(),
+                                  statisticalSum.individualValues.end());
 }
 
 int StatisticalSum::size() {
