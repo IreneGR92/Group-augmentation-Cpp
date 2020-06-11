@@ -277,16 +277,96 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
            stdevSurvivalBreeder >= 0 && "[ERROR] SD negative");
 
     //Correlations
-    (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ?
-            corr_HelpDispersal =
-                    (sumprodHelpDispersal / countHelpers - meanHelp * meanDispersal) / (stdevHelp * stdevDispersal) :
-            corr_HelpDispersal = 0;
+//    (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ?
+//            corr_HelpDispersal =
+//                    (sumprodHelpDispersal / countHelpers - meanHelp * meanDispersal) / (stdevHelp * stdevDispersal) :
+//            corr_HelpDispersal = 0;
 
-    (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSize > 0) ?
-            corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSizeHelp) /
-                             (stdevCumHelp * stdevGroupSizeHelp) :
+
+
+    if (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) {
+        double X;
+        double Y;
+        double sumProductXY = 0;
+        double sumProductXX = 0;
+        double sumProductYY = 0;
+
+        vector<Group, std::allocator<Group >>::iterator groupsIt;
+        for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+
+            // HELPERS
+            vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
+            for (helperIt = groupsIt->helpers.begin();
+                 helperIt < groupsIt->helpers.end(); ++helperIt) {
+                if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
+                    X = (helperIt->getHelp() - meanHelp);
+                    Y = (helperIt->getDispersal() - meanDispersal);
+
+                    sumProductXY += X * Y;
+                    sumProductXX += X * X;
+                    sumProductYY += Y * Y;
+                }
+            }
+        }
+        stdevHelp = sqrt(sumProductXX / countHelpers);
+        stdevDispersal = sqrt(sumProductYY / countHelpers);
+
+        if (stdevHelp == 0 || stdevDispersal == 0) {
+            corr_HelpDispersal =0;
+        }else{
+            corr_HelpDispersal = sumProductXY / (stdevHelp * stdevDispersal * countHelpers);
+        }
+
+    } else {
+        corr_HelpDispersal = 0;
+    }
+
+
+
+//    (countGroupWithHelpers > 0 && stdevCumHelp > 0 && stdevGroupSizeHelp > 0) ?
+//            corr_HelpGroup = (sumprodHelpGroup / countGroupWithHelpers - meanCumHelp * meanGroupSizeHelp) /
+//                             (stdevCumHelp * stdevGroupSizeHelp) :
+//            corr_HelpGroup = 0;
+
+
+    if (countHelpers > 0 && stdevCumHelp > 0 && stdevGroupSizeHelp > 0) {
+        double X;
+        double Y;
+        double sumProductXY = 0;
+        double sumProductXX = 0;
+        double sumProductYY = 0;
+
+        vector<Group, std::allocator<Group >>::iterator groupsIt;
+        for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+
+            X = (groupsIt->getCumHelp() - meanCumHelp);
+            Y = (groupsIt->getGroupSize() - meanGroupSizeHelp);
+
+            sumProductXY += X * Y;
+            sumProductXX += X * X;
+            sumProductYY += Y * Y;
+
+        }
+        stdevCumHelp = sqrt(sumProductXX / countGroupWithHelpers);
+        stdevGroupSizeHelp = sqrt(sumProductYY / countGroupWithHelpers);
+
+        if (stdevCumHelp == 0 || stdevGroupSizeHelp == 0) {
             corr_HelpGroup = 0;
+        }else{
+            corr_HelpGroup = sumProductXY / (stdevCumHelp * stdevGroupSizeHelp * countGroupWithHelpers);
+        }
+    } else {
+        corr_HelpGroup = 0;
+    }
+
+    if (abs(corr_HelpDispersal) > 1 || abs(corr_HelpGroup > 1)) {
+        cout << "Correlation problem = " << corr_HelpDispersal << '\t' << corr_HelpGroup <<endl;
+        assert(abs(corr_HelpDispersal) <= 1 || abs(corr_HelpGroup) <= 1 && "[ERROR] correlation out of range");
+    }
 }
+
+
+
 
 void Statistics::printHeadersToConsole() {
     // column headings on screen
