@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <assert.h>
 
 #include "Statistics.h"
 #include "model/Group.h"
@@ -78,7 +79,9 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
             if (!isnan(helperIt->getDispersal())) {
                 sumDispersal += helperIt->getDispersal();
                 sumsqDispersal += helperIt->getDispersal() * helperIt->getDispersal();
+            }
 
+            if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
                 sumprodHelpDispersal += helperIt->getHelp() * helperIt->getDispersal();
             }
 
@@ -240,10 +243,8 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     varSurvivalFloater = sumsqSurvivalFloater / totalFloaters - meanSurvivalFloater * meanSurvivalFloater;
     varSurvivalBreeder = sumsqSurvivalBreeder / countBreeders - meanSurvivalBreeder * meanSurvivalBreeder;
 
-    /*if (varGroupSize < 0 || varAlpha < 0 || varBeta < 0 || varAge < 0 ||
-        varDispersal < 0 | varHelp < 0 || varCumHelp < 0 || varSurvival < 0) {
-        cout << "error variance negative" << endl;
-    }*/
+    assert(varGroupSize >= 0 || varAlpha >= 0 || varAlphaAge >= 0 || varBeta >= 0 || varBetaAge >= 0 || varAge >= 0 ||
+           varDispersal >= 0 || varHelp >= 0 || varCumHelp >= 0 || varSurvival >= 0 && "[ERROR] variance negative");
 
     // SD
     varGroupSize > 0 ? stdevGroupSize = sqrt(varGroupSize) : stdevGroupSize = 0;
@@ -267,6 +268,13 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     varSurvivalHelper > 0 ? stdevSurvivalHelper = sqrt(varSurvivalHelper) : stdevSurvivalHelper = 0;
     varSurvivalFloater > 0 ? stdevSurvivalFloater = sqrt(varSurvivalFloater) : stdevSurvivalFloater = 0;
     varSurvivalBreeder > 0 ? stdevSurvivalBreeder = sqrt(varSurvivalBreeder) : stdevSurvivalBreeder = 0;
+
+    assert(stdevGroupSize >= 0 || stdevGroupSize >= 0 || stdevAlpha >= 0 || stdevAlphaAge >= 0 ||
+           stdevBeta >= 0 || stdevBetaAge >= 0 || stdevAge >= 0 || stdevAgeHelper >= 0 || stdevAgeFloater >= 0 ||
+           stdevAgeBreeder >= 0 ||
+           stdevHelp >= 0 || stdevCumHelp >= 0 || stdevDispersal >= 0 ||
+           stdevSurvival >= 0 || stdevSurvivalHelper >= 0 || stdevSurvivalFloater >= 0 ||
+           stdevSurvivalBreeder >= 0 && "[ERROR] SD negative");
 
     //Correlations
     (countHelpers > 0 && stdevHelp > 0 && stdevDispersal > 0) ?
@@ -440,7 +448,6 @@ void Statistics::printIndividual(Individual individual, int generation, int grou
                                            << "\t" << setprecision(4) << individual.getSurvival()
                                            << endl;
 }
-
 
 
 
