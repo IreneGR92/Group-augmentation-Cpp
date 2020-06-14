@@ -58,6 +58,8 @@ public:
 
     bool isHelpersPresent() const;
 
+    std::vector<double> get(GeneType) const;
+
 
 };
 

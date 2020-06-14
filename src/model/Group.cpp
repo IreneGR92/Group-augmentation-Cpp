@@ -309,6 +309,14 @@ bool Group::isHelpersPresent() const {
     return helpersPresent;
 }
 
+std::vector<double> Group::get(GeneType type) const {
+    std::vector<double> result = helpers.get(type);
+    if (isBreederAlive()) {
+        result.push_back(breeder.get(type));
+    }
+    return result;
+}
+
 
 
 
