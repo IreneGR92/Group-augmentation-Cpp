@@ -123,7 +123,9 @@ void Group::survivalGroup() {
 
 }
 
-void Group::mortalityGroup(int &deaths) {
+int Group::mortalityGroup() {
+
+    int death = 0;
 
     calculateGroupSize(); //update group size after dispersal
 
@@ -132,13 +134,12 @@ void Group::mortalityGroup(int &deaths) {
     int sizevec = helpers.size();
     int counting = 0;
     while (!helpers.empty() && sizevec > counting) {
-
         //Mortality helpers
         if (parameters->uniform(*parameters->getGenerator()) > helperIt->getSurvival()) {
             *helperIt = helpers[helpers.size() - 1];
             helpers.pop_back();
             ++counting;
-            deaths++;
+            death++;
         } else
             ++helperIt, ++counting; //go to next individual
     }
@@ -146,14 +147,15 @@ void Group::mortalityGroup(int &deaths) {
     //Mortality breeder
     if (parameters->uniform(*parameters->getGenerator()) > breeder.getSurvival()) {
         breederAlive = false;
-        deaths++;
+        death++;
     }
+    return death;
 }
 
 
 /* BECOME BREEDER */
 
-void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
+void Group::newBreeder(DataModel &model) {
     //    Select a random sample from the floaters
     int i = 0;
     int sumAge = 0;
@@ -161,15 +163,17 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     int floaterSampledID;
     double RandP = parameters->uniform(*parameters->getGenerator());
     int proportionFloaters;
-    proportionFloaters = round(floaters.size() * parameters->getBiasFloatBreeder() / parameters->getMaxColonies());
+    proportionFloaters = round(
+            model.getFloaters().size() * parameters->getBiasFloatBreeder() / parameters->getMaxColonies());
 
     vector<Individual *> Candidates;
     vector<double> position; //vector of age to choose with higher likelihood the ind with higher age
     vector<int> TemporaryCandidates; // to prevent taking the same ind several times in the sample
 
-    if (!floaters.empty() && floaters.size() > proportionFloaters) {
+    if (!model.getFloaters().empty() && model.getFloaters().size() > proportionFloaters) {
         while (i < proportionFloaters) {
-            uniform_int_distribution<int> UniformFloat(0, floaters.size() - 1); //random floater ID taken in the sample
+            uniform_int_distribution<int> UniformFloat(0, model.getFloaters().size() -
+                                                          1); //random floater ID taken in the sample
             floaterSampledID = UniformFloat(*parameters->getGenerator());
             TemporaryCandidates.push_back(floaterSampledID); //add references of the floaters sampled to a vector
             sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
@@ -186,10 +190,10 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                 temp = *itTempCandidates;
             }
         }
-    } else if (!floaters.empty() && floaters.size() <
-                                    proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+    } else if (!model.getFloaters().empty() && model.getFloaters().size() <
+                                               proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
         vector<Individual, std::allocator<Individual>>::iterator floaterIt;
-        for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
+        for (floaterIt = model.getFloaters().begin(); floaterIt < model.getFloaters().end(); ++floaterIt) {
             Candidates.push_back(&(*floaterIt));
         }
     }

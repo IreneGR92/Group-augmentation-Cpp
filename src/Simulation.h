@@ -4,6 +4,7 @@
 
 #include "Parameters.h"
 #include "model/Group.h"
+#include "model/DataModel.h"
 
 class Simulation {
 
@@ -15,11 +16,9 @@ class Simulation {
 
     const int replica;
 
+    DataModel model;
+
     int generation = 0;
-
-    int deaths = 0;
-
-    int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 
     void survivalFloaters();
@@ -62,14 +61,6 @@ public:
     const int getReplica() const;
 
     int getGeneration() const;
-
-    int getDeaths() const;
-
-    int getNewbreederFloater() const;
-
-    int getNewbreederHelper() const;
-
-    int getInheritance() const;
 
 };
 

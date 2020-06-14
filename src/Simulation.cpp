@@ -19,15 +19,13 @@ void Simulation::run() {
 
     statistics.calculateStatistics(groups, floaters);
     statistics.printHeadersToConsole();
-    statistics.printToConsole(generation, deaths);
-    statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+    statistics.printToConsole(generation, model.getDeaths());
+    statistics.printToFile(replica, generation, model.getDeaths(), model.getNewBreederFloater(),
+                           model.getNewBreederHelper(), model.getInheritance());
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {
 
-        deaths = 0; // to keep track of how many individuals die each generation
-        newBreederFloater = 0;
-        newBreederHelper = 0;
-        inheritance = 0;
+        model.prepareGeneration();
 
         reassignFloaters();
         this->disperse();
@@ -52,8 +50,9 @@ void Simulation::run() {
 
         // Print main file (separately since we need values of deaths, newBreederFloater, newBreederHelper and inheritance to be calculated)
         if (generation % parameters->getSkip() == 0) {
-            statistics.printToConsole(generation, deaths);
-            statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+            statistics.printToConsole(generation, model.getDeaths());
+            statistics.printToFile(replica, generation, model.getDeaths(), model.getNewBreederFloater(),
+                                   model.getNewBreederHelper(), model.getInheritance());
         }
 
         this->increaseAge();
@@ -92,8 +91,9 @@ void Simulation::reassignFloaters() {
 void Simulation::disperse() {
     //Dispersal
     std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        std::vector<Individual> noRelatedHelpers = group->disperse(floaters); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
+    for (Group group: groups) {
+        std::vector<Individual> noRelatedHelpers = group.disperse(
+                floaters); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
 
         if (!noRelatedHelpers.empty()) {
             std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
@@ -138,9 +138,8 @@ void Simulation::survivalFloaters() {
 
 void Simulation::mortality() {
     //Mortality of helpers and breeders
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        groupIt->mortalityGroup(deaths);
+    for (Group group:groups) {
+        model.addDeath(group.mortalityGroup());
     }
     this->mortalityFloaters();
 
@@ -157,7 +156,7 @@ void Simulation::mortalityFloaters() { //Calculate the survival of the floaters
         if (parameters->uniform(*parameters->getGenerator()) > floaterIt->getSurvival()) {
             *floaterIt = floaters[floaters.size() - 1];
             floaters.pop_back();
-            deaths++;
+            model.increaseDeath();
         } else {
             floaterIt++; //go to next individual
         }
@@ -165,10 +164,10 @@ void Simulation::mortalityFloaters() { //Calculate the survival of the floaters
 }
 
 void Simulation::newBreeder() {
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        if (!groupIt->isBreederAlive()) {
-            groupIt->newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
+    for (Group group: model.getGroups()) {
+        if (!group.isBreederAlive()) {
+            group.newBreeder(floaters, model.getNewBreederFloater(), model.getNewBreederHelper(),
+                             model.getInheritance());
         }
     }
 }
@@ -211,22 +210,6 @@ const int Simulation::getReplica() const {
 
 int Simulation::getGeneration() const {
     return generation;
-}
-
-int Simulation::getDeaths() const {
-    return deaths;
-}
-
-int Simulation::getNewbreederFloater() const {
-    return newBreederFloater;
-}
-
-int Simulation::getNewbreederHelper() const {
-    return newBreederHelper;
-}
-
-int Simulation::getInheritance() const {
-    return inheritance;
 }
 
 
