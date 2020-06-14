@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(group_augmentation C CXX)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
 
-set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Individual.cpp src/model/Individual.h src/model/FishType.h src/model/Group.cpp src/model/Group.h src/Simulation.cpp src/Simulation.cpp src/Simulation.h src/stats/Statistics.cpp src/stats/Statistics.h src/model/DataModel.cpp src/model/DataModel.h src/stats/StatisticalSum.cpp src/stats/StatisticalSum.h src/model/GeneType.h)
+set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Individual.cpp src/model/Individual.h src/model/FishType.h src/model/Group.cpp src/model/Group.h src/Simulation.cpp src/Simulation.cpp src/Simulation.h src/stats/Statistics.cpp src/stats/Statistics.h src/model/DataModel.cpp src/model/DataModel.h src/stats/StatisticalSum.cpp src/stats/StatisticalSum.h src/model/GeneType.h src/model/IndividualVector.cpp src/model/IndividualVector.h)
 #set(YAML_DIR ../yaml-cpp)
 
 

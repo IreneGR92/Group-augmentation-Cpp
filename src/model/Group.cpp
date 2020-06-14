@@ -22,7 +22,6 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
     realFecundity = Parameters::NO_VALUE;
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
-
         helpers.emplace_back(
                 Individual(HELPER, generation));
     }
