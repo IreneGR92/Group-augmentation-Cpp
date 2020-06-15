@@ -184,6 +184,8 @@ void Statistics::calculateStatistics(vector<Group> groups, vector<Individual> fl
     //MEANS
     population = countBreeders + countHelpers + totalFloaters;
 
+    assert(population > 0);
+
     meanGroupSize = sumGroupSize / parameters->getMaxColonies();
     countGroupWithHelpers == 0 ? meanGroupSizeHelp = 0 : meanGroupSizeHelp = sumGroupSizeHelp / countGroupWithHelpers;
 
