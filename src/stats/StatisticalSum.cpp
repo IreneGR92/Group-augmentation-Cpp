@@ -21,8 +21,14 @@ void StatisticalSum::addValue(double toAdd) {
 
 double StatisticalSum::calculateMean() {
     double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
+    double counter = individualValues.size();
 
-    return sum / individualValues.size();
+    if (counter > 0){
+        return sum / counter;
+    }else{
+        return -1; //TODO: or 0?
+    }
+
 }
 
 void StatisticalSum::merge(StatisticalSum statisticalSum) {

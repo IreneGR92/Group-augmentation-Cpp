@@ -10,7 +10,6 @@ class StatisticalSum {
     std::vector<double> individualValues;
 
 public:
-    double calculateStandardDeviation();
 
     void addValue(double toAdd);
 
