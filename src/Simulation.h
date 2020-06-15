@@ -4,6 +4,7 @@
 
 #include "Parameters.h"
 #include "model/Group.h"
+#include "model/GroupVector.h"
 
 class Simulation {
 
@@ -11,7 +12,7 @@ class Simulation {
 
     IndividualVector floaters;
 
-    std::vector<Group> groups;
+    GroupVector groups;
 
     const int replica;
 

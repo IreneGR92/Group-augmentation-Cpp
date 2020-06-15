@@ -64,7 +64,7 @@ class Statistics {
 public:
     Statistics();
 
-    void calculateStatistics(std::vector<Group> groups, IndividualVector floaters);
+    void calculateStatistics(GroupVector groups, IndividualVector floaters);
 
     void printHeadersToConsole();
 
