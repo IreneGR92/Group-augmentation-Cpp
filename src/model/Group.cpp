@@ -307,11 +307,20 @@ bool Group::isHelpersPresent() const {
 
 std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
     std::vector<double> result;
+
+    if (attribute == GROUP_SIZE) {
+        result.push_back(groupSize);
+        return result;
+    } else if (attribute == CUMULATIVE_HELP) {
+        result.push_back(cumHelp);
+        return result;
+    }
     if (includeBreeder && isBreederAlive()) {
         result.push_back(breeder.get(attribute));
     }
-    for (Individual helper: helpers) {
-        result.push_back(helper.get(attribute));
+    for (Individual helper:helpers) {
+        result.push_back(helper.get(attribute)
+        );
     }
     return result;
 }

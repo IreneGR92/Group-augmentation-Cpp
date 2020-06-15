@@ -9,7 +9,7 @@
 using namespace std;
 
 /* CALCULATE STATISTICS */
-void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floaters) {
+void Statistics::calculateStatistics(GroupVector groups, IndividualVector floaters) {
 
     //Counters
     population = 0, totalFloaters = 0, countGroupWithHelpers = 0, totalHelpers = 0, totalBreeders = 0,

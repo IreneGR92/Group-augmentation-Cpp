@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
 
-set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Individual.cpp src/model/Individual.h src/model/FishType.h src/model/Group.cpp src/model/Group.h src/Simulation.cpp src/Simulation.cpp src/Simulation.h src/stats/Statistics.cpp src/stats/Statistics.h src/stats/StatisticalSum.cpp src/stats/StatisticalSum.h src/model/Attribute.h src/model/IndividualVector.cpp src/model/IndividualVector.h)
+set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Individual.cpp src/model/Individual.h src/model/FishType.h src/model/Group.cpp src/model/Group.h src/Simulation.cpp src/Simulation.cpp src/Simulation.h src/stats/Statistics.cpp src/stats/Statistics.h src/stats/StatisticalSum.cpp src/stats/StatisticalSum.h src/model/Attribute.h src/model/IndividualVector.cpp src/model/IndividualVector.h src/model/GroupVector.cpp src/model/GroupVector.h)
 #set(YAML_DIR ../yaml-cpp)
 
 
