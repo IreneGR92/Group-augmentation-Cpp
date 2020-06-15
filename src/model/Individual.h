@@ -5,7 +5,7 @@
 
 #include "FishType.h"
 #include "../Parameters.h"
-#include "GeneType.h"
+#include "Attribute.h"
 
 class Individual {
 
@@ -75,7 +75,7 @@ public:
     void setInherit(bool inherit);
 
     //allows to iterate trough members
-    double get(GeneType geneType) const;
+    double get(Attribute geneType) const;
 };
 
 

@@ -37,8 +37,8 @@ class Statistics {
             meanSurvivalHelper, stdevSurvivalHelper, sumSurvivalHelper, sumsqSurvivalHelper, varSurvivalHelper,
             meanSurvivalFloater, stdevSurvivalFloater, sumSurvivalFloater, sumsqSurvivalFloater, varSurvivalFloater,
             meanDriftB, sumDriftB, meanDriftH, sumDriftH,            //relatedness related
-            meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,        //relatedness related
-            corr_HelpDispersal, sumprodHelpDispersal,
+    meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB,        //relatedness related
+    corr_HelpDispersal, sumprodHelpDispersal,
             corr_HelpGroup, sumprodHelpGroup;
 
     void printIndividual(Individual individual, int generation, int groupID, int replica);
@@ -46,7 +46,7 @@ class Statistics {
 public:
     Statistics();
 
-    void calculateStatistics(std::vector<Group> groups, std::vector<Individual> floaters);
+    void calculateStatistics(std::vector<Group> groups, IndividualVector floaters);
 
     void printHeadersToConsole();
 

@@ -251,7 +251,7 @@ void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-double Individual::get(GeneType type) const {
+double Individual::get(Attribute type) const {
     switch (type) {
         case ALPHA:
             return this->alpha;
@@ -269,6 +269,8 @@ double Individual::get(GeneType type) const {
             return this->survival;
         case DRIFT:
             return this->drift;
+        case AGE:
+            return this->age;
     }
 
     assert(false);
