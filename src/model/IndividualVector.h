@@ -6,8 +6,16 @@
 #include "Individual.h"
 
 struct IndividualVector : std::vector<Individual> {
-    [[nodiscard]] std::vector<double> get(GeneType) const;
 
+    std::vector<double> get(GeneType) const;
+
+    std::vector<Individual> getRandomSample();
+
+
+    IndividualVector();
+
+private:
+    Parameters *parameters;
 };
 
 

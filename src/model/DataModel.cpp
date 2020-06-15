@@ -58,3 +58,16 @@ void DataModel::increaseDeath() {
 void DataModel::addDeath(int newDeath) {
     this->deaths += newDeath;
 }
+
+void DataModel::increaseNewBreederFloater() {
+    this->newBreederFloater++;
+}
+
+void DataModel::increaseNewBreederHelper() {
+    this->newBreederHelper++;
+
+}
+
+void DataModel::increaseInheritance() {
+    this->inheritance++;
+}

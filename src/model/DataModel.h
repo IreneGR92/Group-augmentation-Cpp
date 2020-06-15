@@ -20,11 +20,11 @@ class DataModel {
 public:
     void prepareGeneration();
 
-    [[nodiscard]] int getDeaths() const;
+    int getDeaths() const;
 
     void setDeaths(int deaths);
 
-    [[nodiscard]] int getNewBreederFloater() const;
+    int getNewBreederFloater() const;
 
     void setNewBreederFloater(int newBreederFloater);
 
@@ -41,6 +41,12 @@ public:
     const std::vector<Group> &getGroups() const;
 
     void increaseDeath();
+
+    void increaseNewBreederFloater();
+
+    void increaseNewBreederHelper();
+
+    void increaseInheritance();
 
     void addDeath(int deaths);
 

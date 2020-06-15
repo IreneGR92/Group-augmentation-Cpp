@@ -6,7 +6,6 @@
 #include "Individual.h"
 #include "../Parameters.h"
 #include "IndividualVector.h"
-#include "DataModel.h"
 
 class Group {
 
@@ -40,7 +39,7 @@ public:
     //return death of group
     int mortalityGroup();
 
-    void newBreeder(DataModel &model);
+    IndividualVector newBreeder(std::vector<Individual> candidates);
 
     void increaseAge();
 

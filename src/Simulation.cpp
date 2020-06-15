@@ -166,8 +166,21 @@ void Simulation::mortalityFloaters() { //Calculate the survival of the floaters
 void Simulation::newBreeder() {
     for (Group group: model.getGroups()) {
         if (!group.isBreederAlive()) {
-            group.newBreeder(floaters, model.getNewBreederFloater(), model.getNewBreederHelper(),
-                             model.getInheritance());
+            Individual *theChosenOne = group.newBreeder(floaters.getRandomSample());
+
+            if (theChosenOne->getFishType() == FLOATER) {
+//                theChosenOne = floaters[floaters.size() - 1];
+                floaters.pop_back();
+                model.increaseNewBreederFloater();
+//
+            } else {
+                this->model.increaseNewBreederHelper();
+                if (theChosenOne->isInherit() == 1) {
+                    model.increaseInheritance();                    //calculates how many individuals that become breeders are natal to the territory
+                }
+
+            }
+            theChosenOne->setFishType(BREEDER);
         }
     }
 }

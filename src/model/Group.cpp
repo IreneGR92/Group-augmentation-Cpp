@@ -155,62 +155,27 @@ int Group::mortalityGroup() {
 
 /* BECOME BREEDER */
 
-void Group::newBreeder(DataModel &model) {
-    //    Select a random sample from the floaters
-    int i = 0;
+Individual Group::newBreeder(std::vector<Individual> candidates) {
+    //    Select a random candidates from the floaters
     int sumAge = 0;
     double currentPosition = 0; //age of the previous ind taken from Candidates
     int floaterSampledID;
-    double RandP = parameters->uniform(*parameters->getGenerator());
+    double randomP = parameters->uniform(*parameters->getGenerator());
     int proportionFloaters;
-    proportionFloaters = round(
-            model.getFloaters().size() * parameters->getBiasFloatBreeder() / parameters->getMaxColonies());
-
-    vector<Individual *> Candidates;
     vector<double> position; //vector of age to choose with higher likelihood the ind with higher age
-    vector<int> TemporaryCandidates; // to prevent taking the same ind several times in the sample
 
-    if (!model.getFloaters().empty() && model.getFloaters().size() > proportionFloaters) {
-        while (i < proportionFloaters) {
-            uniform_int_distribution<int> UniformFloat(0, model.getFloaters().size() -
-                                                          1); //random floater ID taken in the sample
-            floaterSampledID = UniformFloat(*parameters->getGenerator());
-            TemporaryCandidates.push_back(floaterSampledID); //add references of the floaters sampled to a vector
-            sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
-            i++;
-        }
-
-        int temp = 0;
-        vector<int, std::allocator<int>>::iterator itTempCandidates;
-        for (itTempCandidates = TemporaryCandidates.begin();
-             itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates) {
-            if (*itTempCandidates != temp) //to make sure the same ind is not taken more than ones
-            {
-                Candidates.push_back(&floaters[floaterSampledID]);
-                temp = *itTempCandidates;
-            }
-        }
-    } else if (!model.getFloaters().empty() && model.getFloaters().size() <
-                                               proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
-        vector<Individual, std::allocator<Individual>>::iterator floaterIt;
-        for (floaterIt = model.getFloaters().begin(); floaterIt < model.getFloaters().end(); ++floaterIt) {
-            Candidates.push_back(&(*floaterIt));
-        }
+    for (Individual helper: helpers) {
+        candidates.push_back(helper);
     }
 
-    //    Join the helpers in the group to the sample of floaters
-    vector<Individual, std::allocator<Individual>>::iterator helperIt;
-    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
-        Candidates.push_back(&(*helperIt));
-    }
 
     //    Choose breeder with higher likelihood for the highest age
     vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
-    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+    for (candidateIt = candidates.begin(); candidateIt < candidates.end(); ++candidateIt) {
         sumAge += (*candidateIt)->getAge(); //add all the age from the vector Candidates
     }
 
-    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+    for (candidateIt = candidates.begin(); candidateIt < candidates.end(); ++candidateIt) {
         position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) +
                            currentPosition); //creates a vector with proportional segments to the age of each individual
         currentPosition = position[position.size() - 1];
@@ -220,38 +185,25 @@ void Group::newBreeder(DataModel &model) {
 //        std::cout << "Error assigning empty floaters to Breeder" << endl;
 //    }
 
-    candidateIt = Candidates.begin();
-    int counting = 0;
-    while (counting < Candidates.size()) {
-        if (RandP < position[candidateIt - Candidates.begin()]) //to access the same ind in the candidates vector
+    candidateIt = candidates.begin();
+    for (int i = 0; i < candidates.size(); i++) {
+        if (randomP < position[candidateIt - candidates.begin()]) //to access the same ind in the candidates vector
         {
             breeder = **candidateIt; //substitute the previous dead breeder
             breederAlive = true;
 
-            if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
+            if ((*candidateIt)->getFishType() == HELPER) //delete the ind from the vector floaters
             {
-                **candidateIt = floaters[floaters.size() - 1];
-                floaters.pop_back();
-                newBreederFloater++;
-//                if ((*candidate3It)->inherit == 1) {
-//                    std::cout << "error in inheritance" << endl;
-//                }
-            } else {
+
                 **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
                 helpers.pop_back();
-                newBreederHelper++;
-                if ((*candidateIt)->isInherit() == 1) {
-                    inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
-                }
-            }
-
-            breeder.setFishType(BREEDER); //modify the class
-            counting = Candidates.size();//end loop
-        } else
-            ++candidateIt, ++counting;
+                i = candidates.size();//end loop
+            } else
+                candidateIt++;
+        }
     }
+    return &breeder;
 }
-
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
@@ -267,8 +219,7 @@ void Group::increaseAge() {
 
 /* REPRODUCTION */
 
-void Group::reproduce(int generation) // populate offspring generation
-{
+void Group::reproduce(int generation) { // populate offspring generation
     //Calculate fecundity
     fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
