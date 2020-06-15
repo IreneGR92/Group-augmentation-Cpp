@@ -32,7 +32,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
         helpers.insert(helpers.end(), group.getHelpers().begin(),
                        group.getHelpers().end());
 
-        //group.calculateGroupSize();
+        //group.calculateGroupSize(); //TODO: Look when it is calculated
         groupSizes.push_back(group.getGroupSize());
         cumHelps.push_back(group.getCumHelp());
     }
