@@ -49,9 +49,39 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     totalBreeders = breeders.size();
     population = totalBreeders + totalHelpers + totalFloaters;
 
-    //initialize the stats
+    //Initialize the stats
+
+    //Genes
     alpha.addValues(individualsAll.get(ALPHA));
     alphaAge.addValues(individualsAll.get(ALPHA_AGE));
+    beta.addValues(individualsAll.get(BETA));
+    betaAge.addValues(individualsAll.get(BETA_AGE));
+
+    //Phenotypes
+    age.addValues(individualsAll.get(AGE));
+    ageHelpers.addValues(helpers.get(AGE));
+    ageBreeders.addValues(breeders.get(AGE));
+    ageFloaters.addValues(floaters.get(AGE));
+
+    help.addValues(helpers.get(HELP));
+
+    dispersal.addValues(helpers.get(DISPERSAL));
+    dispersal.addValues(floaters.get(DISPERSAL));
+    dispersalHelpers.addValues(helpers.get(DISPERSAL));
+
+    survival.addValues(individualsAll.get(SURVIVAL));
+    survivalHelpers.addValues(helpers.get(SURVIVAL));
+    survivalBreeders.addValues(breeders.get(SURVIVAL));
+    survivalFloaters.addValues(floaters.get(SURVIVAL));
+
+//    //Relatedness
+//    driftB.addValues(breeders.get(DRIFT));
+//    driftH.addValues(helpers.get(DRIFT));
+
+    //Group attributes
+    groupSize.addValues(groupSizes);
+    cumulativeHelp.addValues(cumHelps);
+
 
     vector<Group, std::allocator<Group >>::iterator groupsIt;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {

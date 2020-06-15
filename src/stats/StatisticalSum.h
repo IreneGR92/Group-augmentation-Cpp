@@ -17,9 +17,17 @@ public:
 
     double calculateMean();
 
+    double calculateSD();
+
+    double correlation(StatisticalSum y);
+
+//    double calculateStandardDeviation();
+
     void merge(StatisticalSum statisticalSum);
 
     int size();
+
+    std::vector<double> getValues() const;
 
 };
 

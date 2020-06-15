@@ -31,7 +31,7 @@ class Statistics {
 
     StatisticalSum help, cumulativeHelp;
 
-    StatisticalSum dispersal;
+    StatisticalSum dispersal, dispersalHelpers;
 
     StatisticalSum survival, survivalBreeders, survivalFloaters, survivalHelpers;
 
