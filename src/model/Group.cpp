@@ -32,8 +32,6 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
 /* TOTAL NUMBER OF INDIVIDUALS PER GROUP*/
 
 void Group::calculateGroupSize() {
-
-
     if (breederAlive) {
         groupSize = helpers.size() + 1;
     } else {

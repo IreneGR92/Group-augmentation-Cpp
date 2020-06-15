@@ -13,7 +13,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
     //Counters
     population = 0, totalFloaters = 0, countGroupWithHelpers = 0, totalHelpers = 0, totalBreeders = 0,
-    //Relatedness
+            //Relatedness
     relatedness = 0.0, driftGroupSize = 0,
     meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
@@ -80,8 +80,6 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     //Group attributes
     groupSize.addValues(groupSizes);
     cumulativeHelp.addValues(cumHelps);
-
-
 
 
     vector<Group, std::allocator<Group >>::iterator groupsIt;
