@@ -16,10 +16,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     //Relatedness
     relatedness = 0.0, driftGroupSize = 0,
     meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
-    meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0,
-    //Correlations
-    corr_HelpDispersal = 0.0, sumprodHelpDispersal = 0.0,
-    corr_HelpGroup = 0.0, sumprodHelpGroup = 0.0;
+    meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
 
 
     IndividualVector breeders;
@@ -28,13 +25,14 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     std::vector<double> groupSizes;
     std::vector<double> cumHelps;
 
-    for (const Group &group: groups) {
+    for (Group group: groups) {
         if (group.isBreederAlive()) {
             breeders.push_back(group.getBreeder());
         }
         helpers.insert(helpers.end(), group.getHelpers().begin(),
                        group.getHelpers().end());
 
+        //group.calculateGroupSize();
         groupSizes.push_back(group.getGroupSize());
         cumHelps.push_back(group.getCumHelp());
     }
@@ -48,6 +46,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     totalFloaters = floaters.size();
     totalBreeders = breeders.size();
     population = totalBreeders + totalHelpers + totalFloaters;
+    assert(population > 0);
 
     //Initialize the stats
 
@@ -81,6 +80,8 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     //Group attributes
     groupSize.addValues(groupSizes);
     cumulativeHelp.addValues(cumHelps);
+
+
 
 
     vector<Group, std::allocator<Group >>::iterator groupsIt;
@@ -230,8 +231,8 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
                                  << "\t" << setprecision(4) << survivalHelpers.calculateSD()
                                  << "\t" << setprecision(4) << survivalFloaters.calculateSD()
                                  << "\t" << setprecision(4) << survivalBreeders.calculateSD()
-                                 << "\t" << setprecision(4) << corr_HelpDispersal
-                                 << "\t" << setprecision(4) << corr_HelpGroup
+                                 << "\t" << setprecision(4) << help.correlation(dispersalHelpers)
+                                 << "\t" << setprecision(4) << cumulativeHelp.correlation(groupSize)
                                  << "\t" << newBreederFloater
                                  << "\t" << newBreederHelper
                                  << "\t" << inheritance

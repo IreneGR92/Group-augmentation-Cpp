@@ -7,18 +7,26 @@
 #include <assert.h>
 
 
-void StatisticalSum::addValue(double toAdd) {
-    this->individualValues.push_back(toAdd);
-}
+
 
 double StatisticalSum::calculateMean() {
+
+//    double sum =0;
+//    double counter =0;
+//
+//    for (double attribute : individualValues) {
+//        if(!std::isnan(attribute)){
+//            sum += attribute;
+//            counter++;
+//        }
+//    }
     double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
     double counter = individualValues.size();
 
     if (counter > 0) {
         return sum / counter;
     } else {
-        return -1; //TODO: or 0?
+        return 0; //TODO: or -1?
     }
 
 }
@@ -53,6 +61,42 @@ double StatisticalSum::calculateSD() {
 //    return sqrt(value / individualValues.size());;
 //}
 
+double StatisticalSum::correlation(StatisticalSum y) {
+
+    double meanX = this->calculateMean();
+    double meanY = y.calculateMean();
+    double SD_X = this->calculateSD();
+    double SD_Y = y.calculateSD();
+    double Xi, Yi, X, Y;
+    double sumProductXY = 0.0;
+    double counter = this->size();
+    assert(size() == y.size());
+    double correlation;
+
+    for (int i = 0; i < counter; i++) {
+        Xi = this->getValues().at(i);
+        Yi = y.getValues().at(i);
+        X = (Xi - meanX);
+        Y = (Yi - meanY);
+        sumProductXY += X * Y;
+    }
+
+    if (SD_X * SD_Y * counter == 0) {
+        correlation = 0;
+    } else {
+        correlation = sumProductXY / (SD_X * SD_Y * counter);
+    }
+
+    assert(abs(correlation) <= 1 && "[ERROR] correlation out of range");
+
+    return correlation;
+}
+
+
+void StatisticalSum::addValue(double toAdd) {
+    this->individualValues.push_back(toAdd);
+}
+
 void StatisticalSum::merge(StatisticalSum statisticalSum) {
     this->individualValues.insert(individualValues.end(), statisticalSum.individualValues.begin(),
                                   statisticalSum.individualValues.end());
@@ -73,16 +117,5 @@ std::vector<double> StatisticalSum::getValues() const {
     return this->individualValues;
 }
 
-double StatisticalSum::correlation(StatisticalSum y) {
 
-    double meanY = y.calculateMean();
-    double meanX = this->calculateMean();
-    for (double singleY: y.getValues()) {
-
-
-    }
-
-
-    return 0;
-}
 
