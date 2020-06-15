@@ -56,7 +56,9 @@ public:
 
     bool isHelpersPresent() const;
 
+    std::vector<double> get(Attribute attribute) const;
 
+    std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 };
 
 

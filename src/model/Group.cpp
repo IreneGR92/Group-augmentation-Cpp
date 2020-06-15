@@ -305,6 +305,21 @@ bool Group::isHelpersPresent() const {
     return helpersPresent;
 }
 
+std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
+    std::vector<double> result;
+    if (includeBreeder && isBreederAlive()) {
+        result.push_back(breeder.get(attribute));
+    }
+    for (Individual helper: helpers) {
+        result.push_back(helper.get(attribute));
+    }
+    return result;
+}
+
+std::vector<double> Group::get(Attribute attribute) const {
+    return this->get(attribute, true);
+}
+
 
 
 

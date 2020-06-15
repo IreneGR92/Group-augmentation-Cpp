@@ -1,6 +1,7 @@
 
 #include "StatisticalSum.h"
 #include <cmath>
+#include <numeric>
 
 double StatisticalSum::calculateStandardDeviation() {
 
@@ -19,10 +20,8 @@ void StatisticalSum::addValue(double toAdd) {
 }
 
 double StatisticalSum::calculateMean() {
-    double sum = 0;
-    for (double attribute : individualValues) {
-        sum += attribute;
-    }
+    double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
+
     return sum / individualValues.size();
 }
 
@@ -33,5 +32,12 @@ void StatisticalSum::merge(StatisticalSum statisticalSum) {
 
 int StatisticalSum::size() {
     return this->individualValues.size();
+}
+
+
+void StatisticalSum::addValues(const std::vector<double> &values) {
+    for (double value: values) {
+        this->addValue(value);
+    }
 }
 

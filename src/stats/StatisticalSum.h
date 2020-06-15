@@ -14,6 +14,8 @@ public:
 
     void addValue(double toAdd);
 
+    void addValues(const std::vector<double> &values);
+
     double calculateMean();
 
     void merge(StatisticalSum statisticalSum);

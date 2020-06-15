@@ -37,6 +37,28 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     corr_HelpGroup = 0.0, sumprodHelpGroup = 0.0;
 
 
+    IndividualVector breeders;
+    IndividualVector helpers;
+    IndividualVector individualsAll;
+
+    for (const Group &group: groups) {
+        if (group.isBreederAlive()) {
+            breeders.push_back(group.getBreeder());
+        }
+        helpers.insert(helpers.end(), group.getHelpers().begin(),
+                       group.getHelpers().end());
+    }
+
+    individualsAll.insert(individualsAll.end(), helpers.begin(), helpers.end());
+    individualsAll.insert(individualsAll.end(), floaters.begin(), floaters.end());
+    individualsAll.insert(individualsAll.end(), breeders.begin(), breeders.end());
+
+
+
+    //initialize the stats
+    alpha.addValues(individualsAll.get(ALPHA));
+    alphaAge.addValues(individualsAll.get(ALPHA_AGE));
+
     vector<Group, std::allocator<Group >>::iterator groupsIt;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
 
@@ -307,7 +329,7 @@ void Statistics::printToConsole(int generation, int deaths) {
               << setw(9) << setprecision(2) << meanGroupSize
               << setw(9) << maxGroupSize
               << setw(9) << setprecision(2) << meanAge
-              << setw(9) << setprecision(4) << meanAlpha
+              << setw(9) << setprecision(4) << alpha.calculateMean()
               << setw(9) << setprecision(4) << meanAlphaAge
               << setw(9) << setprecision(4) << meanBeta
               << setw(9) << setprecision(4) << meanBetaAge
@@ -366,7 +388,7 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
                                  << "\t" << setprecision(4) << meanAgeHelper
                                  << "\t" << setprecision(4) << meanAgeFloater
                                  << "\t" << setprecision(4) << meanAgeBreeder
-                                 << "\t" << setprecision(4) << meanAlpha
+                                 << "\t" << setprecision(4) << alpha.calculateMean()
                                  << "\t" << setprecision(4) << meanAlphaAge
                                  << "\t" << setprecision(4) << meanBeta
                                  << "\t" << setprecision(4) << meanBetaAge
@@ -448,6 +470,8 @@ void Statistics::printIndividual(Individual individual, int generation, int grou
                                            << "\t" << setprecision(4) << individual.getSurvival()
                                            << endl;
 }
+
+
 
 
 
