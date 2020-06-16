@@ -1,11 +1,11 @@
 
-#ifndef GROUP_AUGMENTATION_STATISTICALSUM_H
-#define GROUP_AUGMENTATION_STATISTICALSUM_H
+#ifndef GROUP_AUGMENTATION_STATISTICALFORMULAS_H
+#define GROUP_AUGMENTATION_STATISTICALFORMULAS_H
 
 
 #include <vector>
 
-class StatisticalSum {
+class StatisticalFormulas {
 
     std::vector<double> individualValues;
 
@@ -19,13 +19,13 @@ public:
 
     double calculateSD();
 
-    double correlation(StatisticalSum y);
+    double correlation(StatisticalFormulas y);
 
     int getMaxValue();
 
 //    double calculateStandardDeviation();
 
-    void merge(StatisticalSum statisticalSum);
+    void merge(StatisticalFormulas statisticalSum);
 
     int size();
 
@@ -34,4 +34,4 @@ public:
 };
 
 
-#endif //GROUP_AUGMENTATION_STATISTICALSUM_H
+#endif //GROUP_AUGMENTATION_STATISTICALFORMULAS_H

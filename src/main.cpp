@@ -52,7 +52,7 @@ int main(int count, char **argv) {
 //    testVector.push_back(5);
 //
 //
-//    StatisticalSum test;
+//    StatisticalFormulas test;
 //    test.addValues(testVector);
 //    cout << test.calculateMean();
 

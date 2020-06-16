@@ -6,7 +6,7 @@
 #include "../model/Group.h"
 #include "../model/Individual.h"
 #include "../Simulation.h"
-#include "StatisticalSum.h"
+#include "StatisticalFormulas.h"
 
 class Statistics {
 
@@ -20,21 +20,21 @@ class Statistics {
     int driftGroupSize;
     double relatedness;
 
-    StatisticalSum groupSize;
+    StatisticalFormulas groupSize;
 
-    StatisticalSum age, ageBreeders, ageFloaters, ageHelpers;
+    StatisticalFormulas age, ageBreeders, ageFloaters, ageHelpers;
 
-    StatisticalSum alpha, alphaAge;
+    StatisticalFormulas alpha, alphaAge;
 
-    StatisticalSum beta, betaAge;
+    StatisticalFormulas beta, betaAge;
 
-    StatisticalSum help, cumulativeHelp;
+    StatisticalFormulas help, cumulativeHelp;
 
-    StatisticalSum dispersal, dispersalHelpers;
+    StatisticalFormulas dispersal, dispersalHelpers;
 
-    StatisticalSum survival, survivalBreeders, survivalFloaters, survivalHelpers;
+    StatisticalFormulas survival, survivalBreeders, survivalFloaters, survivalHelpers;
 
-    StatisticalSum driftB, driftH, driftBB, driftHB;
+    StatisticalFormulas driftB, driftH, driftBB, driftHB;
 
     double meanDriftB, sumDriftB, meanDriftH, sumDriftH, meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB;          //relatedness related
 

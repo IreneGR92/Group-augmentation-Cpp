@@ -26,6 +26,29 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     std::vector<double> groupSizes;
     std::vector<double> cumHelps;
 
+    vector<Individual, std::allocator<Individual >>::iterator helper;
+    for (helper = helpers.begin(); helper < helpers.end(); ++helper) {
+        if (helper->getFishType() != HELPER){
+            cout<< "helper wrong class";
+        }
+    }
+
+    vector<Individual, std::allocator<Individual >>::iterator floater;
+    for (floater = floaters.begin(); floater < floaters.end(); ++floater) {
+        if (floater->getFishType() != FLOATER){
+            cout<< "floater wrong class";
+        }
+    }
+
+    vector<Individual, std::allocator<Individual >>::iterator breeder;
+    for (breeder = breeders.begin(); breeder < breeders.end(); ++breeder) {
+        if (breeder->getFishType() != BREEDER){
+            cout<< "breeder wrong class";
+        }
+    }
+
+
+
     for (Group group: groups) {
         if (group.isBreederAlive()) {
             breeders.push_back(group.getBreeder());

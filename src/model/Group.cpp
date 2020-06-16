@@ -42,25 +42,21 @@ void Group::calculateGroupSize() {
 /*  DISPERSAL (STAY VS DISPERSE) */
 
 vector<Individual> Group::disperse() {
-    vector<Individual, std::allocator<Individual >>::iterator helper;
-    helper = helpers.begin();
-    int sizevec = helpers.size();
-    int counting = 0;
+
     vector<Individual> newFloaters;
 
-    while (!helpers.empty() && sizevec > counting) {
+    for (auto helper = helpers.begin(); helper != helpers.end();) {
         helper->calcDispersal();
 
         if (parameters->uniform(*parameters->getGenerator()) < helper->getDispersal()) {
             helper->setInherit(false); //the location of the individual is not the natal territory
+            helper->setFishType(FLOATER);
             newFloaters.push_back(*helper); //add the individual to the vector floaters in the last position
-            newFloaters[newFloaters.size() - 1].setFishType(FLOATER);
-            *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
-            helpers.pop_back();
-            ++counting;
+            helper = helpers.erase(helper);
+
         } else {
             helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
-            ++helper, ++counting;
+            helper++;
         }
     }
     return newFloaters;
