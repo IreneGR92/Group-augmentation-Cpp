@@ -41,13 +41,11 @@ void Group::calculateGroupSize() {
 
 /*  DISPERSAL (STAY VS DISPERSE) */
 
-vector<Individual> Group::disperse(vector<Individual> &floaters) {
+void Group::disperse(vector<Individual> &floaters, int IDgroup, vector<Individual> noRelatedHelpers, vector<int> noRelatednessGroupsID) {
     vector<Individual, std::allocator<Individual >>::iterator helper;
     helper = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
-
-    vector<Individual> noRelatedHelpers;
 
     while (!helpers.empty() && sizevec > counting) {
         helper->calcDispersal();
@@ -60,13 +58,14 @@ vector<Individual> Group::disperse(vector<Individual> &floaters) {
             helpers.pop_back();
             ++counting;
         } else {
-            if (parameters->isNoRelatedness() &&
-                helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
+            if (parameters->isNoRelatedness() && helper->getAge() == 1 && generation > 0) { // all new offspring is assigned to new groups so no related to breeder
+
+                noRelatednessGroupsID.push_back(IDgroup); // Add as many times to this vector the ID of the group as number of offspring reassigned to other groups
+
                 helper->setInherit(false); //the location of the individual is not the natal territory
                 helper->setFishType(HELPER);
                 noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
-                *helper = helpers[helpers.size() -
-                                  1]; // this and next line removes the individual from the helpers vector
+                *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
                 helpers.pop_back();
                 ++counting;
             } else {
@@ -75,7 +74,6 @@ vector<Individual> Group::disperse(vector<Individual> &floaters) {
             }
         }
     }
-    return noRelatedHelpers;
 }
 
 /*  CALCULATE CUMULATIVE LEVEL OF HELP */

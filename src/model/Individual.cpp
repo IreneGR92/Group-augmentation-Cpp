@@ -54,7 +54,7 @@ void Individual::initializeIndividual(FishType fishType) {
 
 double Individual::calcDispersal() {
     if (!parameters->isReactionNormDispersal()) {
-        dispersal = beta; // Range from 0 to 1 to compare to a Uniform distribution
+        dispersal = beta; // TODO: Mae logistic formula too so range from 0 to 1 naturally?
     } else {
         dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
@@ -235,8 +235,9 @@ void Individual::setFishType(FishType fishType) {
         this->dispersal = Parameters::NO_VALUE;
         this->help = Parameters::NO_VALUE;
     }
-
-
+    if (fishType == FLOATER) {
+        this->help = Parameters::NO_VALUE;
+    }
 }
 
 int Individual::getAge() const {

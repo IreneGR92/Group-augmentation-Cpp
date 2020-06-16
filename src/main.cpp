@@ -46,14 +46,14 @@ int main(int count, char **argv) {
     }
 
 
-//    vector<double> yoMan;
+//    vector<double> testVector;
 //
-//    yoMan.push_back(4);
-//    yoMan.push_back(5);
+//    testVector.push_back(4);
+//    testVector.push_back(5);
 //
 //
 //    StatisticalSum test;
-//    test.addValues(yoMan);
+//    test.addValues(testVector);
 //    cout << test.calculateMean();
 
 
