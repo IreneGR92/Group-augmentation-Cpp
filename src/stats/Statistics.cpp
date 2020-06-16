@@ -12,8 +12,9 @@ using namespace std;
 void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floaters) {
 
     //Counters
-    population = 0, totalFloaters = 0, countGroupWithHelpers = 0, totalHelpers = 0, totalBreeders = 0,
-            //Relatedness
+    population = 0, totalFloaters = 0, totalHelpers = 0, totalBreeders = 0,
+
+    //Relatedness
     relatedness = 0.0, driftGroupSize = 0,
     meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
@@ -81,15 +82,10 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     cumulativeHelp.addValues(cumHelps);
 
 
+
+    // Relatedness
     vector<Group, std::allocator<Group >>::iterator groupsIt;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
-
-        //Group
-        if (groupsIt->isHelpersPresent()) {
-            countGroupWithHelpers++;
-        }
-
-        // Relatedness
         vector<Individual, std::allocator<Individual >>::iterator helperIt;
         for (helperIt = groupsIt->helpers.begin();
              helperIt < groupsIt->helpers.end(); ++helperIt) {

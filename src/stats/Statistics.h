@@ -14,10 +14,10 @@ class Statistics {
 
     //Population parameters and Statistics
 
-    int population;
-    int totalFloaters, totalHelpers, totalBreeders;
-    int driftGroupSize, countGroupWithHelpers; //counters
+    int population, totalFloaters, totalHelpers, totalBreeders; //Counters
 
+    //Relatedness
+    int driftGroupSize;
     double relatedness;
 
     StatisticalSum groupSize;

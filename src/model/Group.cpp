@@ -299,10 +299,6 @@ double Group::getCumHelp() const {
     return cumHelp;
 }
 
-bool Group::isHelpersPresent() const {
-    return helpersPresent;
-}
-
 std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
     std::vector<double> result;
     if (includeBreeder && isBreederAlive()) {

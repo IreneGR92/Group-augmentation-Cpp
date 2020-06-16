@@ -54,8 +54,6 @@ public:
 
     double getCumHelp() const;
 
-    bool isHelpersPresent() const;
-
     std::vector<double> get(Attribute attribute) const;
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
