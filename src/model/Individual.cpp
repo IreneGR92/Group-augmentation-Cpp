@@ -80,7 +80,6 @@ void Individual::calcHelp() {
     }
 }
 
-
 /*SURVIVAL*/
 
 double Individual::calculateSurvival(int groupSize) {

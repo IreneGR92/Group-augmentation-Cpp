@@ -12,4 +12,6 @@ std::vector<double> IndividualVector::get(Attribute type) const {
 }
 
 
-
+void IndividualVector::merge(vector<Individual> vector) {
+    this->insert(end(), vector.begin(), vector.end());
+}

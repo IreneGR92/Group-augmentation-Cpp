@@ -29,7 +29,7 @@ public:
 
     void calculateGroupSize();
 
-    void disperse(std::vector<Individual> &floaters, int IDgroups, std::vector<Individual>noRelatedHelpers, std::vector<int> noRelatednessGroupsID);
+    std::vector<Individual> disperse();
 
 
     void calculateCumulativeHelp();
@@ -57,6 +57,8 @@ public:
     std::vector<double> get(Attribute attribute) const;
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
+
+    std::vector<Individual> reassignNoRelatedness();
 };
 
 

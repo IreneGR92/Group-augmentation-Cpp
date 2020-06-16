@@ -41,40 +41,49 @@ void Group::calculateGroupSize() {
 
 /*  DISPERSAL (STAY VS DISPERSE) */
 
-void Group::disperse(vector<Individual> &floaters, int IDgroup, vector<Individual> noRelatedHelpers, vector<int> noRelatednessGroupsID) {
+vector<Individual> Group::disperse() {
     vector<Individual, std::allocator<Individual >>::iterator helper;
     helper = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
+    vector<Individual> newFloaters;
 
     while (!helpers.empty() && sizevec > counting) {
         helper->calcDispersal();
 
         if (parameters->uniform(*parameters->getGenerator()) < helper->getDispersal()) {
             helper->setInherit(false); //the location of the individual is not the natal territory
-            floaters.push_back(*helper); //add the individual to the vector floaters in the last position
-            floaters[floaters.size() - 1].setFishType(FLOATER);
+            newFloaters.push_back(*helper); //add the individual to the vector floaters in the last position
+            newFloaters[newFloaters.size() - 1].setFishType(FLOATER);
             *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
             helpers.pop_back();
             ++counting;
         } else {
-            if (parameters->isNoRelatedness() && helper->getAge() == 1 && generation > 0) { // all new offspring is assigned to new groups so no related to breeder
-
-                noRelatednessGroupsID.push_back(IDgroup); // Add as many times to this vector the ID of the group as number of offspring reassigned to other groups
-
-                helper->setInherit(false); //the location of the individual is not the natal territory
-                helper->setFishType(HELPER);
-                noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
-                *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
-                helpers.pop_back();
-                ++counting;
-            } else {
-                helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
-                ++helper, ++counting;
-            }
+            helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
+            ++helper, ++counting;
         }
     }
+    return newFloaters;
 }
+
+vector<Individual> Group::reassignNoRelatedness() {
+
+    std::vector<Individual> noRelatedHelpers;
+
+    for (auto helper = helpers.begin(); helper != helpers.end();) {
+        if (helper->getAge() == 1 && generation > 0) { // all new offspring is assigned to new groups so no related to breeder
+
+            helper->setInherit(false); //the location of the individual is not the natal territory
+            noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
+            helper = helpers.erase(helper); // removes the individual from the helpers vector
+
+        } else {
+            helper++;
+        }
+    }
+    return noRelatedHelpers;
+}
+
 
 /*  CALCULATE CUMULATIVE LEVEL OF HELP */
 

@@ -93,33 +93,45 @@ void Simulation::reassignFloaters() {
 
 void Simulation::disperse() {
 
-    int IDgroup = 0;
+    int groupID = 0;
+
     std::vector<Individual> noRelatedHelpers;
+    IndividualVector allNoRelatedHelpers;
     std::vector<int> noRelatednessGroupsID;
 
     //Dispersal
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); group++) {
-        group->disperse(floaters, IDgroup, noRelatedHelpers, noRelatednessGroupsID); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
+    for (Group group : groups) {
 
-        IDgroup++;
+        this->floaters.merge(group.disperse());
 
+        if (parameters->isNoRelatedness()) {
 
-        // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
-        if (parameters->isNoRelatedness() && !noRelatedHelpers.empty()) {
-            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size()-1);
-            int selectGroupID, selectGroupIndex;
-            std::vector<Individual>::iterator NoRelatedHelperIt;
-            while (!noRelatedHelpers.empty()) {
-                NoRelatedHelperIt = noRelatedHelpers.end() - 1;
-
-                selectGroupIndex = UniformGroupID(*parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-                selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-                noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() + selectGroupIndex); //remove the group ID from the vector to not draw it again
-                groups[selectGroupID].helpers.push_back(
-                        *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
-                noRelatedHelpers.pop_back(); //remove the no related helper from its vector
+            noRelatedHelpers = group.reassignNoRelatedness();
+            for (int i = 0; noRelatedHelpers.size(); i++) {
+                noRelatednessGroupsID.push_back(groupID);
             }
+        }
+        allNoRelatedHelpers.merge(noRelatedHelpers);
+        groupID++;
+    }
+
+
+    // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
+    if (parameters->isNoRelatedness() && !noRelatedHelpers.empty()) {
+        std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
+        int selectGroupID, selectGroupIndex;
+        std::vector<Individual>::iterator NoRelatedHelperIt;
+        while (!noRelatedHelpers.empty()) {
+            NoRelatedHelperIt = noRelatedHelpers.end() - 1;
+
+            selectGroupIndex = UniformGroupID(
+                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
+            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
+            groups[selectGroupID].helpers.push_back(
+                    *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
+            noRelatedHelpers.pop_back(); //remove the no related helper from its vector
         }
     }
 }
