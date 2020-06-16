@@ -21,6 +21,8 @@ public:
 
     double correlation(StatisticalSum y);
 
+    int getMaxValue();
+
 //    double calculateStandardDeviation();
 
     void merge(StatisticalSum statisticalSum);

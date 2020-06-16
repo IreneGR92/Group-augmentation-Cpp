@@ -11,15 +11,6 @@
 
 double StatisticalSum::calculateMean() {
 
-//    double sum =0;
-//    double counter =0;
-//
-//    for (double attribute : individualValues) {
-//        if(!std::isnan(attribute)){
-//            sum += attribute;
-//            counter++;
-//        }
-//    }
     double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
     double counter = individualValues.size();
 
@@ -90,6 +81,11 @@ double StatisticalSum::correlation(StatisticalSum y) {
     assert(abs(correlation) <= 1 && "[ERROR] correlation out of range");
 
     return correlation;
+}
+
+int StatisticalSum::getMaxValue(){
+    int max = *max_element(individualValues.begin(), individualValues.end());
+    return max;
 }
 
 

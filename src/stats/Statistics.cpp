@@ -32,7 +32,6 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
         helpers.insert(helpers.end(), group.getHelpers().begin(),
                        group.getHelpers().end());
 
-        //group.calculateGroupSize(); //TODO: Look when it is calculated
         groupSizes.push_back(group.getGroupSize());
         cumHelps.push_back(group.getCumHelp());
     }
@@ -86,9 +85,6 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
 
         //Group
-        groupsIt->calculateGroupSize();
-        if (groupsIt->getGroupSize() > maxGroupSize) maxGroupSize = groupsIt->getGroupSize();
-
         if (groupsIt->isHelpersPresent()) {
             countGroupWithHelpers++;
         }
@@ -140,7 +136,7 @@ void Statistics::printToConsole(int generation, int deaths) {
               << setw(9) << deaths
               << setw(9) << totalFloaters
               << setw(9) << setprecision(2) << groupSize.calculateMean()
-              << setw(9) << maxGroupSize
+              << setw(9) << groupSize.getMaxValue()
               << setw(9) << setprecision(2) << age.calculateMean()
               << setw(9) << setprecision(4) << alpha.calculateMean()
               << setw(9) << setprecision(4) << alphaAge.calculateMean()

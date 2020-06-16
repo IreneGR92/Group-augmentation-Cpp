@@ -16,7 +16,7 @@ class Statistics {
 
     int population;
     int totalFloaters, totalHelpers, totalBreeders;
-    int driftGroupSize, maxGroupSize, countGroupWithHelpers; //counters
+    int driftGroupSize, countGroupWithHelpers; //counters
 
     double relatedness;
 
