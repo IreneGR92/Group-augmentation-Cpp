@@ -22,7 +22,6 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
     realFecundity = Parameters::NO_VALUE;
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
-
         helpers.emplace_back(
                 Individual(HELPER, generation));
     }
@@ -33,8 +32,6 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
 /* TOTAL NUMBER OF INDIVIDUALS PER GROUP*/
 
 void Group::calculateGroupSize() {
-
-
     if (breederAlive) {
         groupSize = helpers.size() + 1;
     } else {
@@ -63,14 +60,16 @@ vector<Individual> Group::disperse(vector<Individual> &floaters) {
             helpers.pop_back();
             ++counting;
         } else {
-            if (parameters->isNoRelatedness() && helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
+            if (parameters->isNoRelatedness() &&
+                helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
                 helper->setInherit(false); //the location of the individual is not the natal territory
                 helper->setFishType(HELPER);
                 noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
-                *helper = helpers[helpers.size() - 1]; // this and next line removes the individual from the helpers vector
+                *helper = helpers[helpers.size() -
+                                  1]; // this and next line removes the individual from the helpers vector
                 helpers.pop_back();
                 ++counting;
-            }else{
+            } else {
                 helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
                 ++helper, ++counting;
             }
@@ -150,8 +149,6 @@ void Group::mortalityGroup(int &deaths) {
 }
 
 
-
-
 /* BECOME BREEDER */
 
 void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
@@ -187,7 +184,8 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                 temp = *itTempCandidates;
             }
         }
-    } else if (!floaters.empty() && floaters.size() < proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+    } else if (!floaters.empty() && floaters.size() <
+                                    proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
         vector<Individual, std::allocator<Individual>>::iterator floaterIt;
         for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
             Candidates.push_back(&(*floaterIt));
@@ -207,7 +205,8 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     }
 
     for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
-        position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) + currentPosition); //creates a vector with proportional segments to the age of each individual
+        position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) +
+                           currentPosition); //creates a vector with proportional segments to the age of each individual
         currentPosition = position[position.size() - 1];
     }
 
@@ -300,8 +299,19 @@ double Group::getCumHelp() const {
     return cumHelp;
 }
 
-bool Group::isHelpersPresent() const {
-    return helpersPresent;
+std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
+    std::vector<double> result;
+    if (includeBreeder && isBreederAlive()) {
+        result.push_back(breeder.get(attribute));
+    }
+    for (Individual helper: helpers) {
+        result.push_back(helper.get(attribute));
+    }
+    return result;
+}
+
+std::vector<double> Group::get(Attribute attribute) const {
+    return this->get(attribute, true);
 }
 
 

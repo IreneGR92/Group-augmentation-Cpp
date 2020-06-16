@@ -29,12 +29,11 @@ Xsn: 3    # benefit of group size in survival
 K0: 1    # min fecundity, fecundity when no help provided.
 K1: 1    # benefit of cumHelp in the fecundity
 
-
 #Genetic values
 
 #For help
-INIT_ALPHA: 0.0            #bigger values higher level of help
-INIT_ALPHA_AGE: 0.0            #linear term for age
+INIT_ALPHA: 0.0             #bigger values higher level of help
+INIT_ALPHA_AGE: 0.0         #linear term for age
 
 MUTATION_ALPHA: 0.05            # mutation rate in alpha for level of help
 MUTATION_ALPHA_AGE: 0.05

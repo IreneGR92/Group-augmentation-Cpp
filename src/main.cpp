@@ -21,7 +21,7 @@
 #include <iostream>
 #include "Parameters.h"
 #include "Simulation.h"
-#include "Statistics.h"
+#include "stats/Statistics.h"
 
 using namespace std;
 
@@ -44,6 +44,18 @@ int main(int count, char **argv) {
         simulation.run();
 
     }
+
+
+//    vector<double> yoMan;
+//
+//    yoMan.push_back(4);
+//    yoMan.push_back(5);
+//
+//
+//    StatisticalSum test;
+//    test.addValues(yoMan);
+//    cout << test.calculateMean();
+
 
     return 0;
 }

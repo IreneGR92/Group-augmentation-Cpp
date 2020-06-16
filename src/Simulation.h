@@ -9,7 +9,7 @@ class Simulation {
 
     Parameters *parameters;
 
-    std::vector<Individual> floaters;
+    IndividualVector floaters;
 
     std::vector<Group> groups;
 

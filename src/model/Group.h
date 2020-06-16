@@ -5,6 +5,7 @@
 
 #include "Individual.h"
 #include "../Parameters.h"
+#include "IndividualVector.h"
 
 class Group {
 
@@ -22,7 +23,7 @@ class Group {
 
 public:
     Individual breeder;
-    std::vector<Individual> helpers; // create a vector of helpers inside each group
+    IndividualVector helpers; // create a vector of helpers inside each group
 
     explicit Group(int &generation);
 
@@ -53,9 +54,9 @@ public:
 
     double getCumHelp() const;
 
-    bool isHelpersPresent() const;
+    std::vector<double> get(Attribute attribute) const;
 
-
+    std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 };
 
 

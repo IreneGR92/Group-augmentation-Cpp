@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include "Simulation.h"
-#include "Statistics.h"
+#include "stats/Statistics.h"
 
 
 Simulation::Simulation(const int replica)
@@ -15,15 +15,15 @@ Simulation::Simulation(const int replica)
 void Simulation::run() {
 
     // Output file
-    Statistics statistics;
+    Statistics *statistics = new Statistics();
 
-    statistics.calculateStatistics(groups, floaters);
-    statistics.printHeadersToConsole();
-    statistics.printToConsole(generation, deaths);
-    statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+    statistics->calculateStatistics(groups, floaters);
+    statistics->printHeadersToConsole();
+    statistics->printToConsole(generation, deaths);
+    statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {
-
+        statistics = new Statistics();
         deaths = 0; // to keep track of how many individuals die each generation
         newBreederFloater = 0;
         newBreederHelper = 0;
@@ -36,14 +36,15 @@ void Simulation::run() {
 
         if (generation % parameters->getSkip() == 0) {
             //Calculate stats
-            statistics.calculateStatistics(groups, floaters);
+
+            statistics->calculateStatistics(groups, floaters);
 
             //Print last generation
             if (generation == parameters->getNumGenerations() / 10 ||
                 generation == parameters->getNumGenerations() / 4 ||
                 generation == parameters->getNumGenerations() / 2 || generation == parameters->getNumGenerations()) {
 
-                statistics.printToFileLastGeneration(this);
+                statistics->printToFileLastGeneration(this);
             }
         }
 
@@ -52,8 +53,8 @@ void Simulation::run() {
 
         // Print main file (separately since we need values of deaths, newBreederFloater, newBreederHelper and inheritance to be calculated)
         if (generation % parameters->getSkip() == 0) {
-            statistics.printToConsole(generation, deaths);
-            statistics.printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+            statistics->printToConsole(generation, deaths);
+            statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
         }
 
         this->increaseAge();
@@ -93,7 +94,8 @@ void Simulation::disperse() {
     //Dispersal
     std::vector<Group, std::allocator<Group>>::iterator group;
     for (group = groups.begin(); group < groups.end(); ++group) {
-        std::vector<Individual> noRelatedHelpers = group->disperse(floaters); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
+        std::vector<Individual> noRelatedHelpers = group->disperse(
+                floaters); //creates floaters and passes the new offspring for reassignment in the noRelatedness configuration
 
         if (!noRelatedHelpers.empty()) {
             std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
