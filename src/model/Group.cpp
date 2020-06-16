@@ -14,7 +14,6 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
     this->parameters = Parameters::instance();
     this->generation = generation;
 
-
     breederAlive = true;
     helpersPresent = false;
     cumHelp = Parameters::NO_VALUE;
@@ -98,9 +97,6 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
         helperIt->calcHelp();
         cumHelp += helperIt->getHelp();
     }
-    //Level of help for breeders
-    //breeder.calcHelp();
-    //cumHelp += breeder.help;
 }
 
 /*  MORTALITY */
@@ -108,10 +104,9 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 void Group::survivalGroup() {
     //Calculate survival for the helpers
     this->calculateGroupSize();
-    std::vector<Individual, std::allocator<Individual>>::iterator helperIt; //helpers
-    for (helperIt = this->helpers.begin(); helperIt < this->helpers.end(); helperIt++) {
-        assert(helperIt->getFishType() == HELPER);
-        helperIt->calculateSurvival(groupSize);
+    for (Individual helper :helpers) {
+ //       assert(helper.getFishType() == HELPER);
+        helper.calculateSurvival(groupSize);
     }
 
     //Calculate the survival of the breeder

@@ -105,14 +105,13 @@ void Simulation::disperse() {
         this->floaters.merge(group.disperse());
 
         if (parameters->isNoRelatedness() && generation > 0) {
-
             noRelatedHelpers = group.reassignNoRelatedness();
             for (int i = 0; i < noRelatedHelpers.size(); i++) {
                 noRelatednessGroupsID.push_back(groupID);
             }
+            allNoRelatedHelpers.merge(noRelatedHelpers);
+            groupID++;
         }
-        allNoRelatedHelpers.merge(noRelatedHelpers);
-        groupID++;
     }
 
 
