@@ -66,7 +66,7 @@ vector<Individual> Group::reassignNoRelatedness() {
     std::vector<Individual> noRelatedHelpers;
 
     for (auto helper = helpers.begin(); helper != helpers.end();) {
-        if (helper->getAge() == 1 && generation > 0) { // all new offspring is assigned to new groups so no related to breeder
+        if (helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
 
             helper->setInherit(false); //the location of the individual is not the natal territory
             noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
