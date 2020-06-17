@@ -16,7 +16,8 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
     //Relatedness
     relatedness = 0.0, driftGroupSize = 0,
-    meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
+    meanDriftB = 0.0, sumDriftB = 0.0,
+    meanDriftH = 0.0, sumDriftH = 0.0,
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
 
 
@@ -107,13 +108,53 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
         meanDriftBB = sumDriftBB / driftGroupSize;
     }
 
-    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
-                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
-    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
-        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
-    }
+//    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
+//                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
+//    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
+//        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
+//    }
+
+
+
+
+        double X;
+        double Y;
+        double sumProductXY = 0;
+        double sumProductXX = 0;
+        double sumProductYY = 0;
+        double stdevX =0, stdevY =0;
+        double correlation;
+
+//        vector<Group, std::allocator<Group >>::iterator groups;
+        for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+
+            // HELPERS
+            vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
+            for (helperIt = groupsIt->helpers.begin();
+                 helperIt < groupsIt->helpers.end(); ++helperIt) {
+                if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
+                    X = (helperIt->getDrift() - meanDriftH);
+                    Y = (groupsIt->breeder.getDrift() - meanDriftB);
+
+                    sumProductXY += X * Y;
+                    sumProductXX += X * X;
+                    sumProductYY += Y * Y;
+                }
+            }
+        }
+        stdevX = sqrt(sumProductXX / driftGroupSize);
+        stdevY = sqrt(sumProductYY / driftGroupSize);
+
+        if (stdevX == 0 || stdevY == 0) {
+            relatedness =0;
+        }else{
+            relatedness = sumProductXY / (stdevX * stdevY * driftGroupSize);
+        }
 
 }
+
+
+
 
 void Statistics::printHeadersToConsole() {
     // column headings on screen
