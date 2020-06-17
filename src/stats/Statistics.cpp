@@ -142,6 +142,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     double sumProductXY = 0;
     double sumProductXX = 0;
     double sumProductYY = 0;
+    double stdevX = 0,  stdevY = 0;
     double counter = driftGroupSize;
     double correlation;
 
@@ -162,8 +163,11 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
             }
         }
     }
-    double stdevX = sqrt(sumProductXX / counter);
-    double stdevY = sqrt(sumProductYY / counter);
+    if (counter > 0){
+        stdevX = sqrt(sumProductXX / counter);
+        stdevY = sqrt(sumProductYY / counter);
+    }
+
 
     if (stdevX * stdevY * counter == 0) {
         relatedness = 0;
