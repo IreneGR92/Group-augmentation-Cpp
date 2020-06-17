@@ -83,7 +83,6 @@ void Simulation::reassignFloaters() {
         floaterIt = floaters.end() - 1;
         floaterIt->setHelp(0);
         selectGroup = UniformMaxCol(*parameters->getGenerator());
-        //floaterIt->getFishType() = HELPER; //modify the class
         groups[selectGroup].helpers.push_back(
                 *floaterIt); //add the floater to the helper vector in a randomly selected group
         floaters.pop_back(); //remove the floater from its vector
@@ -100,12 +99,13 @@ void Simulation::disperse() {
     std::vector<int> noRelatednessGroupsID;
 
     //Dispersal
-    for (Group group : groups) {
+    std::vector<Group, std::allocator<Group>>::iterator group;
+    for (group = groups.begin(); group < groups.end(); ++group) {
 
-        this->floaters.merge(group.disperse());
+        this->floaters.merge(group->disperse());
 
         if (parameters->isNoRelatedness() && generation > 0) {
-            noRelatedHelpers = group.reassignNoRelatedness();
+            noRelatedHelpers = group->reassignNoRelatedness();
             for (int i = 0; i < noRelatedHelpers.size(); i++) {
                 noRelatednessGroupsID.push_back(groupID);
             }
