@@ -104,9 +104,10 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 void Group::survivalGroup() {
     //Calculate survival for the helpers
     this->calculateGroupSize();
-    for (Individual helper :helpers) {
- //       assert(helper.getFishType() == HELPER);
-        helper.calculateSurvival(groupSize);
+    vector<Individual, std::allocator<Individual>>::iterator helper;
+    for (helper = helpers.begin(); helper < helpers.end(); ++helper) {
+        assert(helper->getFishType() == HELPER);
+        helper->calculateSurvival(groupSize);
     }
 
     //Calculate the survival of the breeder
@@ -302,7 +303,7 @@ std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
     if (includeBreeder && isBreederAlive()) {
         result.push_back(breeder.get(attribute));
     }
-    for (Individual helper: helpers) {
+    for (Individual helper: helpers) { //TODO: it might cause problems
         result.push_back(helper.get(attribute));
     }
     return result;

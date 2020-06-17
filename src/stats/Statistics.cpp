@@ -49,15 +49,16 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
 
 
-    for (Group group: groups) {
-        if (group.isBreederAlive()) {
-            breeders.push_back(group.getBreeder());
+    std::vector<Group, std::allocator<Group>>::iterator group;
+    for (group = groups.begin(); group < groups.end(); ++group) {
+        if (group->isBreederAlive()) {
+            breeders.push_back(group->getBreeder());
         }
-        helpers.insert(helpers.end(), group.getHelpers().begin(),
-                       group.getHelpers().end());
+        helpers.insert(helpers.end(), group->getHelpers().begin(),
+                       group->getHelpers().end());
 
-        groupSizes.push_back(group.getGroupSize());
-        cumHelps.push_back(group.getCumHelp());
+        groupSizes.push_back(group->getGroupSize());
+        cumHelps.push_back(group->getCumHelp());
     }
 
     individualsAll.insert(individualsAll.end(), helpers.begin(), helpers.end());
@@ -130,13 +131,48 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
         meanDriftBB = sumDriftBB / driftGroupSize;
     }
 
-    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
-                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
-    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
-        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
+//    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
+//                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
+//    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
+//        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
+//    }
+
+    double X;
+    double Y;
+    double sumProductXY = 0;
+    double sumProductXX = 0;
+    double sumProductYY = 0;
+    double counter = driftGroupSize;
+    double correlation;
+
+//        vector<Group, std::allocator<Group >>::iterator groups;
+    for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+
+        // HELPERS
+        vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
+        for (helperIt = groupsIt->helpers.begin();
+             helperIt < groupsIt->helpers.end(); ++helperIt) {
+            if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
+                X = (helperIt->getDrift() - meanDriftH);
+                Y = (groupsIt->breeder.getDrift() - meanDriftB);
+
+                sumProductXY += X * Y;
+                sumProductXX += X * X;
+                sumProductYY += Y * Y;
+            }
+        }
+    }
+    double stdevX = sqrt(sumProductXX / counter);
+    double stdevY = sqrt(sumProductYY / counter);
+
+    if (stdevX * stdevY * counter == 0) {
+        relatedness = 0;
+    }else{
+        relatedness = sumProductXY / (stdevX * stdevY * counter);
     }
 
 }
+
 
 void Statistics::printHeadersToConsole() {
     // column headings on screen
