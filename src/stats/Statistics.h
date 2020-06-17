@@ -17,7 +17,6 @@ class Statistics {
     int population, totalFloaters, totalHelpers, totalBreeders; //Counters
 
     //Relatedness
-    int driftGroupSize;
     double relatedness;
 
     StatisticalSum groupSize;
@@ -34,9 +33,7 @@ class Statistics {
 
     StatisticalSum survival, survivalBreeders, survivalFloaters, survivalHelpers;
 
-    StatisticalSum driftB, driftH, driftBB, driftHB;
 
-    double meanDriftB, sumDriftB, meanDriftH, sumDriftH, meanDriftBH, meanDriftBB, sumDriftBH, sumDriftBB;          //relatedness related
 
     void printIndividual(Individual individual, int generation, int groupID, int replica);
 
@@ -48,6 +45,8 @@ public:
     void printHeadersToConsole();
 
     void printHeadersToFile();
+
+    double calculateRelatedness(std::vector<Group> groups);
 
     void printToConsole(int generation, int deaths);
 

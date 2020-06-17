@@ -11,31 +11,22 @@ using namespace std;
 /* CALCULATE STATISTICS */
 void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floaters) {
 
-    //Counters
-    population = 0, totalFloaters = 0, totalHelpers = 0, totalBreeders = 0,
-
-    //Relatedness
-    relatedness = 0.0, driftGroupSize = 0,
-    meanDriftB = 0.0, sumDriftB = 0.0,
-    meanDriftH = 0.0, sumDriftH = 0.0,
-    meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
-
-
     IndividualVector breeders;
     IndividualVector helpers;
     IndividualVector individualsAll;
     std::vector<double> groupSizes;
     std::vector<double> cumHelps;
 
-    for (Group group: groups) {
-        if (group.isBreederAlive()) {
-            breeders.push_back(group.getBreeder());
+    vector<Group, std::allocator<Group >>::iterator groupsIt;
+    for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+        if (groupsIt->isBreederAlive()) {
+            breeders.push_back(groupsIt->getBreeder());
         }
-        helpers.insert(helpers.end(), group.getHelpers().begin(),
-                       group.getHelpers().end());
+        helpers.insert(helpers.end(), groupsIt->getHelpers().begin(),
+                       groupsIt->getHelpers().end());
 
-        groupSizes.push_back(group.getGroupSize());
-        cumHelps.push_back(group.getCumHelp());
+        groupSizes.push_back(groupsIt->getGroupSize());
+        cumHelps.push_back(groupsIt->getCumHelp());
     }
 
     individualsAll.insert(individualsAll.end(), helpers.begin(), helpers.end());
@@ -82,9 +73,17 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     groupSize.addValues(groupSizes);
     cumulativeHelp.addValues(cumHelps);
 
+    relatedness = calculateRelatedness (groups);
 
+}
+double Statistics::calculateRelatedness(std::vector<Group> groups) {
 
-    // Relatedness
+    //Relatedness
+    double relatedness;          //relatedness related
+    int driftGroupSize = 0;
+    double meanDriftB, meanDriftH, sumDriftB = 0.0, sumDriftH = 0.0;
+    double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
+
     vector<Group, std::allocator<Group >>::iterator groupsIt;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
         vector<Individual, std::allocator<Individual >>::iterator helperIt;
@@ -94,8 +93,6 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
             if (groupsIt->isBreederAlive() && !groupsIt->helpers.empty()) {
                 sumDriftB += groupsIt->breeder.getDrift();
                 sumDriftH += helperIt->getDrift();
-                sumDriftBH += helperIt->getDrift() * groupsIt->breeder.getDrift();
-                sumDriftBB += groupsIt->breeder.getDrift() * groupsIt->breeder.getDrift();
                 driftGroupSize++;
             }
         }
@@ -104,56 +101,36 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     if (driftGroupSize != 0) {
         meanDriftB = sumDriftB / driftGroupSize;
         meanDriftH = sumDriftH / driftGroupSize;
-        meanDriftBH = sumDriftBH / driftGroupSize;
-        meanDriftBB = sumDriftBB / driftGroupSize;
     }
 
-//    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
-//                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
-//    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
-//        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
-//    }
+    for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
 
+        // HELPERS
+        vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
+        for (helperIt = groupsIt->helpers.begin();
+             helperIt < groupsIt->helpers.end(); ++helperIt) {
+            if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
+                double X = (helperIt->getDrift() - meanDriftH);
+                double Y = (groupsIt->breeder.getDrift() - meanDriftB);
 
-
-
-        double X;
-        double Y;
-        double sumProductXY = 0;
-        double sumProductXX = 0;
-        double sumProductYY = 0;
-        double stdevX =0, stdevY =0;
-        double correlation;
-
-//        vector<Group, std::allocator<Group >>::iterator groups;
-        for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
-
-            // HELPERS
-            vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
-            for (helperIt = groupsIt->helpers.begin();
-                 helperIt < groupsIt->helpers.end(); ++helperIt) {
-                if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
-                    X = (helperIt->getDrift() - meanDriftH);
-                    Y = (groupsIt->breeder.getDrift() - meanDriftB);
-
-                    sumProductXY += X * Y;
-                    sumProductXX += X * X;
-                    sumProductYY += Y * Y;
-                }
+                sumProductXY += X * Y;
+                sumProductXX += X * X;
+                sumProductYY += Y * Y;
             }
         }
-        stdevX = sqrt(sumProductXX / driftGroupSize);
-        stdevY = sqrt(sumProductYY / driftGroupSize);
+    }
+    double stdevX = sqrt(sumProductXX / driftGroupSize);
+    double stdevY = sqrt(sumProductYY / driftGroupSize);
 
-        if (stdevX == 0 || stdevY == 0) {
-            relatedness =0;
-        }else{
-            relatedness = sumProductXY / (stdevX * stdevY * driftGroupSize);
-        }
+    if (stdevX * stdevY * driftGroupSize == 0) {
+        relatedness = 0;
+    } else {
+        relatedness = sumProductXY / (stdevX * stdevY * driftGroupSize);
+    }
 
+    assert (abs(relatedness) >= 0);
+    return relatedness;
 }
-
-
 
 
 void Statistics::printHeadersToConsole() {
@@ -316,6 +293,7 @@ void Statistics::printIndividual(Individual individual, int generation, int grou
                                            << "\t" << setprecision(4) << individual.getSurvival()
                                            << endl;
 }
+
 
 
 
