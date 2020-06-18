@@ -17,7 +17,7 @@ class Statistics {
     int population, totalFloaters, totalHelpers, totalBreeders; //Counters
 
     //Relatedness
-    double relatedness;
+    double relatedness, corrHelpGroupSize;
 
     StatisticalFormulas groupSize;
 
@@ -48,12 +48,15 @@ public:
 
     double calculateRelatedness(std::vector<Group> groups);
 
+    double correlationHelpGroupSize(std::vector<Group> groups);
+
     void printToConsole(int generation, int deaths);
 
     void printToFile(int replica, int generation, int deaths, int newBreederFloater,
                      int newBreederHelper, int inheritance);
 
     void printToFileLastGeneration(Simulation *simulation);
+
 };
 
 
