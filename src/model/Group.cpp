@@ -44,18 +44,21 @@ vector<Individual> Group::disperse() {
 
     vector<Individual> newFloaters;
 
-    for (auto helper = helpers.begin(); helper != helpers.end();) {
-        helper->calcDispersal();
 
-        if (parameters->uniform(*parameters->getGenerator()) < helper->getDispersal()) {
-            helper->setInherit(false); //the location of the individual is not the natal territory
-            helper->setFishType(FLOATER);
-            newFloaters.push_back(*helper); //add the individual to the vector floaters in the last position
-            helpers.erase(helper);
+    for (int i = 0; i < helpers.size(); ) {
+        Individual helper = helpers[i];
+
+        helper.calcDispersal();
+
+        if (parameters->uniform(*parameters->getGenerator()) < helper.getDispersal()) {
+            helper.setInherit(false); //the location of the individual is not the natal territory
+            helper.setFishType(FLOATER);
+            newFloaters.push_back(helper); //add the individual to the vector floaters in the last position
+            helpers.removeIndividual(i);
 
         } else {
-            helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
-            helper++;
+            helper.setFishType(HELPER); //individuals that stay or disperse to this group become helpers
+            i++;
         }
     }
     return newFloaters;
@@ -65,15 +68,16 @@ vector<Individual> Group::reassignNoRelatedness() {
 
     std::vector<Individual> noRelatedHelpers;
 
-    for (auto helper = helpers.begin(); helper != helpers.end();) {
-        if (helper->getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
+    for (int i = 0; i < helpers.size(); ) {
+        Individual helper = helpers[i];
+        if (helper.getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
 
-            helper->setInherit(false); //the location of the individual is not the natal territory
-            noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
-            helpers.erase(helper); // removes the individual from the helpers vector
+            helper.setInherit(false); //the location of the individual is not the natal territory
+            noRelatedHelpers.push_back(helper); //add the individual to the vector in the last position
+            helpers.removeIndividual(i); // removes the individual from the helpers vector
 
         } else {
-            helper++;
+            i++;
         }
     }
     return noRelatedHelpers;
