@@ -1,5 +1,5 @@
 
-#include "StatisticalSum.h"
+#include "StatisticalFormulas.h"
 #include <cmath>
 #include <numeric>
 #include <algorithm>
@@ -9,7 +9,7 @@
 
 
 
-double StatisticalSum::calculateMean() {
+double StatisticalFormulas::calculateMean() {
 
     double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
     double counter = individualValues.size();
@@ -22,7 +22,7 @@ double StatisticalSum::calculateMean() {
 
 }
 
-double StatisticalSum::calculateSD() {
+double StatisticalFormulas::calculateSD() {
     double mean = this->calculateMean();
     double stdev;
 
@@ -40,7 +40,7 @@ double StatisticalSum::calculateSD() {
 }
 
 ///Alternative implementation for SD, not so efficient
-//double StatisticalSum::calculateStandardDeviation() {
+//double StatisticalFormulas::calculateStandardDeviation() {
 //
 //    double mean = calculateMean();
 //    double value = 0;
@@ -52,7 +52,7 @@ double StatisticalSum::calculateSD() {
 //    return sqrt(value / individualValues.size());;
 //}
 
-double StatisticalSum::correlation(StatisticalSum y) {
+double StatisticalFormulas::correlation(StatisticalFormulas y) {
 
     double meanX = this->calculateMean();
     double meanY = y.calculateMean();
@@ -83,33 +83,33 @@ double StatisticalSum::correlation(StatisticalSum y) {
     return correlation;
 }
 
-int StatisticalSum::getMaxValue(){
+int StatisticalFormulas::getMaxValue(){
     int max = *max_element(individualValues.begin(), individualValues.end());
     return max;
 }
 
 
-void StatisticalSum::addValue(double toAdd) {
+void StatisticalFormulas::addValue(double toAdd) {
     this->individualValues.push_back(toAdd);
 }
 
-void StatisticalSum::merge(StatisticalSum statisticalSum) {
+void StatisticalFormulas::merge(StatisticalFormulas statisticalSum) {
     this->individualValues.insert(individualValues.end(), statisticalSum.individualValues.begin(),
                                   statisticalSum.individualValues.end());
 }
 
-int StatisticalSum::size() {
+int StatisticalFormulas::size() {
     return this->individualValues.size();
 }
 
 
-void StatisticalSum::addValues(const std::vector<double> &values) {
+void StatisticalFormulas::addValues(const std::vector<double> &values) {
     for (double value: values) {
         this->addValue(value);
     }
 }
 
-std::vector<double> StatisticalSum::getValues() const {
+std::vector<double> StatisticalFormulas::getValues() const {
     return this->individualValues;
 }
 

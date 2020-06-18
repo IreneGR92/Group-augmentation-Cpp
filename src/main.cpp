@@ -52,7 +52,7 @@ int main(int count, char **argv) {
 //    yoMan.push_back(5);
 //
 //
-//    StatisticalSum test;
+//    StatisticalFormulas test;
 //    test.addValues(yoMan);
 //    cout << test.calculateMean();
 
