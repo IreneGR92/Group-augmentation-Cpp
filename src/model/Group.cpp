@@ -51,7 +51,7 @@ vector<Individual> Group::disperse() {
             helper->setInherit(false); //the location of the individual is not the natal territory
             helper->setFishType(FLOATER);
             newFloaters.push_back(*helper); //add the individual to the vector floaters in the last position
-            helper = helpers.erase(helper);
+            helpers.erase(helper);
 
         } else {
             helper->setFishType(HELPER); //individuals that stay or disperse to this group become helpers
@@ -70,7 +70,7 @@ vector<Individual> Group::reassignNoRelatedness() {
 
             helper->setInherit(false); //the location of the individual is not the natal territory
             noRelatedHelpers.push_back(*helper); //add the individual to the vector in the last position
-            helper = helpers.erase(helper); // removes the individual from the helpers vector
+            helpers.erase(helper); // removes the individual from the helpers vector
 
         } else {
             helper++;
