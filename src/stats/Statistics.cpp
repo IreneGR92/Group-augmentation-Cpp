@@ -97,9 +97,6 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     survivalBreeders.addValues(breeders.get(SURVIVAL));
     survivalFloaters.addValues(floaters.get(SURVIVAL));
 
-//    //Relatedness
-//    driftB.addValues(breeders.get(DRIFT));
-//    driftH.addValues(helpers.get(DRIFT));
 
     //Group attributes
     groupSize.addValues(groupSizes);
@@ -107,7 +104,20 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
 
 
-    // Relatedness
+    //Correlations in different levels
+    relatedness = calculateRelatedness (groups);
+    corrHelpGroupSize = correlationHelpGroupSize (groups);
+
+}
+
+double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: optimise formula, make abstract version
+
+    //Relatedness
+    double correlation;          //relatedness related
+    int counter = 0;
+    double meanX, meanY, sumX = 0.0, sumY = 0.0;
+    double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
+
     vector<Group, std::allocator<Group >>::iterator groupsIt;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
         vector<Individual, std::allocator<Individual >>::iterator helperIt;
@@ -115,38 +125,18 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
              helperIt < groupsIt->helpers.end(); ++helperIt) {
 
             if (groupsIt->isBreederAlive() && !groupsIt->helpers.empty()) {
-                sumDriftB += groupsIt->breeder.getDrift();
-                sumDriftH += helperIt->getDrift();
-                sumDriftBH += helperIt->getDrift() * groupsIt->breeder.getDrift();
-                sumDriftBB += groupsIt->breeder.getDrift() * groupsIt->breeder.getDrift();
-                driftGroupSize++;
+                sumX += helperIt->getDrift();
+                sumY += groupsIt->breeder.getDrift();
+                counter++;
             }
         }
     }
 
-    if (driftGroupSize != 0) {
-        meanDriftB = sumDriftB / driftGroupSize;
-        meanDriftH = sumDriftH / driftGroupSize;
-        meanDriftBH = sumDriftBH / driftGroupSize;
-        meanDriftBB = sumDriftBB / driftGroupSize;
+    if (counter != 0) {
+        meanX = sumX / counter;
+        meanY = sumY / counter;
     }
 
-//    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
-//                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
-//    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
-//        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
-//    }
-
-    double X;
-    double Y;
-    double sumProductXY = 0;
-    double sumProductXX = 0;
-    double sumProductYY = 0;
-    double stdevX = 0,  stdevY = 0;
-    double counter = driftGroupSize;
-    double correlation;
-
-//        vector<Group, std::allocator<Group >>::iterator groups;
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
 
         // HELPERS
@@ -154,8 +144,8 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
         for (helperIt = groupsIt->helpers.begin();
              helperIt < groupsIt->helpers.end(); ++helperIt) {
             if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
-                X = (helperIt->getDrift() - meanDriftH);
-                Y = (groupsIt->breeder.getDrift() - meanDriftB);
+                double X = (helperIt->getDrift() - meanX);
+                double Y = (groupsIt->breeder.getDrift() - meanY);
 
                 sumProductXY += X * Y;
                 sumProductXX += X * X;
@@ -163,18 +153,72 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
             }
         }
     }
-    if (counter > 0){
-        stdevX = sqrt(sumProductXX / counter);
-        stdevY = sqrt(sumProductYY / counter);
-    }
-
+    double stdevX = sqrt(sumProductXX / counter);
+    double stdevY = sqrt(sumProductYY / counter);
 
     if (stdevX * stdevY * counter == 0) {
-        relatedness = 0;
-    }else{
-        relatedness = sumProductXY / (stdevX * stdevY * counter);
+        correlation = 0;
+    } else {
+        correlation = sumProductXY / (stdevX * stdevY * counter);
+    }
+    assert (abs(correlation) >= 0);
+    return correlation;
+
+}
+
+double Statistics::correlationHelpGroupSize(std::vector<Group> groups) { //TODO: optimise formula, make abstract version
+
+    double correlation;
+    int counter = 0;
+    double meanX, meanY, sumX = 0.0, sumY = 0.0;
+    double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
+
+    vector<Group, std::allocator<Group >>::iterator groupsIt;
+    for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+        vector<Individual, std::allocator<Individual >>::iterator helperIt;
+        for (helperIt = groupsIt->helpers.begin();
+             helperIt < groupsIt->helpers.end(); ++helperIt) {
+
+            if (!groupsIt->helpers.empty()) {
+                sumX += helperIt->getHelp();
+                sumY += groupsIt->getGroupSize();
+                counter++;
+            }
+        }
     }
 
+    if (counter != 0) {
+        meanX = sumX / counter;
+        meanY = sumY / counter;
+    }
+
+    for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
+
+        // HELPERS
+        vector<Individual, std::allocator<Individual >>::iterator helperIt; //helpers
+        for (helperIt = groupsIt->helpers.begin();
+             helperIt < groupsIt->helpers.end(); ++helperIt) {
+            if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
+                double X = (helperIt->getHelp() - meanX);
+                double Y = (groupsIt->getGroupSize() - meanY);
+
+                sumProductXY += X * Y;
+                sumProductXX += X * X;
+                sumProductYY += Y * Y;
+            }
+        }
+    }
+    double stdevX = sqrt(sumProductXX / counter);
+    double stdevY = sqrt(sumProductYY / counter);
+
+    if (stdevX * stdevY * counter == 0) {
+        correlation = 0;
+    } else {
+        correlation = sumProductXY / (stdevX * stdevY * counter);
+    }
+
+    assert (abs(correlation) >= 0);
+    return correlation;
 }
 
 
@@ -285,7 +329,7 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
                                  << "\t" << setprecision(4) << survivalFloaters.calculateSD()
                                  << "\t" << setprecision(4) << survivalBreeders.calculateSD()
                                  << "\t" << setprecision(4) << help.correlation(dispersalHelpers)
-                                 << "\t" << setprecision(4) << cumulativeHelp.correlation(groupSize)
+                                 << "\t" << setprecision(4) << corrHelpGroupSize
                                  << "\t" << newBreederFloater
                                  << "\t" << newBreederHelper
                                  << "\t" << inheritance
@@ -338,8 +382,3 @@ void Statistics::printIndividual(Individual individual, int generation, int grou
                                            << "\t" << setprecision(4) << individual.getSurvival()
                                            << endl;
 }
-
-
-
-
-

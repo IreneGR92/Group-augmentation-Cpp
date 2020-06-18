@@ -18,7 +18,7 @@ class Statistics {
 
     //Relatedness
     int driftGroupSize;
-    double relatedness;
+    double relatedness, corrHelpGroupSize;
 
     StatisticalFormulas groupSize;
 
@@ -45,6 +45,10 @@ public:
 
     void calculateStatistics(std::vector<Group> groups, IndividualVector floaters);
 
+    double calculateRelatedness(std::vector<Group> groups);
+
+    double correlationHelpGroupSize(std::vector<Group> groups);
+
     void printHeadersToConsole();
 
     void printHeadersToFile();
@@ -55,6 +59,7 @@ public:
                      int newBreederHelper, int inheritance);
 
     void printToFileLastGeneration(Simulation *simulation);
+
 };
 
 
