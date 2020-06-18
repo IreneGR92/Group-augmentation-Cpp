@@ -79,9 +79,9 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: optimise formula, make abstract version
 
     //Relatedness
-    double relatedness;          //relatedness related
-    int driftGroupSize = 0;
-    double meanDriftB, meanDriftH, sumDriftB = 0.0, sumDriftH = 0.0;
+    double correlation;          //relatedness related
+    int counter = 0;
+    double meanX, meanY, sumX = 0.0, sumY = 0.0;
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     vector<Group, std::allocator<Group >>::iterator groupsIt;
@@ -91,16 +91,16 @@ double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: opt
              helperIt < groupsIt->helpers.end(); ++helperIt) {
 
             if (groupsIt->isBreederAlive() && !groupsIt->helpers.empty()) {
-                sumDriftH += helperIt->getDrift();
-                sumDriftB += groupsIt->breeder.getDrift();
-                driftGroupSize++;
+                sumX += helperIt->getDrift();
+                sumY += groupsIt->breeder.getDrift();
+                counter++;
             }
         }
     }
 
-    if (driftGroupSize != 0) {
-        meanDriftH = sumDriftH / driftGroupSize;
-        meanDriftB = sumDriftB / driftGroupSize;
+    if (counter != 0) {
+        meanX = sumX / counter;
+        meanY = sumY / counter;
     }
 
     for (groupsIt = groups.begin(); groupsIt < groups.end(); ++groupsIt) {
@@ -110,8 +110,8 @@ double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: opt
         for (helperIt = groupsIt->helpers.begin();
              helperIt < groupsIt->helpers.end(); ++helperIt) {
             if (!isnan(helperIt->getDispersal()) || !isnan(helperIt->getHelp())) {
-                double X = (helperIt->getDrift() - meanDriftH);
-                double Y = (groupsIt->breeder.getDrift() - meanDriftB);
+                double X = (helperIt->getDrift() - meanX);
+                double Y = (groupsIt->breeder.getDrift() - meanY);
 
                 sumProductXY += X * Y;
                 sumProductXX += X * X;
@@ -119,17 +119,16 @@ double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: opt
             }
         }
     }
-    double stdevX = sqrt(sumProductXX / driftGroupSize);
-    double stdevY = sqrt(sumProductYY / driftGroupSize);
+    double stdevX = sqrt(sumProductXX / counter);
+    double stdevY = sqrt(sumProductYY / counter);
 
-    if (stdevX * stdevY * driftGroupSize == 0) {
-        relatedness = 0;
+    if (stdevX * stdevY * counter == 0) {
+        correlation = 0;
     } else {
-        relatedness = sumProductXY / (stdevX * stdevY * driftGroupSize);
+        correlation = sumProductXY / (stdevX * stdevY * counter);
     }
-
-    assert (abs(relatedness) >= 0);
-    return relatedness;
+    assert (abs(correlation) >= 0);
+    return correlation;
 
 
     //Old version
@@ -141,7 +140,7 @@ double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: opt
 //
 //            if (groupsIt->isBreederAlive() && !groupsIt->helpers.empty()) {
 //                sumDriftB += groupsIt->breeder.getDrift();
-//                sumDriftH += helperIt->getDrift();
+//                sumX += helperIt->getDrift();
 //                sumDriftBH += helperIt->getDrift() * groupsIt->breeder.getDrift();
 //                sumDriftBB += groupsIt->breeder.getDrift() * groupsIt->breeder.getDrift();
 //                driftGroupSize++;
@@ -151,12 +150,12 @@ double Statistics::calculateRelatedness(std::vector<Group> groups) { //TODO: opt
 //
 //    if (driftGroupSize != 0) {
 //        meanDriftB = sumDriftB / driftGroupSize;
-//        meanDriftH = sumDriftH / driftGroupSize;
+//        meanX = sumX / driftGroupSize;
 //        meanDriftBH = sumDriftBH / driftGroupSize;
 //        meanDriftBB = sumDriftBB / driftGroupSize;
 //    }
 //
-//    relatedness = (meanDriftBH - meanDriftB * meanDriftH) /
+//    relatedness = (meanDriftBH - meanDriftB * meanX) /
 //                  (meanDriftBB - meanDriftB * meanDriftB); //covariate of a neutral selected gene
 //    if ((meanDriftBB - meanDriftB * meanDriftB) == 0 || driftGroupSize == 0) {
 //        relatedness = Parameters::NO_VALUE; //prevent to divide by 0
