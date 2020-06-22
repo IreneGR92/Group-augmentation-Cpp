@@ -10,8 +10,12 @@
 //Singleton
 class Parameters {
 
-    explicit Parameters(std::string url);
+    explicit Parameters(const std::string& url);
 
+public:
+    virtual ~Parameters();
+
+private:
 
 
     std::string name;

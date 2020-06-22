@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Parameters::Parameters(string url) {
+Parameters::Parameters(const string& url) {
 
 
     YAML::Node config = YAML::LoadFile(url);
@@ -55,6 +55,13 @@ Parameters::Parameters(string url) {
     const int seed = 0;
     this->generator = new std::default_random_engine(seed);
 }
+
+Parameters::~Parameters() {
+    delete mainWriter;
+    delete lastGenerationWriter;
+    delete generator;
+}
+
 
 void Parameters::print() {
     this->print(*mainWriter);
@@ -276,6 +283,7 @@ Parameters *Parameters::instance(std::string url) {
     }
     return singletonInstance;
 }
+
 
 
 
