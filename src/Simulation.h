@@ -6,12 +6,15 @@
 #include "model/Group.h"
 
 class Simulation {
+public:
+
+private:
 
     Parameters *parameters;
 
-    IndividualVector floaters;
+    IndividualVector *floaters;
 
-    std::vector<Group> groups;
+    std::vector<Group> *groups;
 
     const int replica;
 

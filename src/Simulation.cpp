@@ -8,7 +8,9 @@
 Simulation::Simulation(const int replica)
         : replica(replica) {
     this->parameters = Parameters::instance();
-    this->groups = initializeGroups();
+    this->groups = new std::vector<Group>(this->parameters->getMaxColonies(), Group(generation));
+    this->floaters = new IndividualVector();
+
 
 }
 
@@ -16,12 +18,14 @@ Simulation::Simulation(const int replica)
 void Simulation::run() {
 
     // Output file
-    Statistics *statistics = new Statistics();
+    auto *statistics = new Statistics();
 
     statistics->calculateStatistics(groups, floaters);
     statistics->printHeadersToConsole();
     statistics->printToConsole(generation, deaths);
     statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+
+    delete statistics;
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {
         statistics = new Statistics();
@@ -49,6 +53,7 @@ void Simulation::run() {
             }
         }
 
+
         this->mortality();
         this->newBreeder();
 
@@ -58,20 +63,11 @@ void Simulation::run() {
             statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
         }
 
+        delete statistics;
+
         this->increaseAge();
         this->reproduce();
     }
-}
-
-
-/* INITIALISE POPULATION */
-std::vector<Group> Simulation::initializeGroups() {
-
-    std::vector<Group> createdGroups(this->parameters->getMaxColonies(), Group(generation));
-
-    assert(createdGroups.size() == Parameters::instance()->getMaxColonies());
-
-    return createdGroups;
 }
 
 
@@ -138,7 +134,8 @@ void Simulation::disperse() {
             selectGroupIndex = UniformGroupID(
                     *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() + selectGroupIndex); //remove the group ID from the vector to not draw it again
+            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
             groups[selectGroupID].helpers.push_back(
                     *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
             allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
@@ -265,6 +262,7 @@ int Simulation::getNewbreederHelper() const {
 int Simulation::getInheritance() const {
     return inheritance;
 }
+
 
 
 

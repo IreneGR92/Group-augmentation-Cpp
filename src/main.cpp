@@ -40,9 +40,9 @@ int main(int count, char **argv) {
 
     for (int replica = 0; replica < parameters->getMaxNumReplicates(); replica++) {
 
-        Simulation simulation(replica);
-        simulation.run();
-
+        auto *simulation = new Simulation(replica);
+        simulation->run();
+        delete simulation;
     }
 
 

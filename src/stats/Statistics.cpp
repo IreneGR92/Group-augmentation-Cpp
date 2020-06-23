@@ -9,12 +9,12 @@
 using namespace std;
 
 /* CALCULATE STATISTICS */
-void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floaters) {
+void Statistics::calculateStatistics(const vector<Group> &groups, const IndividualVector &floaters) {
 
     //Counters
     population = 0, totalFloaters = 0, totalHelpers = 0, totalBreeders = 0,
 
-    //Relatedness
+            //Relatedness
     relatedness = 0.0, driftGroupSize = 0,
     meanDriftB = 0.0, sumDriftB = 0.0, meanDriftH = 0.0, sumDriftH = 0.0,
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
@@ -28,25 +28,24 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
     vector<Individual, std::allocator<Individual >>::iterator helper;
     for (helper = helpers.begin(); helper < helpers.end(); ++helper) {
-        if (helper->getFishType() != HELPER){
-            cout<< "helper wrong class";
+        if (helper->getFishType() != HELPER) {
+            cout << "helper wrong class";
         }
     }
 
     vector<Individual, std::allocator<Individual >>::iterator floater;
     for (floater = floaters.begin(); floater < floaters.end(); ++floater) {
-        if (floater->getFishType() != FLOATER){
-            cout<< "floater wrong class";
+        if (floater->getFishType() != FLOATER) {
+            cout << "floater wrong class";
         }
     }
 
     vector<Individual, std::allocator<Individual >>::iterator breeder;
     for (breeder = breeders.begin(); breeder < breeders.end(); ++breeder) {
-        if (breeder->getFishType() != BREEDER){
-            cout<< "breeder wrong class";
+        if (breeder->getFishType() != BREEDER) {
+            cout << "breeder wrong class";
         }
     }
-
 
 
     std::vector<Group, std::allocator<Group>>::iterator group;
@@ -142,7 +141,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
     double sumProductXY = 0;
     double sumProductXX = 0;
     double sumProductYY = 0;
-    double stdevX = 0,  stdevY = 0;
+    double stdevX = 0, stdevY = 0;
     double counter = driftGroupSize;
     double correlation;
 
@@ -163,7 +162,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
             }
         }
     }
-    if (counter > 0){
+    if (counter > 0) {
         stdevX = sqrt(sumProductXX / counter);
         stdevY = sqrt(sumProductYY / counter);
     }
@@ -171,7 +170,7 @@ void Statistics::calculateStatistics(vector<Group> groups, IndividualVector floa
 
     if (stdevX * stdevY * counter == 0) {
         relatedness = 0;
-    }else{
+    } else {
         relatedness = sumProductXY / (stdevX * stdevY * counter);
     }
 
