@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <yaml-cpp/yaml.h>
-#include "../headers/Parameters.h"
+#include "Parameters.h"
 
 using namespace std;
 

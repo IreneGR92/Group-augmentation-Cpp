@@ -19,7 +19,7 @@
 /*HEADER FILES*/
 
 #include <iostream>
-#include "headers/Parameters.h"
+#include "Parameters.h"
 
 
 /* MAIN PROGRAM */
