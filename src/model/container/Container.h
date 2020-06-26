@@ -31,7 +31,7 @@ public:
 
     void merge(Container<T> &container);
 
-    T &getRandomElement() const;
+    T getRandomElement() const;
 
     typename std::vector<T>::const_iterator begin() const;
 
@@ -82,15 +82,11 @@ void Container<T>::merge(Container<T> &container) {
 
 
 template<class T>
-T &Container<T>::getRandomElement() const {
+T Container<T>::getRandomElement() const {
     Parameters *parameters = Parameters::instance();
     std::uniform_int_distribution<int> uniform(0, vector.size() - 1);
     int index = uniform(*parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-
-    auto result = vector[index];
-
-    return result;
-
+    return this->vector[index];
 }
 
 template<class T>
