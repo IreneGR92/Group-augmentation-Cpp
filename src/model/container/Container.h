@@ -30,7 +30,7 @@ public:
 
     T remove(int index);
 
-    void merge(Container<T> container);
+    void merge(Container<T> &container);
 
     T &getRandomElement() const;
 
@@ -77,8 +77,8 @@ T Container<T>::remove(int index) {
 }
 
 template<class T>
-void Container<T>::merge(Container<T> container) {
-    this->insert(vector->end(), container.begin(), container.end());
+void Container<T>::merge(Container<T> &container) {
+    vector->insert(vector->end(), container.vector->begin(), container.vector->end());
 }
 
 template<class T>
