@@ -52,12 +52,12 @@ Container<T>::~Container() {
 
 template<class T>
 const unsigned int Container<T>::size() const {
-    vector->size();
+    return vector->size();
 }
 
 template<class T>
 const bool Container<T>::isEmpty() {
-    vector->empty();
+    return vector->empty();
 }
 
 template<class T>
@@ -81,12 +81,14 @@ void Container<T>::merge(Container<T> &container) {
     vector->insert(vector->end(), container.vector->begin(), container.vector->end());
 }
 
+
 template<class T>
 T &Container<T>::getRandomElement() const {
     Parameters *parameters = Parameters::instance();
     std::uniform_int_distribution<int> uniform(0, vector->size() - 1);
     int index = uniform(*parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-    vector[index];
+
+    return this->vector->at(index);
 
 }
 

@@ -277,6 +277,9 @@ default_random_engine *Parameters::getGenerator() const {
 }
 
 Parameters *Parameters::instance() {
+    if (singletonInstance == nullptr) {
+        singletonInstance = new Parameters;
+    }
     return singletonInstance;
 }
 
