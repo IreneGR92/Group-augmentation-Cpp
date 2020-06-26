@@ -4,7 +4,7 @@
 
 #include "Parameters.h"
 #include "model/IndividualVector.h"
-#include "model/DataModel.h"
+#include "model/Population.h"
 
 class Simulation {
     Parameters *parameters;
