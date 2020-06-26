@@ -106,8 +106,8 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 /*  MORTALITY */
 
 void Group::survivalGroup() {
-    //Calculate survival for the helpers
     this->calculateGroupSize();
+    //Calculate survival for the helpers
     vector<Individual, std::allocator<Individual>>::iterator helper;
     for (helper = helpers.begin(); helper < helpers.end(); ++helper) {
         assert(helper->getFishType() == HELPER);
@@ -125,8 +125,6 @@ void Group::survivalGroup() {
 }
 
 void Group::mortalityGroup(int &deaths) {
-
-    calculateGroupSize(); //update group size after dispersal
 
     vector<Individual, std::allocator<Individual>>::iterator helperIt;
     helperIt = helpers.begin();
@@ -149,6 +147,8 @@ void Group::mortalityGroup(int &deaths) {
         breederAlive = false;
         deaths++;
     }
+    this->calculateGroupSize(); //update group size after mortality
+
 }
 
 

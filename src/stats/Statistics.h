@@ -45,9 +45,9 @@ public:
 
     void calculateStatistics(const std::vector<Group> &groups, const IndividualVector &floaters);
 
-    double calculateRelatedness(std::vector<Group> groups);
+    double calculateRelatedness(const std::vector<Group> &groups);
 
-    double correlationHelpGroupSize(std::vector<Group> groups);
+    double correlationHelpGroupSize(const std::vector<Group> &groups);
 
     void printHeadersToConsole();
 
