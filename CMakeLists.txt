@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD 14)
 #pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
 
 include_directories(${PROJECT_SOURCE_DIR}/include/)
-set(LIB_YAML ${PROJECT_SOURCE_DIR}/lib/libyaml-cpp.so)
+set(LIB_YAML ${PROJECT_SOURCE_DIR}/../yaml-cpp/libyaml-cpp.so)
 
 
 set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Attribute.h)
