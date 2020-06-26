@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include "../../Parameters.h"
 
 template<class T>
 
@@ -18,22 +19,20 @@ public:
 public:
     Container();
 
-    void test();
+    const unsigned int size() const;
 
-//
+    const bool isEmpty();
+
+    const T &accessElement(int index);
+
+    //Modifiers
     void add(T &element);
-//
-//    const unsigned int size() const;
-//
-//    const bool isEmpty();
-//
-//    const T &accessElement(int index);
-//
-//    void merge(Container<T> container);
-//
-//    T &getRandomElement() const;
-//
-//    T remove(int index);
+
+    T remove(int index);
+
+    void merge(Container<T> container);
+
+    T &getRandomElement() const;
 
 //    void shuffle();
 //
@@ -52,13 +51,44 @@ Container<T>::~Container() {
 }
 
 template<class T>
-void Container<T>::test() {
-    std::cout << "gekdsfs";
+const unsigned int Container<T>::size() const {
+    vector->size();
 }
+
+template<class T>
+const bool Container<T>::isEmpty() {
+    vector->empty();
+}
+
+template<class T>
+const T &Container<T>::accessElement(int index) {
+    vector->at(index);
+}
+
 
 template<class T>
 void Container<T>::add(T &element) {
     vector->push_back(element);
 }
+
+template<class T>
+T Container<T>::remove(int index) {
+    vector->erase(vector->begin() + index);
+}
+
+template<class T>
+void Container<T>::merge(Container<T> container) {
+    this->insert(vector->end(), container.begin(), container.end());
+}
+
+template<class T>
+T &Container<T>::getRandomElement() const {
+    Parameters *parameters = Parameters::instance();
+    std::uniform_int_distribution<int> uniform(0, vector->size() - 1);
+    int index = uniform(*parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+    vector[index];
+
+}
+
 
 #endif //GROUP_AUGMENTATION_CONTAINER_H
