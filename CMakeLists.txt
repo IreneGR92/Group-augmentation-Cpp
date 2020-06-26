@@ -20,11 +20,18 @@ set(CMAKE_CXX_STANDARD 14)
 #pkg_check_modules(YAML_CPP REQUIRED yaml-cpp)
 
 include_directories(${PROJECT_SOURCE_DIR}/include/)
+set(LIB_YAML ${PROJECT_SOURCE_DIR}/lib/libyaml-cpp.so)
 
-set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Group.h src/model/Group.cpp src/model/Individual.h src/model/Individual.cpp src/model/IndividualVector.h src/model/IndividualVector.cpp src/model/Attribute.h src/model/DataModel.cpp src/model/DataModel.h src/Simulation.cpp src/Simulation.h)
+
+set(SOURCE_FILES src/main.cpp src/Parameters.h src/Parameters.cpp src/model/Attribute.h)
 add_executable(App ${SOURCE_FILES})
+target_link_libraries(App PUBLIC ${LIB_YAML})
 
-target_link_libraries(App PUBLIC lib/libyaml-cpp.so)
+
+set(TEST_FILES src/test.cpp src/Parameters.h src/Parameters.cpp src/model/Attribute.h src/model/container/Container.h src/model/container/Container.cpp)
+add_executable(Test ${TEST_FILES})
+target_link_libraries(Test PUBLIC ${LIB_YAML})
+
 
 
 
