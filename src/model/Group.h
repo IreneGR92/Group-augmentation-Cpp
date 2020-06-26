@@ -18,9 +18,10 @@ private:
     double fecundity;
     int realFecundity;
 
-public:
     Individual breeder;
     Container<Individual> helpers; // create a vector of helpers inside each group
+
+public:
 
     explicit Group();
 
@@ -51,11 +52,14 @@ public:
 
     double getCumHelp() const;
 
+    bool hasHelpers() const;
+
     std::vector<double> get(Attribute attribute) const;
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 
     std::vector<Individual> reassignNoRelatedness();
+
 };
 
 

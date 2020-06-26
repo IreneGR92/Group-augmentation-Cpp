@@ -22,7 +22,7 @@ public:
 
     const unsigned int size() const;
 
-    const bool isEmpty();
+    const bool isEmpty() const;
 
     const T &accessElement(int index);
 
@@ -46,9 +46,7 @@ public:
     typename std::vector<T>::iterator end();
 
 
-//    void shuffle();
-//
-//    void removeElement(size_t itemIndex);
+    void shuffle();
 
 };
 
@@ -59,7 +57,7 @@ const unsigned int Container<T>::size() const {
 }
 
 template<class T>
-const bool Container<T>::isEmpty() {
+const bool Container<T>::isEmpty() const {
     return vector.empty();
 }
 
@@ -123,6 +121,11 @@ Container<T>::Container() {}
 
 template<class T>
 Container<T>::Container(int number, T instance) :std::vector<T>(number, instance) {
+}
+
+template<class T>
+void Container<T>::shuffle() {
+    std::cout << "shuffle not implemented yet!" << std::endl;
 }
 
 

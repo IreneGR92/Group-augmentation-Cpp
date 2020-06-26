@@ -7,6 +7,7 @@
 #include "Container.h"
 
 class IndividualContainer : public Container<Individual> {
+public:
     Container<double> get(Attribute type) const;
 };
 

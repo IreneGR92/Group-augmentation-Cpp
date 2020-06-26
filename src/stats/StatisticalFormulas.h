@@ -3,17 +3,17 @@
 #define GROUP_AUGMENTATION_STATISTICALFORMULAS_H
 
 
-#include <vector>
+#include "../model/container/Container.h"
 
 class StatisticalFormulas {
 
-    std::vector<double> individualValues;
+    Container<double> individualValues;
 
 public:
 
     void addValue(double toAdd);
 
-    void addValues(const std::vector<double> &values);
+    void addValues(const Container<double> &values);
 
     double calculateMean();
 
@@ -29,7 +29,7 @@ public:
 
     int size();
 
-    std::vector<double> getValues() const;
+    Container<double> getValues() const;
 
 };
 

@@ -3,6 +3,7 @@
 
 
 #include "container/Container.h"
+#include "container/IndividualContainer.h"
 #include "Individual.h"
 #include "Group.h"
 
@@ -10,14 +11,14 @@ class Population {
 public:
     const Container<Group> &getGroups() const;
 
-    const Container<Individual> &getFloaters() const;
+    const IndividualContainer &getFloaters() const;
 
     Population();
 
 private:
     Container<Group> groups;
 
-    Container<Individual> floaters;
+    IndividualContainer floaters;
 
     int deaths = 0;
 

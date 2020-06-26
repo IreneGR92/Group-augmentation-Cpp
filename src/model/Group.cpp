@@ -316,5 +316,10 @@ std::vector<double> Group::get(Attribute attribute) const {
 }
 
 
+bool Group::hasHelpers() const {
+    return !helpers.isEmpty();
+}
+
+
 
 

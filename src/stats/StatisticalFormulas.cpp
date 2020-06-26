@@ -7,8 +7,6 @@
 #include <assert.h>
 
 
-
-
 double StatisticalFormulas::calculateMean() {
 
     double sum = std::accumulate(individualValues.begin(), individualValues.end(), 0.0);
@@ -65,8 +63,8 @@ double StatisticalFormulas::correlation(StatisticalFormulas y) {
     double correlation;
 
     for (int i = 0; i < counter; i++) {
-        Xi = this->getValues().at(i);
-        Yi = y.getValues().at(i);
+        Xi = this->getValues().accessElement(i);
+        Yi = y.getValues().accessElement(i);
         X = (Xi - meanX);
         Y = (Yi - meanY);
         sumProductXY += X * Y;
@@ -83,19 +81,18 @@ double StatisticalFormulas::correlation(StatisticalFormulas y) {
     return correlation;
 }
 
-int StatisticalFormulas::getMaxValue(){
+int StatisticalFormulas::getMaxValue() {
     int max = *max_element(individualValues.begin(), individualValues.end());
     return max;
 }
 
 
 void StatisticalFormulas::addValue(double toAdd) {
-    this->individualValues.push_back(toAdd);
+    this->individualValues.add(toAdd);
 }
 
-void StatisticalFormulas::merge(StatisticalFormulas statisticalSum) {
-    this->individualValues.insert(individualValues.end(), statisticalSum.individualValues.begin(),
-                                  statisticalSum.individualValues.end());
+void StatisticalFormulas::merge(const StatisticalFormulas statisticalSum) {
+    this->individualValues.merge(statisticalSum.getValues());
 }
 
 int StatisticalFormulas::size() {
@@ -103,13 +100,13 @@ int StatisticalFormulas::size() {
 }
 
 
-void StatisticalFormulas::addValues(const std::vector<double> &values) {
+void StatisticalFormulas::addValues(const Container<double> &values) {
     for (double value: values) {
         this->addValue(value);
     }
 }
 
-std::vector<double> StatisticalFormulas::getValues() const {
+Container<double> StatisticalFormulas::getValues() const {
     return this->individualValues;
 }
 

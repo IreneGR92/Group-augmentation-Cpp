@@ -9,7 +9,7 @@
 using namespace std;
 
 /* CALCULATE STATISTICS */
-void Statistics::calculateStatistics(const std::vector<Group> &groups, const IndividualContainer &floaters) {
+void Statistics::calculateStatistics(const Population &populationObj) {
 
     //Counters
     population = 0, totalFloaters = 0, totalHelpers = 0, totalBreeders = 0,
@@ -23,8 +23,8 @@ void Statistics::calculateStatistics(const std::vector<Group> &groups, const Ind
     IndividualContainer breeders;
     IndividualContainer helpers;
     IndividualContainer individualsAll;
-    std::vector<double> groupSizes;
-    std::vector<double> cumHelps;
+    Container<double> groupSizes;
+    Container<double> cumHelps;
 
     for (const Individual &helper: helpers) {
         if (helper.getFishType() != HELPER) {
@@ -32,7 +32,7 @@ void Statistics::calculateStatistics(const std::vector<Group> &groups, const Ind
         }
     }
 
-    for (const Individual &floater: floaters) {
+    for (const Individual &floater: populationObj.getFloaters()) {
         if (floater.getFishType() != FLOATER) {
             cout << "floater wrong class";
         }
@@ -45,24 +45,23 @@ void Statistics::calculateStatistics(const std::vector<Group> &groups, const Ind
     }
 
 
-    for (const Group &group: groups) {
+    for (const Group &group: populationObj.getGroups()) {
         if (group.isBreederAlive()) {
-            breeders.push_back(group.getBreeder());
+            breeders.add(group.getBreeder());
         }
-        helpers.insert(helpers.end(), group.getHelpers().begin(),
-                       group.getHelpers().end());
+        helpers.merge(group.getHelpers());
 
-        groupSizes.push_back(group.getGroupSize());
-        cumHelps.push_back(group.getCumHelp());
+        groupSizes.add(group.getGroupSize());
+        cumHelps.add(group.getCumHelp());
     }
 
     individualsAll.merge(helpers);
-    individualsAll.merge(floaters);
+    individualsAll.merge(populationObj.getFloaters());
     individualsAll.merge(breeders);
 
     //Counters
     totalHelpers = helpers.size();
-    totalFloaters = floaters.size();
+    totalFloaters = populationObj.getFloaters().size();
     totalBreeders = breeders.size();
     population = totalBreeders + totalHelpers + totalFloaters;
     assert(population > 0);
@@ -79,18 +78,18 @@ void Statistics::calculateStatistics(const std::vector<Group> &groups, const Ind
     age.addValues(individualsAll.get(AGE));
     ageHelpers.addValues(helpers.get(AGE));
     ageBreeders.addValues(breeders.get(AGE));
-    ageFloaters.addValues(floaters.get(AGE));
+    ageFloaters.addValues(populationObj.getFloaters().get(AGE));
 
     help.addValues(helpers.get(HELP));
 
     dispersal.addValues(helpers.get(DISPERSAL));
-    dispersal.addValues(floaters.get(DISPERSAL));
+    dispersal.addValues(populationObj.getFloaters().get(DISPERSAL));
     dispersalHelpers.addValues(helpers.get(DISPERSAL));
 
     survival.addValues(individualsAll.get(SURVIVAL));
     survivalHelpers.addValues(helpers.get(SURVIVAL));
     survivalBreeders.addValues(breeders.get(SURVIVAL));
-    survivalFloaters.addValues(floaters.get(SURVIVAL));
+    survivalFloaters.addValues(populationObj.getFloaters().get(SURVIVAL));
 
 
     //Group attributes
@@ -100,13 +99,13 @@ void Statistics::calculateStatistics(const std::vector<Group> &groups, const Ind
 
 
     //Correlations in different levels
-    relatedness = calculateRelatedness(groups);
-    corrHelpGroupSize = correlationHelpGroupSize(groups);
+    relatedness = calculateRelatedness(populationObj.getGroups());
+    corrHelpGroupSize = correlationHelpGroupSize(populationObj.getGroups());
 
 }
 
 double
-Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
 
     //Relatedness
     double correlation;          //relatedness related
@@ -115,10 +114,10 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
-        for (const Individual &helper: group.helpers) {
-            if (group.isBreederAlive() && !group.helpers.empty()) {
+        for (const Individual &helper: group.getHelpers()) {
+            if (group.isBreederAlive() && group.hasHelpers()) {
                 sumX += helper.getDrift();
-                sumY += group.breeder.getDrift();
+                sumY += group.getBreeder().getDrift();
                 counter++;
             }
         }
@@ -130,10 +129,10 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
     }
 
     for (const Group &group: groups) {
-        for (const Individual &helper: group.helpers) {
+        for (const Individual &helper: group.getHelpers()) {
             if (!isnan(helper.getDispersal()) || !isnan(helper.getHelp())) {
                 double X = (helper.getDrift() - meanX);
-                double Y = (group.breeder.getDrift() - meanY);
+                double Y = (group.getBreeder().getDrift() - meanY);
 
                 sumProductXY += X * Y;
                 sumProductXX += X * X;
@@ -155,7 +154,7 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
 }
 
 double
-Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::correlationHelpGroupSize(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
 
     double correlation;
     int counter = 0;
@@ -163,9 +162,9 @@ Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO:
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
-        for (const Individual &helper: group.helpers) {
+        for (const Individual &helper: group.getHelpers()) {
 
-            if (!group.helpers.empty()) {
+            if (group.hasHelpers()) {
                 sumX += helper.getHelp();
                 sumY += group.getGroupSize();
                 counter++;
@@ -179,7 +178,7 @@ Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO:
     }
 
     for (const Group &group: groups) {
-        for (const Individual &helper: group.helpers) {
+        for (const Individual &helper: group.getHelpers()) {
             if (!isnan(helper.getDispersal()) || !isnan(helper.getHelp())) {
                 double X = (helper.getHelp() - meanX);
                 double Y = (group.getGroupSize() - meanY);
@@ -328,7 +327,7 @@ void Statistics::printToFileLastGeneration(Simulation *simulation) {
         if (counter < 100) {
             this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
 
-            for (auto const &helper: group.helpers) {
+            for (auto const &helper: group.getHelpers()) {
                 this->printIndividual(helper, simulation->getGeneration(), groupID, simulation->getReplica());
             }
             counter++;

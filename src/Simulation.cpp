@@ -19,10 +19,10 @@ void Simulation::run() {
     // Output file
     auto *statistics = new Statistics();
 
-    statistics->calculateStatistics(groups, floaters);
+    statistics->calculateStatistics(population);
     statistics->printHeadersToConsole();
-    statistics->printToConsole(generation, deaths);
-    statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+    statistics->printToConsole(generation, population.getDeaths());
+//    statistics->printToFile(replica, generation, population.getDeaths(), newBreederFloater, newBreederHelper, inheritance);
 
     delete statistics;
 
@@ -38,7 +38,7 @@ void Simulation::run() {
         if (generation % parameters->getSkip() == 0) {
             //Calculate stats
 
-            statistics->calculateStatistics(groups, floaters);
+            statistics->calculateStatistics(population);
 
             //Print last generation
             if (generation == parameters->getNumGenerations() / 10 ||
@@ -55,8 +55,8 @@ void Simulation::run() {
 
         // Print main file (separately since we need values of deaths, newBreederFloater, newBreederHelper and inheritance to be calculated)
         if (generation % parameters->getSkip() == 0) {
-            statistics->printToConsole(generation, deaths);
-            statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+            statistics->printToConsole(generation, population.getDeaths());
+//            statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
         }
 
         delete statistics;
@@ -71,8 +71,8 @@ void Simulation::reassignFloaters() {
     std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
     int selectGroup;
     std::vector<Individual>::iterator floaterIt;
-    while (!floaters.empty()) {
-        floaterIt = floaters.end() - 1;
+    while (!population.getFloaters().isEmpty()) {
+        floaterIt = population.getFloaters().end() - 1;
         floaterIt->setHelp(0);
         selectGroup = UniformMaxCol(*parameters->getGenerator());
         groups[selectGroup].helpers.push_back(
@@ -230,7 +230,7 @@ const std::vector<Individual> &Simulation::getFloaters() const {
     return floaters;
 }
 
-const std::vector<Group> &Simulation::getGroups() const {
+const Container<Group> &Simulation::getGroups() const {
     return groups;
 }
 

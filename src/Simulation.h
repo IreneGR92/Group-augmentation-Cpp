@@ -48,7 +48,7 @@ public:
 
     const std::vector<Individual> &getFloaters() const;
 
-    const std::vector<Group> &getGroups() const;
+    const Container<Group>&getGroups() const;
 
     const int getReplica() const;
 
