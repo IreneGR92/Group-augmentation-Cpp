@@ -7,9 +7,8 @@
 using namespace std;
 
 
-Group::Group(int &generation) : breeder(BREEDER, generation) {
+Group::Group() : breeder(BREEDER) {
     this->parameters = Parameters::instance();
-    this->generation = generation;
 
     breederAlive = true;
     helpersPresent = false;
@@ -18,7 +17,7 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
     realFecundity = Parameters::NO_VALUE;
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
-        auto individual = Individual(HELPER, generation);
+        auto individual = Individual(HELPER);
         helpers.add(individual);
     }
 

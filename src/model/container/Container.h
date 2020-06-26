@@ -16,6 +16,10 @@ private:
     std::vector<T> vector;
 
 public:
+    Container();
+
+    Container(int size, T);
+
     const unsigned int size() const;
 
     const bool isEmpty();
@@ -112,6 +116,13 @@ typename std::vector<T>::iterator Container<T>::end() {
 template<class T>
 void Container<T>::removeLast() {
     vector.pop_back();
+}
+
+template<class T>
+Container<T>::Container() {}
+
+template<class T>
+Container<T>::Container(int number, T instance) :std::vector<T>(number, instance) {
 }
 
 

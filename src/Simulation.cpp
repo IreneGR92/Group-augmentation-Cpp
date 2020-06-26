@@ -3,17 +3,13 @@
 #include <iostream>
 #include <cassert>
 #include "Simulation.h"
-#include "stats/Statistics.h"
 #include <vector>
 
 
 Simulation::Simulation(const int replica)
-        : replica(replica) {
-    this->parameters = Parameters::instance();
-    this->groups = new std::vector<Group>(this->parameters->getMaxColonies(), Group(generation));
-    this->floaters = new IndividualVector();
-
-
+        : replica(replica),
+          population(),
+          parameters(Parameters::instance()) {
 }
 
 
@@ -31,10 +27,7 @@ void Simulation::run() {
 
     for (generation = 1; generation <= Parameters::instance()->getNumGenerations(); generation++) {
         statistics = new Statistics();
-        deaths = 0; // to keep track of how many individuals die each generation
-        newBreederFloater = 0;
-        newBreederHelper = 0;
-        inheritance = 0;
+        population.reset();
 
         reassignFloaters();
         this->disperse();

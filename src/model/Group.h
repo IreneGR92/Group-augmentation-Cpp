@@ -18,14 +18,11 @@ private:
     double fecundity;
     int realFecundity;
 
-    int generation;
-
-
 public:
     Individual breeder;
     Container<Individual> helpers; // create a vector of helpers inside each group
 
-    explicit Group(int &generation);
+    explicit Group();
 
     void calculateGroupSize();
 

@@ -28,7 +28,7 @@ Individual::Individual(Individual &individual, FishType fishType, int &generatio
 }
 
 //Constructor for initial creation
-Individual::Individual(FishType fishType, int &generation) {
+Individual::Individual(FishType fishType) {
 
     auto param = Parameters::instance();
 

@@ -32,7 +32,7 @@ class Individual {
 public:
     Individual(Individual &individual, FishType fishType, int &generation);
 
-    Individual(FishType fishType, int &generation);
+    explicit Individual(FishType fishType);
 
 
     //Functions inside Individual

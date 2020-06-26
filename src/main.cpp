@@ -24,6 +24,7 @@
 
 /* MAIN PROGRAM */
 int main(int count, char **argv) {
+    //goes to HEAP since we need it only once globally
     Parameters *parameters;
     if (count > 1) {
         std::cout << "reading file " << argv[1] << "\n";
