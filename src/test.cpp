@@ -1,17 +1,21 @@
-
-
-
 #include <iostream>
 #include "model/container/Container.h"
-#include "model/Attribute.h"
 
 /* MAIN PROGRAM */
 int main(int count, char **argv) {
 
-//    Container<Attribute> *test;
-////
-//    test = new Container<Attribute>;
-std::cout << "hl";
+    auto *test = new Container<int>();
+
+//    auto *test = new Container<Parameters>();
+//
+//    std::cout << test.size();
+
+    int four = 4;
+
+    test->add(four);
+
+
+    std::cout << "hl";
 
     return 0;
 }
