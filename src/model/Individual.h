@@ -75,7 +75,7 @@ public:
     void setInherit(bool inherit);
 
     //allows to iterate trough members
-    double get(Attribute geneType) const;
+    const double get(Attribute geneType) const;
 };
 
 

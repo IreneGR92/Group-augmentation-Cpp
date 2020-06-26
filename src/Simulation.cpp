@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include "Simulation.h"
+#include "stats/Statistics.h"
 #include <vector>
 
 
@@ -86,7 +87,7 @@ void Simulation::disperse() {
     int groupID = 0;
 
     std::vector<Individual> noRelatedHelpers;
-    IndividualVector allNoRelatedHelpers;
+    IndividualContainer allNoRelatedHelpers;
     std::vector<int> noRelatednessGroupsID;
 
 

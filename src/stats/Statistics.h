@@ -7,6 +7,7 @@
 #include "../model/Individual.h"
 #include "../Simulation.h"
 #include "StatisticalFormulas.h"
+#include "../model/container/IndividualContainer.h"
 
 class Statistics {
 
@@ -43,7 +44,7 @@ class Statistics {
 public:
     Statistics();
 
-    void calculateStatistics(const std::vector<Group> &groups, const IndividualVector &floaters);
+    void calculateStatistics(const std::vector<Group> &groups, const IndividualContainer &floaters);
 
     double calculateRelatedness(const std::vector<Group> &groups);
 

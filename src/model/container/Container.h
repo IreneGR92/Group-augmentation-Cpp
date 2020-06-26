@@ -12,7 +12,7 @@ template<class T>
 
 class Container {
 
-private:
+protected:
     std::vector<T> vector;
 
 public:
@@ -27,13 +27,13 @@ public:
     const T &accessElement(int index);
 
     //Modifiers
-    void add(T &element);
+    void add(T element);
 
     void remove(int index);
 
     void removeLast();
 
-    void merge(Container<T> &container);
+    void merge(const Container<T> &container);
 
     T getRandomElement() const;
 
@@ -70,7 +70,7 @@ const T &Container<T>::accessElement(int index) {
 
 
 template<class T>
-void Container<T>::add(T &element) {
+void Container<T>::add(T element) {
     vector.push_back(element);
 }
 
@@ -80,7 +80,7 @@ void Container<T>::remove(int index) {
 }
 
 template<class T>
-void Container<T>::merge(Container<T> &container) {
+void Container<T>::merge(const Container<T> &container) {
     vector.insert(vector.end(), container.vector.begin(), container.vector.end());
 }
 

@@ -4,7 +4,6 @@
 
 #include "Individual.h"
 #include "FishType.h"
-#include "../Parameters.h"
 
 using namespace std;
 
@@ -251,7 +250,7 @@ void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-double Individual::get(Attribute type) const {
+const double Individual::get(Attribute type) const{
     switch (type) {
         case ALPHA:
             return this->alpha;
