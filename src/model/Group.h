@@ -9,7 +9,7 @@
 
 class Group {
 
-
+private:
     Parameters *parameters;
     double cumHelp;
     bool breederAlive;      // for the breeder: 1 alive, 0 dead
@@ -44,7 +44,7 @@ public:
 
     void reproduce(int generation);
 
-    const std::vector<Individual> &getHelpers() const;
+    const Container<Individual> &getHelpers() const;
 
     const Individual &getBreeder() const;
 

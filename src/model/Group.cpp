@@ -1,11 +1,8 @@
 
-#include <iomanip>
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include "Group.h"
 #include "FishType.h"
-#include "../Parameters.h"
 
 using namespace std;
 
@@ -21,8 +18,8 @@ Group::Group(int &generation) : breeder(BREEDER, generation) {
     realFecundity = Parameters::NO_VALUE;
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
-        helpers.emplace_back(
-                Individual(HELPER, generation));
+        auto individual = Individual(HELPER, generation);
+        helpers.add(individual);
     }
 
     calculateGroupSize();
@@ -45,8 +42,8 @@ vector<Individual> Group::disperse() {
     vector<Individual> newFloaters;
 
 
-    for (int i = 0; i < helpers.size(); ) {
-        Individual helper = helpers[i];
+    for (int i = 0; i < helpers.size();) {
+        Individual helper = helpers.accessElement(i);
 
         helper.calcDispersal();
 
@@ -68,8 +65,8 @@ vector<Individual> Group::reassignNoRelatedness() {
 
     std::vector<Individual> noRelatedHelpers;
 
-    for (int i = 0; i < helpers.size(); ) {
-        Individual helper = helpers[i];
+    for (int i = 0; i < helpers.size();) {
+        Individual helper = helpers.accessElement(i);
         if (helper.getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
 
             helper.setInherit(false); //the location of the individual is not the natal territory
@@ -130,12 +127,12 @@ void Group::mortalityGroup(int &deaths) {
     helperIt = helpers.begin();
     int sizevec = helpers.size();
     int counting = 0;
-    while (!helpers.empty() && sizevec > counting) {
+    while (!helpers.isEmpty() && sizevec > counting) {
 
         //Mortality helpers
         if (parameters->uniform(*parameters->getGenerator()) > helperIt->getSurvival()) {
-            *helperIt = helpers[helpers.size() - 1];
-            helpers.pop_back();
+            *helperIt = helpers.accessElement(helpers.size() - 1);
+            helpers.removeLast();
             ++counting;
             deaths++;
         } else
@@ -234,8 +231,8 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 //                    std::cout << "error in inheritance" << endl;
 //                }
             } else {
-                **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
-                helpers.pop_back();
+                **candidateIt = helpers.accessElement(helpers.size() - 1); //delete the ind from the vector helpers
+                helpers.removeLast();
                 newBreederHelper++;
                 if ((*candidateIt)->isInherit() == 1) {
                     inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
@@ -276,8 +273,10 @@ void Group::reproduce(int generation) // populate offspring generation
     if (breederAlive) {
         for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
         {
-            helpers.emplace_back(breeder, HELPER,
-                                 generation); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
+            Individual offspring = Individual(breeder, HELPER, generation);
+
+            helpers.add(
+                    offspring); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
 }
@@ -286,7 +285,7 @@ const Individual &Group::getBreeder() const {
     return breeder;
 }
 
-const vector<Individual> &Group::getHelpers() const {
+const Container<Individual> &Group::getHelpers() const {
     return helpers;
 }
 
