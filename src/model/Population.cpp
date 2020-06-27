@@ -22,6 +22,7 @@ void Population::reset() {
     this->newBreederHelper = 0;
     this->newBreederFloater = 0;
 }
+
 //this initializes groups and fills it with "maxColonies times" groups
 Population::Population() : groups(Parameters::instance()->getMaxColonies(), Group()) {
 }
@@ -68,12 +69,12 @@ void Population::mortalityFloaters() { //Calculate the survival of the floaters
     std::vector<Individual, std::allocator<Individual>>::iterator floaterIt;
     floaterIt = floaters.begin();
     int size = floaters.size();
-    for (int count = 0; !floaters.empty() && size > count; count++) {
+    for (int count = 0; !floaters.isEmpty() && size > count; count++) {
 
         //Mortality floaters
         if (parameters->uniform(*parameters->getGenerator()) > floaterIt->getSurvival()) {
-            *floaterIt = floaters[floaters.size() - 1];
-            floaters.pop_back();
+            *floaterIt = floaters.accessElement(floaters.size() - 1);
+            floaters.removeLast();
             deaths++;
         } else {
             floaterIt++; //go to next individual

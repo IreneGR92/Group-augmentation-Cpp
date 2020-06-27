@@ -150,7 +150,7 @@ void Group::mortalityGroup(int &deaths) {
 
 /* BECOME BREEDER */
 
-void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
+void Group::newBreeder(IndividualContainer &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
     //    Select a random sample from the floaters
     int i = 0;
     int sumAge = 0;
@@ -164,7 +164,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     vector<double> position; //vector of age to choose with higher likelihood the ind with higher age
     vector<int> TemporaryCandidates; // to prevent taking the same ind several times in the sample
 
-    if (!floaters.empty() && floaters.size() > proportionFloaters) {
+    if (!floaters.isEmpty() && floaters.size() > proportionFloaters) {
         while (i < proportionFloaters) {
             uniform_int_distribution<int> UniformFloat(0, floaters.size() - 1); //random floater ID taken in the sample
             floaterSampledID = UniformFloat(*parameters->getGenerator());
@@ -179,12 +179,13 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
              itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates) {
             if (*itTempCandidates != temp) //to make sure the same ind is not taken more than ones
             {
-                Candidates.push_back(&floaters[floaterSampledID]);
+                //FIXME
+                Candidates.push_back(&floaters.accessElement(floaterSampledID));
                 temp = *itTempCandidates;
             }
         }
-    } else if (!floaters.empty() && floaters.size() <
-                                    proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+    } else if (!floaters.isEmpty() && floaters.size() <
+                                      proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
         vector<Individual, std::allocator<Individual>>::iterator floaterIt;
         for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
             Candidates.push_back(&(*floaterIt));
@@ -223,8 +224,8 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
             if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
             {
-                **candidateIt = floaters[floaters.size() - 1];
-                floaters.pop_back();
+                **candidateIt = floaters.accessElement(floaters.size() - 1);
+                floaters.removeLast();
                 newBreederFloater++;
 //                if ((*candidate3It)->inherit == 1) {
 //                    std::cout << "error in inheritance" << endl;

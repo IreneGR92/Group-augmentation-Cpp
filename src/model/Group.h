@@ -6,7 +6,7 @@
 #include "Individual.h"
 #include "../Parameters.h"
 #include "container/Container.h"
-
+#include "container/IndividualContainer.h"
 class Group {
 
 private:
@@ -36,7 +36,7 @@ public:
 
     void mortalityGroup(int &deaths);
 
-    void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
+    void newBreeder(IndividualContainer &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
     void increaseAge();
 

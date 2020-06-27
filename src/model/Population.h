@@ -16,6 +16,8 @@ public:
     Population();
 
 private:
+    Parameters *parameters = Parameters::instance();
+
     Container<Group> groups;
 
     IndividualContainer floaters;
