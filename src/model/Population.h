@@ -8,12 +8,7 @@
 #include "Group.h"
 
 class Population {
-public:
-    const Container<Group> &getGroups() const;
 
-    const IndividualContainer &getFloaters() const;
-
-    Population();
 
 private:
     Parameters *parameters = Parameters::instance();
@@ -27,6 +22,11 @@ private:
     int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 public:
+    const Container<Group> &getGroups() const;
+
+    const IndividualContainer &getFloaters() const;
+
+    Population();
 
     void reassignFloaters();
 
@@ -55,6 +55,8 @@ public:
     void mortalityFloaters();
 
     void reset();
+
+
 
 public:
 };

@@ -31,7 +31,7 @@ void Simulation::run() {
         population.reset();
 
         population.reassignFloaters();
-        population.disperse();
+        population.disperse(generation);
         population.help();
         population.survival();
 
@@ -62,7 +62,7 @@ void Simulation::run() {
         delete statistics;
 
         population.increaseAge();
-        population.reproduce();
+        population.reproduce(generation);
     }
 }
 

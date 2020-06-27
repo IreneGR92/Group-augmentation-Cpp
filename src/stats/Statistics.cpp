@@ -323,7 +323,7 @@ void Statistics::printToFileLastGeneration(Simulation *simulation) {
     int groupID = 0;
     int counter = 0;
 
-    for (auto const &group: simulation->getGroups()) {
+    for (auto const &group: population->getGroups()) {
         if (counter < 100) {
             this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
 
@@ -334,7 +334,7 @@ void Statistics::printToFileLastGeneration(Simulation *simulation) {
         }
         groupID++;
     }
-    for (auto const &floater: simulation->getFloaters()) {
+    for (auto const &floater: population->getFloaters()) {
         this->printIndividual(floater, simulation->getGeneration(), groupID, simulation->getReplica());
     }
 
