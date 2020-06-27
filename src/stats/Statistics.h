@@ -59,7 +59,7 @@ public:
     void printToFile(int replica, int generation, int deaths, int newBreederFloater,
                      int newBreederHelper, int inheritance);
 
-    void printToFileLastGeneration(Simulation *simulation);
+    void printToFileLastGeneration(Simulation *simulation, const Population &populationObj);
 
 };
 
