@@ -30,7 +30,7 @@ public:
 
     void reassignFloaters();
 
-    void disperse();
+    void disperse(int generation);
 
     void help();
 
@@ -42,7 +42,7 @@ public:
 
     void increaseAge();
 
-    void reproduce();
+    void reproduce(int generation);
 
     void survivalFloaters();
 
