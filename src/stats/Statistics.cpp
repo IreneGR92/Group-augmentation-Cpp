@@ -323,20 +323,22 @@ void Statistics::printToFileLastGeneration(Simulation *simulation) {
     int groupID = 0;
     int counter = 0;
 
-    for (auto const &group: population->getGroups()) {
-        if (counter < 100) {
-            this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
 
-            for (auto const &helper: group.getHelpers()) {
-                this->printIndividual(helper, simulation->getGeneration(), groupID, simulation->getReplica());
-            }
-            counter++;
-        }
-        groupID++;
-    }
-    for (auto const &floater: population->getFloaters()) {
-        this->printIndividual(floater, simulation->getGeneration(), groupID, simulation->getReplica());
-    }
+    //TODO fixme
+//    for (auto const &group: population->getGroups()) {
+//        if (counter < 100) {
+//            this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
+//
+//            for (auto const &helper: group.getHelpers()) {
+//                this->printIndividual(helper, simulation->getGeneration(), groupID, simulation->getReplica());
+//            }
+//            counter++;
+//        }
+//        groupID++;
+//    }
+//    for (auto const &floater: population->getFloaters()) {
+//        this->printIndividual(floater, simulation->getGeneration(), groupID, simulation->getReplica());
+//    }
 
 
 }

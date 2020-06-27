@@ -322,6 +322,10 @@ bool Group::hasHelpers() const {
     return !helpers.isEmpty();
 }
 
+void Group::addHelper(const Individual &helper) {
+    this->helpers.add(helper);
+}
+
 
 
 

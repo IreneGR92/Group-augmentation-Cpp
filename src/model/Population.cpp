@@ -23,8 +23,11 @@ void Population::reset() {
     this->newBreederFloater = 0;
 }
 
-//this initializes groups and fills it with "maxColonies times" groups
-Population::Population() : groups(Parameters::instance()->getMaxColonies(), Group()) {
+Population::Population() {
+    for (int i = 0; i < Parameters::instance()->getMaxColonies(); i++) {
+        Group group;
+        this->groups.add(group);
+    }
 }
 
 void Population::help() {
@@ -151,23 +154,26 @@ void Population::disperse(int generation) {
 //        }
 //    }
 
-    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.isEmpty()) {
 
-        int selectGroupID, selectGroupIndex, size;
-        std::vector<Individual>::iterator NoRelatedHelperIt;
-        while (!allNoRelatedHelpers.isEmpty()) {
-            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
-            NoRelatedHelperIt = allNoRelatedHelpers.end() - 1;
-            selectGroupIndex = UniformGroupID(
-                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
-                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
-            groups.accessElement(selectGroupID).getHelpers().add(
-                    *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
-            allNoRelatedHelpers.removeLast(); //remove the no related helper from its vector
-        }
-    }
+
+//FIXME reimplement this
+
+//    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.isEmpty()) {
+//
+//        int selectGroupID, selectGroupIndex, size;
+//        std::vector<Individual>::iterator noRelatedHelperIt;
+//        while (!allNoRelatedHelpers.isEmpty()) {
+//            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
+//            noRelatedHelperIt = allNoRelatedHelpers.end() - 1;
+//            selectGroupIndex = UniformGroupID(
+//                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+//            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
+//            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+//                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
+//            groups.accessElement(selectGroupID).addHelper(    *noRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
+//            allNoRelatedHelpers.removeLast(); //remove the no related helper from its vector
+//        }
+//    }
 }
 
 
@@ -179,17 +185,19 @@ void Population::reassignFloaters() {
 //        randomGroup.getHelpers().add(individual);
 //    }
 
-    std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-    int selectGroup;
-    std::vector<Individual>::iterator floaterIt;
-    while (!floaters.isEmpty()) {
-        floaterIt = floaters.end() - 1;
-        floaterIt->setHelp(0);
-        selectGroup = UniformMaxCol(*parameters->getGenerator());
-        groups.accessElement(selectGroup).getHelpers().add(
-                *floaterIt); //add the floater to the helper vector in a randomly selected group
-        floaters.removeLast(); //remove the floater from its vector
-    }
+//Fixme reimplement this
+
+//    std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+//    int selectGroup;
+//    std::vector<Individual>::iterator floaterIt;
+//    while (!floaters.isEmpty()) {
+//        floaterIt = floaters.end() - 1;
+//        floaterIt->setHelp(0);
+//        selectGroup = UniformMaxCol(*parameters->getGenerator());
+//        groups.accessElement(selectGroup).getHelpers().add(
+//                *floaterIt); //add the floater to the helper vector in a randomly selected group
+//        floaters.removeLast(); //remove the floater from its vector
+//    }
 }
 
 
