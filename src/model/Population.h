@@ -42,10 +42,13 @@ public:
 
     void reproduce();
 
+    void survivalFloaters();
 
     int getDeaths() const;
 
     void increaseDeath();
+
+    void mortalityFloaters();
 
     void reset();
 
