@@ -25,6 +25,24 @@ private:
     int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 public:
+
+    void reassignFloaters();
+
+    void disperse();
+
+    void help();
+
+    void survival();
+
+    void mortality();
+
+    void newBreeder();
+
+    void increaseAge();
+
+    void reproduce();
+
+
     int getDeaths() const;
 
     void increaseDeath();
