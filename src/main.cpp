@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include "Parameters.h"
+#include "stats/Statistics.h"
 
 
 /* MAIN PROGRAM */
@@ -34,17 +35,17 @@ int main(int count, char **argv) {
     }
 
     parameters->print();
-//
-//    Statistics statistics;
-//    statistics.printHeadersToFile();
-//
-//
-//    for (int replica = 0; replica < parameters->getMaxNumReplicates(); replica++) {
-//
-//        auto *simulation = new Simulation(replica);
-//        simulation->run();
-//        delete simulation;
-//    }
+
+    Statistics statistics;
+    statistics.printHeadersToFile();
+
+
+    for (int replica = 0; replica < parameters->getMaxNumReplicates(); replica++) {
+
+        auto *simulation = new Simulation(replica);
+        simulation->run();
+        delete simulation;
+    }
 
 
 //    vector<double> testVector;
