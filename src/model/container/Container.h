@@ -27,7 +27,7 @@ public:
     const T &accessElement(int index);
 
     //Modifiers
-    void add(const T element) const;
+    void add(const T element);
 
     void remove(int index);
 
@@ -68,7 +68,7 @@ const T &Container<T>::accessElement(int index) {
 
 
 template<class T>
-void Container<T>::add(const T element) const {
+void Container<T>::add(const T element) {
     vector.push_back(element);
 }
 
