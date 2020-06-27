@@ -151,7 +151,7 @@ void Population::disperse(int generation) {
 //        }
 //    }
 
-    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
+    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.isEmpty()) {
 
         int selectGroupID, selectGroupIndex, size;
         std::vector<Individual>::iterator NoRelatedHelperIt;
@@ -163,7 +163,7 @@ void Population::disperse(int generation) {
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
             noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                         selectGroupIndex); //remove the group ID from the vector to not draw it again
-            groups[selectGroupID].helpers.push_back(
+            groups.accessElement(selectGroupID).getHelpers().add(
                     *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
             allNoRelatedHelpers.removeLast(); //remove the no related helper from its vector
         }
