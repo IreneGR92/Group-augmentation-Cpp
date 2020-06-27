@@ -7,6 +7,7 @@
 #include "../Parameters.h"
 #include "container/Container.h"
 #include "container/IndividualContainer.h"
+
 class Group {
 
 private:
@@ -27,7 +28,7 @@ public:
 
     void calculateGroupSize();
 
-    std::vector<Individual> disperse();
+    IndividualContainer disperse();
 
 
     void calculateCumulativeHelp();
@@ -58,7 +59,7 @@ public:
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 
-    std::vector<Individual> reassignNoRelatedness();
+    IndividualContainer reassignNoRelatedness();
 
 };
 

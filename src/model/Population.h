@@ -42,6 +42,8 @@ public:
 
     void increaseAge();
 
+    void increaseAgeFloaters();
+
     void reproduce(int generation);
 
     void survivalFloaters();
