@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "Statistics.h"
+#include "../model/Population.h"
 #include "../model/Group.h"
 #include "../model/Individual.h"
 
@@ -318,12 +319,12 @@ void Statistics::printToFile(int replica, int generation, int deaths, int newBre
 }
 
 
-void Statistics::printToFileLastGeneration(Simulation *simulation) {
+void Statistics::printToFileLastGeneration(Simulation *simulation, const Population &populationObj) {
 
     int groupID = 0;
     int counter = 0;
 
-    for (auto const &group: population->getGroups()) {
+    for (auto const &group: populationObj.getGroups()) {
         if (counter < 100) {
             this->printIndividual(group.getBreeder(), simulation->getGeneration(), groupID, simulation->getReplica());
 
@@ -334,7 +335,7 @@ void Statistics::printToFileLastGeneration(Simulation *simulation) {
         }
         groupID++;
     }
-    for (auto const &floater: population->getFloaters()) {
+    for (auto const &floater: populationObj.getFloaters()) {
         this->printIndividual(floater, simulation->getGeneration(), groupID, simulation->getReplica());
     }
 

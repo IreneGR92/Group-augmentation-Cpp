@@ -45,7 +45,7 @@ void Simulation::run() {
                 generation == parameters->getNumGenerations() / 4 ||
                 generation == parameters->getNumGenerations() / 2 || generation == parameters->getNumGenerations()) {
 
-                statistics->printToFileLastGeneration(this);
+                statistics->printToFileLastGeneration(this, population);
             }
         }
 
