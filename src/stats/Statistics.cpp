@@ -24,8 +24,8 @@ void Statistics::calculateStatistics(const Population &populationObj) {
     IndividualVector breeders;
     IndividualVector helpers;
     IndividualVector individualsAll;
-    Container<double> groupSizes;
-    Container<double> cumHelps;
+    std::vector<double> groupSizes;
+    std::vector<double> cumHelps;
 
     for (const Individual &helper: helpers) {
         if (helper.getFishType() != HELPER) {
@@ -52,8 +52,8 @@ void Statistics::calculateStatistics(const Population &populationObj) {
         }
         helpers.merge(group.getHelpers());
 
-        groupSizes.add(group.getGroupSize());
-        cumHelps.add(group.getCumHelp());
+        groupSizes.push_back(group.getGroupSize());
+        cumHelps.push_back(group.getCumHelp());
     }
 
     individualsAll.merge(helpers);
@@ -106,7 +106,7 @@ void Statistics::calculateStatistics(const Population &populationObj) {
 }
 
 double
-Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
     //Relatedness
     double correlation;          //relatedness related
@@ -155,7 +155,7 @@ Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optim
 }
 
 double
-Statistics::correlationHelpGroupSize(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
     double correlation;
     int counter = 0;

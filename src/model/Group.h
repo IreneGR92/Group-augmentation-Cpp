@@ -19,7 +19,7 @@ private:
     int realFecundity;
 
     Individual breeder;
-    std::vector<Individual> helpers; // create a vector of helpers inside each group
+    // create a vector of helpers inside each group
 
 public:
 
@@ -61,6 +61,7 @@ public:
 
     std::vector<Individual> reassignNoRelatedness();
 
+    IndividualVector helpers;
 };
 
 

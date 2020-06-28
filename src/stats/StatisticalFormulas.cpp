@@ -63,8 +63,8 @@ double StatisticalFormulas::correlation(StatisticalFormulas y) {
     double correlation;
 
     for (int i = 0; i < counter; i++) {
-        Xi = this->getValues().accessElement(i);
-        Yi = y.getValues().accessElement(i);
+        Xi = this->getValues().at(i);
+        Yi = y.getValues().at(i);
         X = (Xi - meanX);
         Y = (Yi - meanY);
         sumProductXY += X * Y;
@@ -88,11 +88,12 @@ int StatisticalFormulas::getMaxValue() {
 
 
 void StatisticalFormulas::addValue(double toAdd) {
-    this->individualValues.add(toAdd);
+    this->individualValues.push_back(toAdd);
 }
 
-void StatisticalFormulas::merge(const StatisticalFormulas statisticalSum) {
-    this->individualValues.merge(statisticalSum.getValues());
+void StatisticalFormulas::merge(const StatisticalFormulas statisticalFormulas) {
+    this->individualValues.insert(individualValues.end(), statisticalFormulas.getValues().begin(),
+                                  statisticalFormulas.getValues().end());
 }
 
 int StatisticalFormulas::size() {
@@ -100,13 +101,13 @@ int StatisticalFormulas::size() {
 }
 
 
-void StatisticalFormulas::addValues(const Container<double> &values) {
+void StatisticalFormulas::addValues(const std::vector<double> &values) {
     for (double value: values) {
         this->addValue(value);
     }
 }
 
-Container<double> StatisticalFormulas::getValues() const {
+std::vector<double> StatisticalFormulas::getValues() const {
     return this->individualValues;
 }
 

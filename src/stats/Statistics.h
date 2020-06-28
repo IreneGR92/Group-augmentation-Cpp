@@ -46,9 +46,9 @@ public:
 
     void calculateStatistics(const Population &populationObj);
 
-    double calculateRelatedness(const Container<Group> &groups);
+    double calculateRelatedness(const std::vector<Group> &groups);
 
-    double correlationHelpGroupSize(const Container<Group> &groups);
+    double correlationHelpGroupSize(const std::vector<Group> &groups);
 
     void printHeadersToConsole();
 
