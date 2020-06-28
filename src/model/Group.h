@@ -19,7 +19,8 @@ private:
     int realFecundity;
 
     Individual breeder;
-    // create a vector of helpers inside each group
+
+    IndividualVector helpers;
 
 public:
 
@@ -31,17 +32,17 @@ public:
 
     void calculateCumulativeHelp();
 
+    const IndividualVector &getHelpers() const;
+
     void survivalGroup();
 
     void mortalityGroup(int &deaths);
 
-    void newBreeder(std::vector<Individual>  &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
+    void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
     void increaseAge();
 
     void reproduce(int generation);
-
-    const std::vector<Individual> &getHelpers() const;
 
     const Individual &getBreeder() const;
 
@@ -53,7 +54,7 @@ public:
 
     bool hasHelpers() const;
 
-    void addHelper(const Individual& helper);
+    void addHelper(const Individual &helper);
 
     std::vector<double> get(Attribute attribute) const;
 
@@ -61,7 +62,6 @@ public:
 
     std::vector<Individual> reassignNoRelatedness();
 
-    IndividualVector helpers;
 };
 
 

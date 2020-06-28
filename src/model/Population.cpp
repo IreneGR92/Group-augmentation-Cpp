@@ -33,10 +33,10 @@ void Population::reassignFloaters() {
     std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
     int selectGroup;
     while (!floaters.empty()) {
-        Individual floater = floaters.at(floaters.size()-1);
+        Individual floater = floaters.at(floaters.size() - 1);
         floater.setHelp(0);
         selectGroup = UniformMaxCol(*parameters->getGenerator());
-        groups[selectGroup].helpers.emplace_back(floater); //add the floater to the helper vector in a randomly selected group
+        groups[selectGroup].addHelper(floater); //add the floater to the helper vector in a randomly selected group
         floaters.pop_back(); //remove the floater from its vector
     }
 }
@@ -46,12 +46,12 @@ void Population::disperse(int generation) {
 
     int groupID = 0;
 
-    std::vector<Individual>  noRelatedHelpers;
+    std::vector<Individual> noRelatedHelpers;
     IndividualVector allNoRelatedHelpers;
     std::vector<int> noRelatednessGroupsID;
 
 
-    for(Group &group: groups){
+    for (Group &group: groups) {
         //Dispersal
         this->floaters.merge(group.disperse());
 
@@ -74,8 +74,10 @@ void Population::disperse(int generation) {
             selectGroupIndex = UniformGroupID(
                     *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin()+selectGroupIndex); //remove the group ID from the vector to not draw it again
-            groups[selectGroupID].helpers.emplace_back(allNoRelatedHelpers[allNoRelatedHelpers.size()-1]); //add the no related helper to the helper vector in a randomly selected group
+            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
+            groups[selectGroupID].addHelper(allNoRelatedHelpers[allNoRelatedHelpers.size() -
+                                                                1]); //add the no related helper to the helper vector in a randomly selected group
             allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
         }
     }

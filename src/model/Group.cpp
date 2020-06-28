@@ -273,10 +273,6 @@ const Individual &Group::getBreeder() const {
     return breeder;
 }
 
-const vector<Individual> &Group::getHelpers() const {
-    return helpers;
-}
-
 int Group::getGroupSize() const {
     return groupSize;
 }
@@ -311,6 +307,10 @@ bool Group::hasHelpers() const {
 
 void Group::addHelper(const Individual &helper) {
     this->helpers.emplace_back(helper);
+}
+
+const IndividualVector &Group::getHelpers() const {
+    return helpers;
 }
 
 
