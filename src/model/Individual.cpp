@@ -118,7 +118,6 @@ double Individual::calculateSurvival(int groupSize) {
             //cout << "process camuflaged to selection" << endl;
         }
     }
-
     return survival;
 }
 

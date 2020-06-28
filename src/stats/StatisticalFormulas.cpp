@@ -17,7 +17,6 @@ double StatisticalFormulas::calculateMean() {
     } else {
         return 0; //TODO: or -1?
     }
-
 }
 
 double StatisticalFormulas::calculateSD() {
@@ -33,7 +32,6 @@ double StatisticalFormulas::calculateSD() {
     } else {
         stdev = 0;
     }
-
     return stdev;
 }
 

@@ -96,15 +96,13 @@ void Population::disperse(int generation) {
 
 
 void Population::help() {
-    //Help & Survival
     for (Group &group:groups) {
-        //Calculate help
+        //Calculate help & cumulative help for group
         group.calculateCumulativeHelp();
     }
 }
 
 void Population::survival() {
-    //Survival
     for (Group &group:groups) {
         group.survivalGroup();
     }
@@ -113,14 +111,12 @@ void Population::survival() {
 
 
 void Population::survivalFloaters() {
-    //Calculate survival for floaters
     for (Individual &floater:floaters) {
         floater.calculateSurvival(0); // TODO:Change to 1?
     }
 }
 
 void Population::mortality() {
-    //Mortality of helpers and breeders
     for (Group &group:groups) {
         group.mortalityGroup(deaths);
     }
@@ -128,7 +124,7 @@ void Population::mortality() {
 
 }
 
-void Population::mortalityFloaters() { //Calculate the survival of the floaters
+void Population::mortalityFloaters() {
 
     std::vector<Individual, std::allocator<Individual>>::iterator floaterIt;
     floaterIt = floaters.begin();
@@ -141,7 +137,7 @@ void Population::mortalityFloaters() { //Calculate the survival of the floaters
             floaters.pop_back();
             deaths++;
         } else {
-            floaterIt++; //go to next individual
+            floaterIt++;
         }
     }
 }

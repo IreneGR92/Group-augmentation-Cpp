@@ -53,10 +53,9 @@ vector<Individual> Group::disperse() {
         } else {
             helper.setFishType(HELPER); //individuals that stay or disperse to this group become helpers
             i++;
-
         }
-        return newFloaters;
     }
+    return newFloaters;
 }
 
 std::vector<Individual> Group::reassignNoRelatedness() {
@@ -87,6 +86,7 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 
     //Level of help for helpers
     for (Individual &helper:helpers) {
+        assert(helper.getFishType() == HELPER);
         helper.calcHelp();
         cumHelp += helper.getHelp();
     }
@@ -98,7 +98,6 @@ void Group::survivalGroup() {
     this->calculateGroupSize();
     //Calculate survival for the helpers
     for (Individual &helper:helpers) {
-        assert(helper.getFishType() == HELPER);
         helper.calculateSurvival(groupSize);
     }
 
@@ -109,7 +108,6 @@ void Group::survivalGroup() {
     else {
         this->breeder.calculateSurvival(groupSize);
     }
-
 }
 
 void Group::mortalityGroup(int &deaths) {
