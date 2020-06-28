@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include "Group.h"
 #include "FishType.h"
 
@@ -54,6 +55,7 @@ vector<Individual> Group::disperse() {
             helper.setFishType(HELPER); //individuals that stay or disperse to this group become helpers
             i++;
         }
+
     }
     return newFloaters;
 }
@@ -63,7 +65,7 @@ std::vector<Individual> Group::reassignNoRelatedness() {
     std::vector<Individual> noRelatedHelpers;
 
     for (int i = 0; i < helpers.size();) {
-        Individual helper = helpers[i];
+        Individual &helper = helpers[i];
         if (helper.getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
 
             helper.setInherit(false); //the location of the individual is not the natal territory
