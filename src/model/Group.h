@@ -55,7 +55,9 @@ public:
 
     bool hasHelpers() const;
 
-    void addHelper(const Individual& helper);
+    void addHelper(const Individual &helper) const;
+
+    void addHelper(Individual &helper);
 
     std::vector<double> get(Attribute attribute) const;
 
