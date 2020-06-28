@@ -108,9 +108,9 @@ double
 Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
     //Relatedness
-    double correlation = 0;          //relatedness related
+    double correlation;          //relatedness related
     int counter = 0;
-    double meanX, meanY, stdevX, stdevY, sumX = 0.0, sumY = 0.0;
+    double meanX = 0, meanY = 0, stdevX = 0, stdevY = 0, sumX = 0.0, sumY = 0.0;
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
@@ -150,7 +150,7 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
     } else {
         correlation = sumProductXY / (stdevX * stdevY * counter);
     }
-///    assert (abs(correlation) >= 0);
+    assert (abs(correlation) >= 0);
     return correlation;
 
 }
@@ -158,9 +158,9 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
 double
 Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
-    double correlation = 0;
+    double correlation;
     int counter = 0;
-    double meanX, meanY, stdevX, stdevY, sumX = 0.0, sumY = 0.0;
+    double meanX = 0, meanY = 0, stdevX = 0, stdevY = 0, sumX = 0.0, sumY = 0.0;
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
@@ -202,7 +202,7 @@ Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO:
         correlation = sumProductXY / (stdevX * stdevY * counter);
     }
 
-///    assert (abs(correlation) >= 0);
+    assert (abs(correlation) >= 0);
     return correlation;
 }
 
