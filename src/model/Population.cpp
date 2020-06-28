@@ -1,10 +1,11 @@
 #include "Population.h"
+#include <vector>
 
-const Container<Group> &Population::getGroups() const {
+const std::vector<Group> &Population::getGroups() const {
     return groups;
 }
 
-const IndividualContainer &Population::getFloaters() const {
+const IndividualVector &Population::getFloaters() const {
     return floaters;
 }
 
@@ -12,9 +13,6 @@ int Population::getDeaths() const {
     return deaths;
 }
 
-void Population::increaseDeath() {
-    this->deaths++;
-}
 
 void Population::reset() {
     this->deaths = 0;
@@ -26,9 +24,78 @@ void Population::reset() {
 Population::Population() {
     for (int i = 0; i < Parameters::instance()->getMaxColonies(); i++) {
         Group group;
-        this->groups.add(group);
+        this->groups.emplace_back(group);
     }
 }
+
+
+void Population::reassignFloaters() {
+    std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+    int selectGroup;
+    std::vector<Individual>::iterator floaterIt;
+    while (!floaters.empty()) {
+        floaterIt = floaters.end() - 1;
+        floaterIt->setHelp(0);
+        selectGroup = UniformMaxCol(*parameters->getGenerator());
+        groups[selectGroup].helpers.push_back(
+                *floaterIt); //add the floater to the helper vector in a randomly selected group
+        floaters.pop_back(); //remove the floater from its vector
+    }
+}
+
+
+void Population::disperse(int generation) {
+
+    int groupID = 0;
+
+    std::vector<Individual>  noRelatedHelpers;
+    std::vector<Individual> allNoRelatedHelpers; //TODO: IndividualVector
+    std::vector<int> noRelatednessGroupsID;
+
+
+    for(Group &group: groups){
+        //Dispersal
+        this->floaters.merge(group.disperse());
+
+        // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
+        if (parameters->isNoRelatedness() && generation > 0) {
+            noRelatedHelpers = group.reassignNoRelatedness();
+            for (int i = 0; i < noRelatedHelpers.size(); i++) {
+                noRelatednessGroupsID.push_back(groupID);
+            }
+            allNoRelatedHelpers.insert(allNoRelatedHelpers.end(), noRelatedHelpers.begin(), noRelatedHelpers.end()); //TODO:change to merge
+            groupID++;
+        }
+    }
+
+    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
+
+        int selectGroupID, selectGroupIndex;
+        while (!allNoRelatedHelpers.empty()) {
+            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
+            selectGroupIndex = UniformGroupID(
+                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
+            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin()+selectGroupIndex); //remove the group ID from the vector to not draw it again
+            groups[selectGroupID].helpers.emplace_back(allNoRelatedHelpers[allNoRelatedHelpers.size()-1]); //add the no related helper to the helper vector in a randomly selected group
+            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+        }
+    }
+
+//    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
+//        std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+//        int selectGroup;
+//        std::vector<Individual>::iterator NoRelatedHelperIt;
+//        while (!allNoRelatedHelpers.empty()) {
+//            NoRelatedHelperIt = allNoRelatedHelpers.end() - 1;
+//            selectGroup = UniformMaxCol(*parameters->getGenerator());
+//            groups[selectGroup].helpers.push_back(
+//                    *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
+//            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+//        }
+//    }
+}
+
 
 void Population::help() {
     //Help & Survival
@@ -72,12 +139,12 @@ void Population::mortalityFloaters() { //Calculate the survival of the floaters
     std::vector<Individual, std::allocator<Individual>>::iterator floaterIt;
     floaterIt = floaters.begin();
     int size = floaters.size();
-    for (int count = 0; !floaters.isEmpty() && size > count; count++) {
+    for (int count = 0; !floaters.empty() && size > count; count++) {
 
         //Mortality floaters
         if (parameters->uniform(*parameters->getGenerator()) > floaterIt->getSurvival()) {
-            *floaterIt = floaters.accessElement(floaters.size() - 1);
-            floaters.removeLast();
+            *floaterIt = floaters[floaters.size() - 1];
+            floaters.pop_back();
             deaths++;
         } else {
             floaterIt++; //go to next individual
@@ -116,85 +183,5 @@ void Population::reproduce(int generation) {
     }
 }
 
-void Population::disperse(int generation) {
-
-    int groupID = 0;
-
-    IndividualContainer noRelatedHelpers;
-    IndividualContainer allNoRelatedHelpers;
-    std::vector<int> noRelatednessGroupsID;
-
-
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        //Dispersal
-        this->floaters.merge(group->disperse());
-
-        // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
-        if (parameters->isNoRelatedness() && generation > 0) {
-            noRelatedHelpers = group->reassignNoRelatedness();
-            for (int i = 0; i < noRelatedHelpers.size(); i++) {
-                noRelatednessGroupsID.push_back(groupID);
-            }
-            allNoRelatedHelpers.merge(noRelatedHelpers);
-            groupID++;
-        }
-    }
-
-//        if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
-//        std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-//        int selectGroup;
-//        std::vector<Individual>::iterator NoRelatedHelperIt;
-//        while (!allNoRelatedHelpers.empty()) {
-//            NoRelatedHelperIt = allNoRelatedHelpers.end() - 1;
-//            selectGroup = UniformMaxCol(*parameters->getGenerator());
-//            groups[selectGroup].helpers.push_back(
-//                    *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
-//            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
-//        }
-//    }
-
-
-
-//FIXME reimplement this
-
-    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.isEmpty()) {
-
-        int selectGroupID, selectGroupIndex;
-        while (!allNoRelatedHelpers.isEmpty()) {
-            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
-            selectGroupIndex = UniformGroupID(
-                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin()+selectGroupIndex); //remove the group ID from the vector to not draw it again
-            groups.accessElement(selectGroupID).getHelpers().add(allNoRelatedHelpers.accessElement(allNoRelatedHelpers.size()-1)); //add the no related helper to the helper vector in a randomly selected group
-            allNoRelatedHelpers.removeLast(); //remove the no related helper from its vector
-        }
-    }
-}
-
-
-void Population::reassignFloaters() {
-//FIXME implement this
-//    for (Individual individual:floaters) {
-//        Group randomGroup = groups.getRandomElement();
-//
-//        randomGroup.getHelpers().add(individual);
-//    }
-
-//Fixme reimplement this
-
-//    std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-//    int selectGroup;
-//    std::vector<Individual>::iterator floaterIt;
-//    while (!floaters.isEmpty()) {
-//        floaterIt = floaters.end() - 1;
-//        floaterIt->setHelp(0);
-//        selectGroup = UniformMaxCol(*parameters->getGenerator());
-//        groups.accessElement(selectGroup).getHelpers().add(
-//                *floaterIt); //add the floater to the helper vector in a randomly selected group
-//        floaters.removeLast(); //remove the floater from its vector
-//    }
-}
 
 
