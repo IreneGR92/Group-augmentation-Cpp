@@ -21,9 +21,9 @@ void Statistics::calculateStatistics(const Population &populationObj) {
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
 
 
-    IndividualContainer breeders;
-    IndividualContainer helpers;
-    IndividualContainer individualsAll;
+    IndividualVector breeders;
+    IndividualVector helpers;
+    IndividualVector individualsAll;
     Container<double> groupSizes;
     Container<double> cumHelps;
 
@@ -48,7 +48,7 @@ void Statistics::calculateStatistics(const Population &populationObj) {
 
     for (const Group &group: populationObj.getGroups()) {
         if (group.isBreederAlive()) {
-            breeders.add(group.getBreeder());
+            breeders.push_back(group.getBreeder());
         }
         helpers.merge(group.getHelpers());
 

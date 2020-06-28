@@ -7,7 +7,7 @@
 #include "../model/Individual.h"
 #include "../Simulation.h"
 #include "StatisticalFormulas.h"
-#include "../model/container/IndividualContainer.h"
+#include "../model/container/IndividualVector.h"
 
 class Statistics {
 
