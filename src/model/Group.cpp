@@ -40,7 +40,7 @@ vector<Individual> Group::disperse() {
     vector<Individual> newFloaters;
 
     for (int i = 0; i < helpers.size();) {
-        Individual helper = helpers[i];
+        Individual &helper = helpers[i];
 
         helper.calcDispersal();
 
@@ -237,7 +237,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
-    for(Individual &helper:helpers) {
+    for (Individual &helper:helpers) {
         helper.increaseAge();
     }
     if (breederAlive) {

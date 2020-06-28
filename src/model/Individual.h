@@ -36,7 +36,7 @@ public:
 
 
     //Functions inside Individual
-    double calcDispersal();
+    void calcDispersal();
 
     void calcHelp();
 

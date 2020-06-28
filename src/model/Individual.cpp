@@ -51,13 +51,12 @@ void Individual::initializeIndividual(FishType fishType) {
 
 /* BECOME FLOATER (STAY VS DISPERSE) */
 
-double Individual::calcDispersal() {
+void Individual::calcDispersal() {
     if (!parameters->isReactionNormDispersal()) {
-        dispersal = beta; // TODO: Mae logistic formula too so range from 0 to 1 naturally?
+        this->dispersal = beta; // TODO: Mae logistic formula too so range from 0 to 1 naturally?
     } else {
-        dispersal = 1 / (1 + exp(betaAge * age - beta));
+        this->dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
-    return dispersal;
 }
 
 /*DISPLAY LEVEL OF HELP*/
@@ -249,7 +248,7 @@ void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-const double Individual::get(Attribute type) const{
+const double Individual::get(Attribute type) const {
     switch (type) {
         case ALPHA:
             return this->alpha;

@@ -8,10 +8,10 @@ NO_GROUP_AUGMENTATION: false
 NO_RELATEDNESS: true     # Apply implementation to remove the effect of relatedness?
 LOGISTIC_SURVIVAL: true
 
-MAX_COLONIES: 100     # max number of groups or colonies
+MAX_COLONIES: 3     # max number of groups or colonies
 NUM_GENERATIONS: 1000
 MAX_NUM_REPLICATES: 1
-SKIP: 100   # interval between print-outs
+SKIP: 1   # interval between print-outs
 
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group
