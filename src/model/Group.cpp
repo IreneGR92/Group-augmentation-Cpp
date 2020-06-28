@@ -18,7 +18,7 @@ Group::Group() : breeder(BREEDER) {
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
         auto individual = Individual(HELPER);
-        helpers.add(individual);
+        helpers.emplace_back(individual);
     }
 
     calculateGroupSize();
@@ -36,33 +36,34 @@ void Group::calculateGroupSize() {
 
 /*  DISPERSAL (STAY VS DISPERSE) */
 
-IndividualContainer Group::disperse() {
+vector<Individual> Group::disperse() {
 
-    IndividualContainer newFloaters;
+    vector<Individual> newFloaters;
 
 
     for (int i = 0; i < helpers.size();) {
-        Individual helper = helpers.accessElement(i);
+        Individual helper = helpers[i];
 
         helper.calcDispersal();
 
         if (parameters->uniform(*parameters->getGenerator()) < helper.getDispersal()) {
             helper.setInherit(false); //the location of the individual is not the natal territory
             helper.setFishType(FLOATER);
-            newFloaters.add(helper); //add the individual to the vector floaters in the last position
-            helpers.remove(i);
+            newFloaters.push_back(helper); //add the individual to the vector floaters in the last position
+            helpers.removeIndividual(i);
 
         } else {
             helper.setFishType(HELPER); //individuals that stay or disperse to this group become helpers
             i++;
+
         }
+        return newFloaters;
     }
-    return newFloaters;
 }
 
-IndividualContainer Group::reassignNoRelatedness() {
+std::vector<Individual> Group::reassignNoRelatedness() {
 
-    IndividualContainer noRelatedHelpers;
+    std::vector<Individual> noRelatedHelpers;
 
     for (int i = 0; i < helpers.size();) {
         Individual helper = helpers.accessElement(i);
@@ -150,7 +151,7 @@ void Group::mortalityGroup(int &deaths) {
 
 /* BECOME BREEDER */
 
-void Group::newBreeder(IndividualContainer &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
+void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance) {
     //    Select a random sample from the floaters
     int i = 0;
     int sumAge = 0;
@@ -163,88 +164,86 @@ void Group::newBreeder(IndividualContainer &floaters, int &newBreederFloater, in
     vector<Individual *> candidates;
     vector<double> position; //vector of age to choose with higher likelihood the ind with higher age
     vector<int> TemporaryCandidates; // to prevent taking the same ind several times in the sample
-//FIXME rewrite
 
-//    if (!floaters.isEmpty() && floaters.size() > proportionFloaters) {
-//        while (i < proportionFloaters) {
-//            uniform_int_distribution<int> UniformFloat(0, floaters.size() - 1); //random floater ID taken in the sample
-//            floaterSampledID = UniformFloat(*parameters->getGenerator());
-//            TemporaryCandidates.push_back(floaterSampledID); //add references of the floaters sampled to a vector
-//            sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
-//            i++;
-//        }
-//
-//        int temp = 0;
-//        vector<int, std::allocator<int>>::iterator itTempCandidates;
-//        for (itTempCandidates = TemporaryCandidates.begin();
-//             itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates) {
-//            if (*itTempCandidates != temp) //to make sure the same ind is not taken more than ones
-//            {
-//                //FIXME
-//                candidates.add(&floaters.accessElement(floaterSampledID));
-//                temp = *itTempCandidates;
-//            }
-//        }
-//    } else if (!floaters.isEmpty() && floaters.size() <
-//                                      proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
-//        vector<Individual, std::allocator<Individual>>::iterator floaterIt;
-//        for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
-//            Candidates.push_back(&(*floaterIt));
-//        }
+    if (!floaters.isEmpty() && floaters.size() > proportionFloaters) {
+        while (i < proportionFloaters) {
+            uniform_int_distribution<int> UniformFloat(0, floaters.size() - 1); //random floater ID taken in the sample
+            floaterSampledID = UniformFloat(*parameters->getGenerator());
+            TemporaryCandidates.push_back(floaterSampledID); //add references of the floaters sampled to a vector
+            sort(TemporaryCandidates.begin(), TemporaryCandidates.end()); //sort vector
+            i++;
+        }
+
+        int temp = 0;
+        vector<int, std::allocator<int>>::iterator itTempCandidates;
+        for (itTempCandidates = TemporaryCandidates.begin();
+             itTempCandidates < TemporaryCandidates.end(); ++itTempCandidates) {
+            if (*itTempCandidates != temp) //to make sure the same ind is not taken more than ones
+            {
+                candidates.add(&floaters.accessElement(floaterSampledID));
+                temp = *itTempCandidates;
+            }
+        }
+    } else if (!floaters.isEmpty() && floaters.size() <
+                                      proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+        vector<Individual, std::allocator<Individual>>::iterator floaterIt;
+        for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
+            Candidates.push_back(&(*floaterIt));
+        }
+    }
+
+    //    Join the helpers in the group to the sample of floaters
+    vector<Individual, std::allocator<Individual>>::iterator helperIt;
+    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
+        Candidates.push_back(&(*helperIt));
+    }
+
+    //    Choose breeder with higher likelihood for the highest age
+    vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
+    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+        sumAge += (*candidateIt)->getAge(); //add all the age from the vector Candidates
+    }
+
+    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
+        position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) +
+                           currentPosition); //creates a vector with proportional segments to the age of each individual
+        currentPosition = position[position.size() - 1];
+    }
+
+//    if (floaters.empty() && Candidates.size() != helpers.size()) {
+//        std::cout << "Error assigning empty floaters to Breeder" << endl;
 //    }
-//
-//    //    Join the helpers in the group to the sample of floaters
-//    vector<Individual, std::allocator<Individual>>::iterator helperIt;
-//    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
-//        Candidates.push_back(&(*helperIt));
-//    }
-//
-//    //    Choose breeder with higher likelihood for the highest age
-//    vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
-//    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
-//        sumAge += (*candidateIt)->getAge(); //add all the age from the vector Candidates
-//    }
-//
-//    for (candidateIt = Candidates.begin(); candidateIt < Candidates.end(); ++candidateIt) {
-//        position.push_back(static_cast<double>((*candidateIt)->getAge()) / static_cast<double>(sumAge) +
-//                           currentPosition); //creates a vector with proportional segments to the age of each individual
-//        currentPosition = position[position.size() - 1];
-//    }
-//
-////    if (floaters.empty() && Candidates.size() != helpers.size()) {
-////        std::cout << "Error assigning empty floaters to Breeder" << endl;
-////    }
-//
-//    candidateIt = Candidates.begin();
-//    int counting = 0;
-//    while (counting < Candidates.size()) {
-//        if (RandP < position[candidateIt - Candidates.begin()]) //to access the same ind in the candidates vector
-//        {
-//            breeder = **candidateIt; //substitute the previous dead breeder
-//            breederAlive = true;
-//
-//            if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
-//            {
-//                **candidateIt = floaters.accessElement(floaters.size() - 1);
-//                floaters.removeLast();
-//                newBreederFloater++;
-////                if ((*candidate3It)->inherit == 1) {
-////                    std::cout << "error in inheritance" << endl;
-////                }
-//            } else {
-//                **candidateIt = helpers.accessElement(helpers.size() - 1); //delete the ind from the vector helpers
-//                helpers.removeLast();
-//                newBreederHelper++;
-//                if ((*candidateIt)->isInherit() == 1) {
-//                    inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
+
+    candidateIt = Candidates.begin();
+    int counting = 0;
+    while (counting < Candidates.size()) {
+        if (RandP < position[candidateIt - Candidates.begin()]) //to access the same ind in the candidates vector
+        {
+            breeder = **candidateIt; //substitute the previous dead breeder
+            breederAlive = true;
+
+            if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
+            {
+                **candidateIt = floaters.accessElement(floaters.size() - 1);
+                floaters.removeLast();
+                newBreederFloater++;
+//                if ((*candidate3It)->inherit == 1) {
+//                    std::cout << "error in inheritance" << endl;
 //                }
-//            }
-//
-//            breeder.setFishType(BREEDER); //modify the class
-//            counting = Candidates.size();//end loop
-//        } else
-//            ++candidateIt, ++counting;
-//    }
+            } else {
+                **candidateIt = helpers.accessElement(helpers.size() - 1); //delete the ind from the vector helpers
+                helpers.removeLast();
+                newBreederHelper++;
+                if ((*candidateIt)->isInherit() == 1) {
+                    inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
+                }
+            }
+
+            breeder.setFishType(BREEDER); //modify the class
+            counting = Candidates.size();//end loop
+        } else
+            ++candidateIt, ++counting;
+    }
 }
 
 
@@ -262,8 +261,7 @@ void Group::increaseAge() {
 
 /* REPRODUCTION */
 
-void Group::reproduce(int generation) // populate offspring generation
-{
+void Group::reproduce(int generation){ // populate offspring generation
     //Calculate fecundity
     fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
@@ -286,7 +284,7 @@ const Individual &Group::getBreeder() const {
     return breeder;
 }
 
-const Container<Individual> &Group::getHelpers() const {
+const vector<Individual> &Group::getHelpers() const {
     return helpers;
 }
 

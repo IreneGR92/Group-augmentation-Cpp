@@ -5,8 +5,8 @@
 
 #include "Individual.h"
 #include "../Parameters.h"
-#include "container/Container.h"
-#include "container/IndividualContainer.h"
+#include "container/IndividualVector.h"
+
 
 class Group {
 
@@ -20,7 +20,7 @@ private:
     int realFecundity;
 
     Individual breeder;
-    Container<Individual> helpers; // create a vector of helpers inside each group
+    std::vector<Individual> helpers; // create a vector of helpers inside each group
 
 public:
 
@@ -28,8 +28,7 @@ public:
 
     void calculateGroupSize();
 
-    IndividualContainer disperse();
-
+    std::vector<Individual> disperse();
 
     void calculateCumulativeHelp();
 
@@ -37,13 +36,13 @@ public:
 
     void mortalityGroup(int &deaths);
 
-    void newBreeder(IndividualContainer &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
+    void newBreeder(std::vector<Individual>  &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
     void increaseAge();
 
     void reproduce(int generation);
 
-    const Container<Individual> &getHelpers() const;
+    const std::vector<Individual> &getHelpers() const;
 
     const Individual &getBreeder() const;
 
@@ -61,7 +60,7 @@ public:
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 
-    IndividualContainer reassignNoRelatedness();
+    std::vector<Individual> reassignNoRelatedness();
 
 };
 
