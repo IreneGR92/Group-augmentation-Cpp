@@ -32,13 +32,11 @@ Population::Population() {
 void Population::reassignFloaters() {
     std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
     int selectGroup;
-    std::vector<Individual>::iterator floaterIt;
     while (!floaters.empty()) {
-        floaterIt = floaters.end() - 1;
-        floaterIt->setHelp(0);
+        Individual floater = floaters.at(floaters.size()-1);
+        floater.setHelp(0);
         selectGroup = UniformMaxCol(*parameters->getGenerator());
-        groups[selectGroup].helpers.push_back(
-                *floaterIt); //add the floater to the helper vector in a randomly selected group
+        groups[selectGroup].helpers.emplace_back(floater); //add the floater to the helper vector in a randomly selected group
         floaters.pop_back(); //remove the floater from its vector
     }
 }
@@ -49,7 +47,7 @@ void Population::disperse(int generation) {
     int groupID = 0;
 
     std::vector<Individual>  noRelatedHelpers;
-    std::vector<Individual> allNoRelatedHelpers; //TODO: IndividualVector
+    IndividualVector allNoRelatedHelpers;
     std::vector<int> noRelatednessGroupsID;
 
 
@@ -63,7 +61,7 @@ void Population::disperse(int generation) {
             for (int i = 0; i < noRelatedHelpers.size(); i++) {
                 noRelatednessGroupsID.push_back(groupID);
             }
-            allNoRelatedHelpers.insert(allNoRelatedHelpers.end(), noRelatedHelpers.begin(), noRelatedHelpers.end()); //TODO:change to merge
+            allNoRelatedHelpers.merge(noRelatedHelpers);
             groupID++;
         }
     }
@@ -99,18 +97,16 @@ void Population::disperse(int generation) {
 
 void Population::help() {
     //Help & Survival
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
+    for (Group &group:groups) {
         //Calculate help
-        groupIt->calculateCumulativeHelp();
+        group.calculateCumulativeHelp();
     }
 }
 
 void Population::survival() {
     //Survival
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        groupIt->survivalGroup();
+    for (Group &group:groups) {
+        group.survivalGroup();
     }
     this->survivalFloaters();
 }
@@ -118,17 +114,15 @@ void Population::survival() {
 
 void Population::survivalFloaters() {
     //Calculate survival for floaters
-    std::vector<Individual, std::allocator<Individual>>::iterator floatersIt;
-    for (floatersIt = floaters.begin(); floatersIt < floaters.end(); ++floatersIt) {
-        floatersIt->calculateSurvival(0); // TODO:Change to 1?
+    for (Individual &floater:floaters) {
+        floater.calculateSurvival(0); // TODO:Change to 1?
     }
 }
 
 void Population::mortality() {
     //Mortality of helpers and breeders
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        groupIt->mortalityGroup(deaths);
+    for (Group &group:groups) {
+        group.mortalityGroup(deaths);
     }
     this->mortalityFloaters();
 
@@ -153,33 +147,29 @@ void Population::mortalityFloaters() { //Calculate the survival of the floaters
 }
 
 void Population::newBreeder() {
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        if (!groupIt->isBreederAlive()) {
-            groupIt->newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
+    for (Group &group:groups) {
+        if (!group.isBreederAlive()) {
+            group.newBreeder(floaters, newBreederFloater, newBreederHelper, inheritance);
         }
     }
 }
 
 void Population::increaseAge() {
-    std::vector<Group, std::allocator<Group>>::iterator groupIt;
-    for (groupIt = groups.begin(); groupIt < groups.end(); ++groupIt) {
-        groupIt->increaseAge();
+    for (Group &group:groups) {
+        group.increaseAge();
     }
     this->increaseAgeFloaters();
 }
 
 void Population::increaseAgeFloaters() {
-    std::vector<Individual, std::allocator<Individual>>::iterator floatersIt;
-    for (floatersIt = floaters.begin(); floatersIt < floaters.end(); ++floatersIt) {
-        floatersIt->increaseAge();
+    for (Individual &floater:floaters) {
+        floater.increaseAge();
     }
 }
 
 void Population::reproduce(int generation) {
-    std::vector<Group, std::allocator<Group>>::iterator group;
-    for (group = groups.begin(); group < groups.end(); ++group) {
-        group->reproduce(generation);
+    for (Group &group:groups) {
+        group.reproduce(generation);
     }
 }
 

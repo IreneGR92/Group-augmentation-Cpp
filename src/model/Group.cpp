@@ -39,7 +39,6 @@ vector<Individual> Group::disperse() {
 
     vector<Individual> newFloaters;
 
-
     for (int i = 0; i < helpers.size();) {
         Individual helper = helpers[i];
 
@@ -64,7 +63,7 @@ std::vector<Individual> Group::reassignNoRelatedness() {
 
     std::vector<Individual> noRelatedHelpers;
 
-    for (int i = 0; i < helpers.size(); ) {
+    for (int i = 0; i < helpers.size();) {
         Individual helper = helpers[i];
         if (helper.getAge() == 1) { // all new offspring is assigned to new groups so no related to breeder
 
@@ -87,10 +86,9 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
     cumHelp = 0;
 
     //Level of help for helpers
-    vector<Individual, std::allocator<Individual>>::iterator helperIt;
-    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
-        helperIt->calcHelp();
-        cumHelp += helperIt->getHelp();
+    for (Individual &helper:helpers) {
+        helper.calcHelp();
+        cumHelp += helper.getHelp();
     }
 }
 
@@ -99,10 +97,9 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 void Group::survivalGroup() {
     this->calculateGroupSize();
     //Calculate survival for the helpers
-    vector<Individual, std::allocator<Individual>>::iterator helper;
-    for (helper = helpers.begin(); helper < helpers.end(); ++helper) {
-        assert(helper->getFishType() == HELPER);
-        helper->calculateSurvival(groupSize);
+    for (Individual &helper:helpers) {
+        assert(helper.getFishType() == HELPER);
+        helper.calculateSurvival(groupSize);
     }
 
     //Calculate the survival of the breeder
@@ -119,18 +116,18 @@ void Group::mortalityGroup(int &deaths) {
 
     vector<Individual, std::allocator<Individual>>::iterator helperIt;
     helperIt = helpers.begin();
-    int sizevec = helpers.size();
+    int sizeVectorHelpers = helpers.size();
     int counting = 0;
-    while (!helpers.empty() && sizevec > counting) {
+    while (!helpers.empty() && sizeVectorHelpers > counting) {
 
         //Mortality helpers
         if (parameters->uniform(*parameters->getGenerator()) > helperIt->getSurvival()) {
             *helperIt = helpers[helpers.size() - 1];
             helpers.pop_back();
-            ++counting;
+            counting++;
             deaths++;
         } else
-            ++helperIt, ++counting; //go to next individual
+            helperIt++, counting++; //go to next individual
     }
 
     //Mortality breeder
@@ -178,7 +175,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
             }
         }
     } else if (!floaters.empty() && floaters.size() <
-                                      proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
+                                    proportionFloaters) { //TODO:When less floaters available than the sample size, takes all of them. Change to a proportion?
         vector<Individual, std::allocator<Individual>>::iterator floaterIt;
         for (floaterIt = floaters.begin(); floaterIt < floaters.end(); ++floaterIt) {
             candidates.push_back(&(*floaterIt));
@@ -242,9 +239,8 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
-    vector<Individual, std::allocator<Individual>>::iterator helperIt;
-    for (helperIt = helpers.begin(); helperIt < helpers.end(); ++helperIt) {
-        helperIt->increaseAge();
+    for(Individual &helper:helpers) {
+        helper.increaseAge();
     }
     if (breederAlive) {
         breeder.increaseAge(breederAlive);
@@ -254,7 +250,7 @@ void Group::increaseAge() {
 
 /* REPRODUCTION */
 
-void Group::reproduce(int generation){ // populate offspring generation
+void Group::reproduce(int generation) { // populate offspring generation
     //Calculate fecundity
     fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
@@ -298,7 +294,7 @@ std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
     if (includeBreeder && isBreederAlive()) {
         result.push_back(breeder.get(attribute));
     }
-    for (Individual helper: helpers) { //TODO: it might cause problems
+    for (const Individual &helper: helpers) {
         result.push_back(helper.get(attribute));
     }
     return result;

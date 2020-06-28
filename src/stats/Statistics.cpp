@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include <assert.h>
-
 #include "Statistics.h"
 #include "../model/Population.h"
 #include "../model/Group.h"
