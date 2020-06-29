@@ -29,7 +29,7 @@ int main(int count, char **argv) {
     Parameters *parameters;
     if (count > 1) {
         std::cout << "reading file " << argv[1] << "\n";
-        parameters = new Parameters(argv[0]);
+        parameters = new Parameters(argv[1]);
     } else {
         parameters = new Parameters;
     }
