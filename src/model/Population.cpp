@@ -88,23 +88,10 @@ void Population::disperse(int generation) {
                 groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
                 allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
             } else {
-                timeout++;
+                timeout++; //if not other group to put the helper than the original one, do it anyways
             }
         }
     }
-
-//    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
-//        std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
-//        int selectGroup;
-//        std::vector<Individual>::iterator NoRelatedHelperIt;
-//        while (!allNoRelatedHelpers.empty()) {
-//            NoRelatedHelperIt = allNoRelatedHelpers.end() - 1;
-//            selectGroup = UniformMaxCol(*parameters->getGenerator());
-//            groups[selectGroup].helpers.push_back(
-//                    *NoRelatedHelperIt); //add the no related helper to the helper vector in a randomly selected group
-//            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
-//        }
-//    }
 }
 
 
