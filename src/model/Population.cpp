@@ -79,13 +79,12 @@ void Population::disperse(int generation) {
                         *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
             }
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
-                                        selectGroupIndex); //remove the group ID from the vector to not draw it again
 
             auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
 
-            int test = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
             if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 100) {
+                noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+                                            selectGroupIndex); //remove the group ID from the vector to not draw it again
                 groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
                 allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
             } else {
