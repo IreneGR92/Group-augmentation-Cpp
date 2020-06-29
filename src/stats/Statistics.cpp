@@ -1,7 +1,6 @@
 
 #include <iostream>
 #include <assert.h>
-
 #include "Statistics.h"
 #include "../model/Population.h"
 #include "../model/Group.h"
@@ -21,11 +20,11 @@ void Statistics::calculateStatistics(const Population &populationObj) {
     meanDriftBH = 0.0, meanDriftBB = 0.0, sumDriftBH = 0.0, sumDriftBB = 0.0;
 
 
-    IndividualContainer breeders;
-    IndividualContainer helpers;
-    IndividualContainer individualsAll;
-    Container<double> groupSizes;
-    Container<double> cumHelps;
+    IndividualVector breeders;
+    IndividualVector helpers;
+    IndividualVector individualsAll;
+    std::vector<double> groupSizes;
+    std::vector<double> cumHelps;
 
     for (const Individual &helper: helpers) {
         if (helper.getFishType() != HELPER) {
@@ -48,12 +47,12 @@ void Statistics::calculateStatistics(const Population &populationObj) {
 
     for (const Group &group: populationObj.getGroups()) {
         if (group.isBreederAlive()) {
-            breeders.add(group.getBreeder());
+            breeders.push_back(group.getBreeder());
         }
         helpers.merge(group.getHelpers());
 
-        groupSizes.add(group.getGroupSize());
-        cumHelps.add(group.getCumHelp());
+        groupSizes.push_back(group.getGroupSize());
+        cumHelps.push_back(group.getCumHelp());
     }
 
     individualsAll.merge(helpers);
@@ -106,12 +105,12 @@ void Statistics::calculateStatistics(const Population &populationObj) {
 }
 
 double
-Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
     //Relatedness
     double correlation;          //relatedness related
     int counter = 0;
-    double meanX, meanY, sumX = 0.0, sumY = 0.0;
+    double meanX = 0, meanY = 0, stdevX = 0, stdevY = 0, sumX = 0.0, sumY = 0.0;
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
@@ -141,8 +140,10 @@ Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optim
             }
         }
     }
-    double stdevX = sqrt(sumProductXX / counter);
-    double stdevY = sqrt(sumProductYY / counter);
+    if (counter != 0) {
+        stdevX = sqrt(sumProductXX / counter);
+        stdevY = sqrt(sumProductYY / counter);
+    }
 
     if (stdevX * stdevY * counter == 0) {
         correlation = 0;
@@ -150,16 +151,16 @@ Statistics::calculateRelatedness(const Container<Group> &groups) { //TODO: optim
         correlation = sumProductXY / (stdevX * stdevY * counter);
     }
     assert (abs(correlation) >= 0);
-    return correlation;
+    return abs(correlation);
 
 }
 
 double
-Statistics::correlationHelpGroupSize(const Container<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
 
     double correlation;
     int counter = 0;
-    double meanX, meanY, sumX = 0.0, sumY = 0.0;
+    double meanX = 0, meanY = 0, stdevX = 0, stdevY = 0, sumX = 0.0, sumY = 0.0;
     double sumProductXY = 0, sumProductXX = 0, sumProductYY = 0;
 
     for (const Group &group: groups) {
@@ -190,8 +191,10 @@ Statistics::correlationHelpGroupSize(const Container<Group> &groups) { //TODO: o
             }
         }
     }
-    double stdevX = sqrt(sumProductXX / counter);
-    double stdevY = sqrt(sumProductYY / counter);
+    if (counter != 0) {
+        stdevX = sqrt(sumProductXX / counter);
+        stdevY = sqrt(sumProductYY / counter);
+    }
 
     if (stdevX * stdevY * counter == 0) {
         correlation = 0;

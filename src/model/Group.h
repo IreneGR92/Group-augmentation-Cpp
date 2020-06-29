@@ -5,8 +5,8 @@
 
 #include "Individual.h"
 #include "../Parameters.h"
-#include "container/Container.h"
-#include "container/IndividualContainer.h"
+#include "container/IndividualVector.h"
+
 
 class Group {
 
@@ -14,13 +14,13 @@ private:
     Parameters *parameters;
     double cumHelp;
     bool breederAlive;      // for the breeder: 1 alive, 0 dead
-    bool helpersPresent;    //helpers present in group before reassign?
     int groupSize;
     double fecundity;
     int realFecundity;
 
     Individual breeder;
-    Container<Individual> helpers; // create a vector of helpers inside each group
+
+    IndividualVector helpers;
 
 public:
 
@@ -28,22 +28,21 @@ public:
 
     void calculateGroupSize();
 
-    IndividualContainer disperse();
-
+    std::vector<Individual> disperse();
 
     void calculateCumulativeHelp();
+
+    const IndividualVector &getHelpers() const;
 
     void survivalGroup();
 
     void mortalityGroup(int &deaths);
 
-    void newBreeder(IndividualContainer &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
+    void newBreeder(std::vector<Individual> &floaters, int &newBreederFloater, int &newBreederHelper, int &inheritance);
 
     void increaseAge();
 
     void reproduce(int generation);
-
-    const Container<Individual> &getHelpers() const;
 
     const Individual &getBreeder() const;
 
@@ -55,15 +54,13 @@ public:
 
     bool hasHelpers() const;
 
-    void addHelper(const Individual &helper) const;
-
-    void addHelper(Individual &helper);
+    void addHelper(const Individual &helper);
 
     std::vector<double> get(Attribute attribute) const;
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 
-    IndividualContainer reassignNoRelatedness();
+    std::vector<Individual> reassignNoRelatedness(int index);
 
 };
 

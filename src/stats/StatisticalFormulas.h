@@ -2,18 +2,17 @@
 #ifndef GROUP_AUGMENTATION_STATISTICALFORMULAS_H
 #define GROUP_AUGMENTATION_STATISTICALFORMULAS_H
 
-
-#include "../model/container/Container.h"
+#include<vector>
 
 class StatisticalFormulas {
 
-    Container<double> individualValues;
+    std::vector<double> individualValues;
 
 public:
 
     void addValue(double toAdd);
 
-    void addValues(const Container<double> &values);
+    void addValues(const std::vector<double> &values);
 
     double calculateMean();
 
@@ -25,11 +24,11 @@ public:
 
 //    double calculateStandardDeviation();
 
-    void merge(StatisticalFormulas statisticalSum);
+    void merge(StatisticalFormulas statisticalFormulas);
 
     int size();
 
-    Container<double> getValues() const;
+    std::vector<double> getValues() const;
 
 };
 

@@ -1,9 +1,7 @@
 #ifndef GROUP_AUGMENTATION_DATAMODEL_H
 #define GROUP_AUGMENTATION_DATAMODEL_H
 
-
-#include "container/Container.h"
-#include "container/IndividualContainer.h"
+#include "container/IndividualVector.h"
 #include "Individual.h"
 #include "Group.h"
 
@@ -13,18 +11,18 @@ class Population {
 private:
     Parameters *parameters = Parameters::instance();
 
-    Container<Group> groups;
+    std::vector<Group> groups;
 
-    IndividualContainer floaters;
+    IndividualVector floaters;
 
     int deaths = 0;
 
     int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
 
 public:
-    const Container<Group> &getGroups() const;
+    const std::vector<Group> &getGroups() const;
 
-    const IndividualContainer &getFloaters() const;
+    const IndividualVector &getFloaters() const;
 
     Population();
 
@@ -49,8 +47,6 @@ public:
     void survivalFloaters();
 
     int getDeaths() const;
-
-    void increaseDeath();
 
     void mortalityFloaters();
 
