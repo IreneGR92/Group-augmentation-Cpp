@@ -5,8 +5,6 @@
 #include "Individual.h"
 #include "FishType.h"
 
-using namespace std;
-
 //Constructor for reproduction of a Breeder
 Individual::Individual(Individual &individual, FishType fishType, int &generation) {
 
@@ -39,12 +37,12 @@ Individual::Individual(FishType fishType) {
     this->initializeIndividual(fishType);
 }
 
-void Individual::initializeIndividual(FishType fishType) {
+void Individual::initializeIndividual(FishType type) {
     this->parameters = Parameters::instance();
     this->dispersal = Parameters::NO_VALUE;
     this->help = 0;
     this->survival = Parameters::NO_VALUE;
-    this->fishType = fishType;
+    this->fishType = type;
     this->inherit = true;
     this->age = 1;
 }
@@ -74,60 +72,63 @@ void Individual::calcHelp() {
 
     } else {
         help = Parameters::NO_VALUE;
-        cout << "Error: floaters get a help value" << endl;
+        std::cout << "Error: floaters get a help value" << std::endl;
     }
 }
 
 /*SURVIVAL*/
 
-double Individual::calculateSurvival(int groupSize) {
+void Individual::calculateSurvival(const int& groupSize) {
 
     if (parameters->isLogisticSurvival()) {
         if (parameters->isNoGroupAugmentation()) {
-            survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() -
-                                                           parameters->getXsn() * parameters->getFixedGroupSize() +
-                                                           parameters->getXsh() * help));
+            this->survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() -
+                                                                 parameters->getXsn() *
+                                                                 parameters->getFixedGroupSize() +
+                                                                 parameters->getXsh() * this->help));
 
         } else {
             if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
-                survival = (1 - parameters->getM() * parameters->getN()) / (1 + exp(-parameters->getX0() -
-                                                                                    parameters->getXsn() * groupSize +
-                                                                                    parameters->getXsh() *
-                                                                                    help));
+                this->survival = (1 - parameters->getM() * parameters->getN()) / (1 + exp(-parameters->getX0() -
+                                                                                          parameters->getXsn() *
+                                                                                          groupSize +
+                                                                                          parameters->getXsh() *
+                                                                                          this->help));
             } else {
-                survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                                                               parameters->getXsh() * help));
+                this->survival = (1 - parameters->getM()) /
+                                 (1 + std::exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                               parameters->getXsh() * this->help));
             }
         }
     } else {
         if (parameters->isNoGroupAugmentation()) {
-            survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(parameters->getFixedGroupSize()))) -
-                       parameters->getXsh() / (1 + exp(-help));
+            this->survival =
+                    parameters->getX0() + parameters->getXsn() / (1 + exp(-(parameters->getFixedGroupSize()))) -
+                    parameters->getXsh() / (1 + exp(-this->help));
 
         } else {
             if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
-                survival = parameters->getX0(); //TODO:change?
+                this->survival = parameters->getX0(); //TODO:change?
             } else {
-                survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(groupSize))) -
-                           parameters->getXsh() / (1 + exp(-help));
+                this->survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(groupSize))) -
+                                 parameters->getXsh() / (1 + exp(-this->help));
             }
         }
-        if (survival > 0.95) {
-            survival = 0.95;
+        if (this->survival > 0.95) {
+            this->survival = 0.95;
             //cout << "process camuflaged to selection" << endl;
         }
     }
-    return survival;
 }
 
 
 void Individual::mutate(int generation) // mutate genome of offspring
 {
     auto rng = *parameters->getGenerator();
-    normal_distribution<double> NormalA(0,
-                                        parameters->getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
-    normal_distribution<double> NormalB(0, parameters->getStepBeta());
-    normal_distribution<double> NormalD(0, parameters->getStepDrift());
+    std::normal_distribution<double> NormalA(0,
+                                             parameters->getStepAlpha()); //TODO: could be simplified if I decide to have all the steps size with the same magnitude
+    std::normal_distribution<double> NormalB(0, parameters->getStepBeta());
+    std::normal_distribution<double> NormalD(0, parameters->getStepDrift());
     double mutationAlpha;
     double mutationAlphaAge;
 
@@ -213,8 +214,8 @@ double Individual::getHelp() const {
     return help;
 }
 
-void Individual::setHelp(double help) {
-    Individual::help = help;
+void Individual::setHelp(double help_) {
+    Individual::help = help_;
 }
 
 double Individual::getSurvival() const {
@@ -225,13 +226,13 @@ FishType Individual::getFishType() const {
     return fishType;
 }
 
-void Individual::setFishType(FishType fishType) {
-    Individual::fishType = fishType;
-    if (fishType == BREEDER) {
+void Individual::setFishType(FishType type) {
+    Individual::fishType = type;
+    if (type == BREEDER) {
         this->dispersal = Parameters::NO_VALUE;
         this->help = Parameters::NO_VALUE;
     }
-    if (fishType == FLOATER) {
+    if (type == FLOATER) {
         this->help = Parameters::NO_VALUE;
     }
 }
@@ -248,7 +249,7 @@ void Individual::setInherit(bool inherit) {
     Individual::inherit = inherit;
 }
 
-const double Individual::get(Attribute type) const {
+double Individual::get(Attribute type) const {
     switch (type) {
         case ALPHA:
             return this->alpha;

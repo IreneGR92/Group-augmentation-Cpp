@@ -9,7 +9,7 @@
 
 class Individual {
 
-    Parameters *parameters;
+    Parameters *parameters{};
 
     double alpha;
     double alphaAge;
@@ -17,17 +17,17 @@ class Individual {
     double betaAge;
     double drift;
 
-    double dispersal;
-    double help;
-    double survival;
+    double dispersal{};
+    double help{};
+    double survival{};
 
     FishType fishType;                                                // possible classes: breeder, helper, floater
-    int age;
-    bool inherit;                                                    //did the new breeder inherit the territory or did it disperse?
+    int age{};
+    bool inherit{};                                                    //did the new breeder inherit the territory or did it disperse?
 
     void mutate(int generation);
 
-    void initializeIndividual(FishType fishType);
+    void initializeIndividual(FishType type);
 
 public:
     Individual(Individual &individual, FishType fishType, int &generation);
@@ -40,7 +40,7 @@ public:
 
     void calcHelp();
 
-    double calculateSurvival(int groupSize);
+    void calculateSurvival(const int &groupSize);
 
     //Getters and setters
     double getAlpha() const;
@@ -57,13 +57,13 @@ public:
 
     double getHelp() const;
 
-    void setHelp(double help);
+    void setHelp(double help_);
 
     double getSurvival() const;
 
     FishType getFishType() const;
 
-    void setFishType(FishType fishType);
+    void setFishType(FishType type);
 
     int getAge() const;
 
@@ -75,7 +75,7 @@ public:
     void setInherit(bool inherit);
 
     //allows to iterate trough members
-    const double get(Attribute geneType) const;
+    double get(Attribute geneType) const;
 };
 
 
