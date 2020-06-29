@@ -1,6 +1,6 @@
 #Run parameters
-REACTION_NORM_HELP: true    # Apply reaction norm to age for level of help?
-REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
+REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
+REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 LOW_SURVIVAL_FLOATER: false  #Survival of the floaters decreased?
@@ -8,10 +8,10 @@ NO_GROUP_AUGMENTATION: false
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
 LOGISTIC_SURVIVAL: true
 
-MAX_COLONIES: 200     # max number of groups or colonies
-NUM_GENERATIONS: 20000
-MAX_NUM_REPLICATES: 1
-SKIP: 100   # interval between print-outs
+MAX_COLONIES: 100     # max number of groups or colonies
+NUM_GENERATIONS: 25000
+MAX_NUM_REPLICATES: 10
+SKIP: 10000   # interval between print-outs
 
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group
@@ -29,11 +29,12 @@ Xsn: 3    # benefit of group size in survival
 K0: 1    # min fecundity, fecundity when no help provided.
 K1: 1    # benefit of cumHelp in the fecundity
 
+
 #Genetic values
 
 #For help
-INIT_ALPHA: 0.0             #bigger values higher level of help
-INIT_ALPHA_AGE: 0.0         #linear term for age
+INIT_ALPHA: 0.0            #bigger values higher level of help
+INIT_ALPHA_AGE: 0.0            #linear term for age
 
 MUTATION_ALPHA: 0.05            # mutation rate in alpha for level of help
 MUTATION_ALPHA_AGE: 0.05
@@ -41,7 +42,7 @@ STEP_ALPHA: 0.04            # mutation step size in alpha for level of help
 
 
 #For dispersal
-INIT_BETA: 0.5            # bigger values higher dispersal
+INIT_BETA: 1.0            # bigger values higher dispersal
 INIT_BETA_AGE: 0.0            # if 0 age has no effect
 
 MUTATION_BETA: 0.05            # mutation rate for the propensity to disperse
