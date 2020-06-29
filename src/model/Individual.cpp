@@ -230,10 +230,10 @@ void Individual::setFishType(FishType type) {
     Individual::fishType = type;
     if (type == BREEDER) {
         this->dispersal = Parameters::NO_VALUE;
-        this->help = Parameters::NO_VALUE;
+        this->help = 0;
     }
     if (type == FLOATER) {
-        this->help = Parameters::NO_VALUE;
+        this->help = 0;
     }
 }
 

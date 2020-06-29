@@ -151,7 +151,7 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
         correlation = sumProductXY / (stdevX * stdevY * counter);
     }
     assert (abs(correlation) >= 0);
-    return correlation;
+    return abs(correlation);
 
 }
 
