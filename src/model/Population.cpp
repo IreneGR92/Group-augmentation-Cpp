@@ -84,9 +84,9 @@ void Population::disperse(int generation) {
 
             auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
 
-            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() && timeout < 100) {
-                groups[selectGroupID].addHelper(
-                        allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
+            int test = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
+            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 100) {
+                groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
                 allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
             } else {
                 timeout++;
