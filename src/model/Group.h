@@ -60,7 +60,7 @@ public:
 
     std::vector<double> get(Attribute attribute, bool includeBreeder) const;
 
-    std::vector<Individual> reassignNoRelatedness();
+    std::vector<Individual> reassignNoRelatedness(int index);
 
 };
 

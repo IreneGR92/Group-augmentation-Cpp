@@ -60,7 +60,7 @@ vector<Individual> Group::disperse() {
     return newFloaters;
 }
 
-std::vector<Individual> Group::reassignNoRelatedness() {
+std::vector<Individual> Group::reassignNoRelatedness(int index) {
 
     std::vector<Individual> noRelatedHelpers;
 
@@ -75,6 +75,7 @@ std::vector<Individual> Group::reassignNoRelatedness() {
         } else {
             i++;
         }
+        helper.setGroupIndex(index);
     }
     return noRelatedHelpers;
 }

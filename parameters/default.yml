@@ -5,10 +5,10 @@ EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolutio
 LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 LOW_SURVIVAL_FLOATER: false  #Survival of the floaters decreased?
 NO_GROUP_AUGMENTATION: false
-NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
+NO_RELATEDNESS: true     # Apply implementation to remove the effect of relatedness?
 LOGISTIC_SURVIVAL: true
 
-MAX_COLONIES: 3     # max number of groups or colonies
+MAX_COLONIES: 2     # max number of groups or colonies
 NUM_GENERATIONS: 1000
 MAX_NUM_REPLICATES: 1
 SKIP: 1   # interval between print-outs
@@ -26,7 +26,7 @@ Xsh: 4    # cost of help in survival
 Xsn: 3    # benefit of group size in survival
 
 #Modifiers in fecundity
-K0: 1    # min fecundity, fecundity when no help provided.
+K0: 4    # min fecundity, fecundity when no help provided.
 K1: 1    # benefit of cumHelp in the fecundity
 
 #Genetic values
@@ -41,7 +41,7 @@ STEP_ALPHA: 0.04            # mutation step size in alpha for level of help
 
 
 #For dispersal
-INIT_BETA: 1.0            # bigger values higher dispersal
+INIT_BETA: 0.5            # bigger values higher dispersal
 INIT_BETA_AGE: 0.0            # if 0 age has no effect
 
 MUTATION_BETA: 0.05            # mutation rate for the propensity to disperse

@@ -3,6 +3,7 @@
 #define GROUP_AUGMENTATION_INDIVIDUAL_H
 
 
+#include <unordered_map>
 #include "FishType.h"
 #include "../Parameters.h"
 #include "Attribute.h"
@@ -28,6 +29,10 @@ class Individual {
     void mutate(int generation);
 
     void initializeIndividual(FishType type);
+
+    int groupIndex;
+public:
+    int getGroupIndex() const;
 
 public:
     Individual(Individual &individual, FishType fishType, int &generation);
@@ -76,6 +81,8 @@ public:
 
     //allows to iterate trough members
     double get(Attribute geneType) const;
+
+    void setGroupIndex(int groupIndex);
 };
 
 

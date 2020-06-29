@@ -57,6 +57,10 @@ void Individual::calcDispersal() {
     }
 }
 
+void Individual::setGroupIndex(int groupIndex) {
+    Individual::groupIndex = groupIndex;
+}
+
 /*DISPLAY LEVEL OF HELP*/
 
 void Individual::calcHelp() {
@@ -272,6 +276,10 @@ double Individual::get(Attribute type) const {
     }
 
     assert(false);
+}
+
+int Individual::getGroupIndex() const {
+    return groupIndex;
 }
 
 

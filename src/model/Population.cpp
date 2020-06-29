@@ -51,13 +51,14 @@ void Population::disperse(int generation) {
     std::vector<int> noRelatednessGroupsID;
 
 
-    for (Group &group: groups) {
+    for (int i = 0; i < groups.size(); i++) {
+        Group &group = groups[i];
         //Dispersal
         this->floaters.merge(group.disperse());
 
         // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
         if (parameters->isNoRelatedness() && generation > 0) {
-            noRelatedHelpers = group.reassignNoRelatedness();
+            noRelatedHelpers = group.reassignNoRelatedness(i);
             for (int i = 0; i < noRelatedHelpers.size(); i++) {
                 noRelatednessGroupsID.push_back(groupID);
             }
@@ -68,17 +69,28 @@ void Population::disperse(int generation) {
 
     if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
 
-        int selectGroupID, selectGroupIndex;
+        int selectGroupID;
+        int timeout = 0;
         while (!allNoRelatedHelpers.empty()) {
-            std::uniform_int_distribution<int> UniformGroupID(0, noRelatednessGroupsID.size() - 1);
-            selectGroupIndex = UniformGroupID(
-                    *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+            int selectGroupIndex = 0;
+            if (noRelatednessGroupsID.size() > 1) {
+                std::uniform_int_distribution<int> uniformIntDistribution(0, noRelatednessGroupsID.size() - 1);
+                selectGroupIndex = uniformIntDistribution(
+                        *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+            }
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
             noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                         selectGroupIndex); //remove the group ID from the vector to not draw it again
-            groups[selectGroupID].addHelper(allNoRelatedHelpers[allNoRelatedHelpers.size() -
-                                                                1]); //add the no related helper to the helper vector in a randomly selected group
-            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+
+            auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
+
+            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() && timeout < 100) {
+                groups[selectGroupID].addHelper(
+                        allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
+                allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+            } else {
+                timeout++;
+            }
         }
     }
 
