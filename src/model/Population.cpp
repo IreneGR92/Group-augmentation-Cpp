@@ -169,5 +169,17 @@ void Population::reproduce(int generation) {
     }
 }
 
+int Population::getNewBreederFloater() const {
+    return newBreederFloater;
+}
+
+int Population::getNewBreederHelper() const {
+    return newBreederHelper;
+}
+
+int Population::getInheritance() const {
+    return inheritance;
+}
+
 
 

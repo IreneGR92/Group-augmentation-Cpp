@@ -56,7 +56,7 @@ void Simulation::run() {
         // Print main file (separately since we need values of deaths, newBreederFloater, newBreederHelper and inheritance to be calculated)
         if (generation % parameters->getSkip() == 0) {
             statistics->printToConsole(generation, population.getDeaths());
-//            statistics->printToFile(replica, generation, deaths, newBreederFloater, newBreederHelper, inheritance);
+            statistics->printToFile(replica, generation, population.getDeaths(), population.getNewBreederFloater(), population.getNewBreederHelper(), population.getInheritance());
         }
 
         delete statistics;

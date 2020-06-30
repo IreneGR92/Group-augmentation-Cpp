@@ -17,7 +17,14 @@ private:
 
     int deaths = 0;
 
-    int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0; //to know if the new breeder was a helper or a floater
+    int newBreederFloater = 0, newBreederHelper = 0, inheritance = 0;
+public:
+    int getNewBreederFloater() const;
+
+    int getNewBreederHelper() const;
+
+    int getInheritance() const;
+    //to know if the new breeder was a helper or a floater
 
 public:
     const std::vector<Group> &getGroups() const;
