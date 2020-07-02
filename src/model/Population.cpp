@@ -82,7 +82,7 @@ void Population::disperse(int generation) {
 
             auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
 
-            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 100) {
+            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 5000) {
                 noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                             selectGroupIndex); //remove the group ID from the vector to not draw it again
                 groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
