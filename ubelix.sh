@@ -10,7 +10,7 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=60:00:00 //TODO:check
+#SBATCH --time=80:00:00 //TODO:check
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-7 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-14 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -46,13 +46,13 @@ declare -a arr=(
 #    "default/bias4.yml"
 #    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
-#    "default/bias1-RN-m01.yml"
+    "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
-#    "default/bias2-RN-m01.yml"
+    "default/bias2-RN-m01.yml"
 #    "default/bias3-m01.yml"
-#    "default/bias3-RN-m01.yml"
+    "default/bias3-RN-m01.yml"
 #    "default/bias4-m01.yml"
-#    "default/bias4-RN-m01.yml"
+    "default/bias4-RN-m01.yml"
 #    "default/bias1-m03.yml"
 #    "default/bias1-RN-m03.yml"
 #    "default/bias2-m03.yml"
@@ -94,17 +94,17 @@ declare -a arr=(
 #    "noRelatedness/bias4.yml"
 #    "noRelatedness/bias4-RN.yml"
 #    "noRelatedness/bias1-m01.yml"
-#    "noRelatedness/bias1-RN-m01.yml"
+    "noRelatedness/bias1-RN-m01.yml"
 #    "noRelatedness/bias2-m01.yml"
-#    "noRelatedness/bias2-RN-m01.yml"
+    "noRelatedness/bias2-RN-m01.yml"
 #    "noRelatedness/bias3-m01.yml"
-#    "noRelatedness/bias3-RN-m01.yml"
+    "noRelatedness/bias3-RN-m01.yml"
 #    "noRelatedness/bias4-m01.yml"
-#    "noRelatedness/bias4-RN-m01.yml"
+    "noRelatedness/bias4-RN-m01.yml"
 #    "noRelatedness/bias1-m03.yml"
 #    "noRelatedness/bias1-RN-m03.yml"
 #    "noRelatedness/bias2-m03.yml"
-#    "noRelatedness/bias2-RN-m03.yml"
+    "noRelatedness/bias2-RN-m03.yml"
 #    "noRelatedness/bias3-m03.yml"
 #    "noRelatedness/bias3-RN-m03.yml"
 #    "noRelatedness/bias4-m03.yml"
@@ -126,7 +126,6 @@ declare -a arr=(
 #    "noRelatedness/n2-NRN.yml"
 #    "noRelatedness/n2-RN.yml"
 
-    "noRelatedness/bias2-RN-m03_again.yml"
     "noRelatedness/bias3-RN _longer.yml"
     "noRelatedness/bias3-RN-m03 _longer.yml"
     "noRelatedness/bias4-RN _longer.yml"
