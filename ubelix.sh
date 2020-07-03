@@ -78,9 +78,9 @@ declare -a arr=(
 #    "default/n2-NRN.yml"
 #    "default/n2-RN.yml"
 
-    "default/bias2-RN-m03 _longer.yml"
-    "default/bias4-RN _longer.yml"
-    "default/bias4-RN-m03 _longer.yml"
+    "default/bias2-RN-m03_longer.yml"
+    "default/bias4-RN_longer.yml"
+    "default/bias4-RN-m03_longer.yml"
 
 
 #   NO RELATEDNESS    #
@@ -126,10 +126,10 @@ declare -a arr=(
 #    "noRelatedness/n2-NRN.yml"
 #    "noRelatedness/n2-RN.yml"
 
-    "noRelatedness/bias3-RN _longer.yml"
-    "noRelatedness/bias3-RN-m03 _longer.yml"
-    "noRelatedness/bias4-RN _longer.yml"
-    "noRelatedness/bias4-RN-m03 _longer.yml"
+    "noRelatedness/bias3-RN_longer.yml"
+    "noRelatedness/bias3-RN-m03_longer.yml"
+    "noRelatedness/bias4-RN_longer.yml"
+    "noRelatedness/bias4-RN-m03_longer.yml"
 
 
 
