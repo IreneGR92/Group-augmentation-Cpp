@@ -46,7 +46,7 @@ declare -a arr=(
 #    "default/bias4.yml"
 #    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
-#    "default/bias1-RN-m01.yml"
+    "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
     "default/bias2-RN-m01.yml"
 #    "default/bias3-m01.yml"
