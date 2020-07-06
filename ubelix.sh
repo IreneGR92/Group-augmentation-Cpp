@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-14 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-8 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -46,13 +46,13 @@ declare -a arr=(
 #    "default/bias4.yml"
 #    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
-    "default/bias1-RN-m01.yml"
+#    "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
-    "default/bias2-RN-m01.yml"
+#    "default/bias2-RN-m01.yml"
 #    "default/bias3-m01.yml"
-    "default/bias3-RN-m01.yml"
+#    "default/bias3-RN-m01.yml"
 #    "default/bias4-m01.yml"
-    "default/bias4-RN-m01.yml"
+#    "default/bias4-RN-m01.yml"
 #    "default/bias1-m03.yml"
 #    "default/bias1-RN-m03.yml"
 #    "default/bias2-m03.yml"
@@ -78,9 +78,9 @@ declare -a arr=(
 #    "default/n2-NRN.yml"
 #    "default/n2-RN.yml"
 
-    "default/bias2-RN-m03_longer.yml"
-    "default/bias4-RN_longer.yml"
-    "default/bias4-RN-m03_longer.yml"
+    "default/bias2-RN-m03_longer.yml" # need more generations
+    "default/bias4-RN_longer.yml" # ok
+    "default/bias4-RN-m03_longer.yml" #no printed
 
 
 #   NO RELATEDNESS    #
@@ -96,15 +96,15 @@ declare -a arr=(
 #    "noRelatedness/bias1-m01.yml"
     "noRelatedness/bias1-RN-m01.yml"
 #    "noRelatedness/bias2-m01.yml"
-    "noRelatedness/bias2-RN-m01.yml"
+#    "noRelatedness/bias2-RN-m01.yml"
 #    "noRelatedness/bias3-m01.yml"
-    "noRelatedness/bias3-RN-m01.yml"
+#    "noRelatedness/bias3-RN-m01.yml"
 #    "noRelatedness/bias4-m01.yml"
-    "noRelatedness/bias4-RN-m01.yml"
+#    "noRelatedness/bias4-RN-m01.yml"
 #    "noRelatedness/bias1-m03.yml"
 #    "noRelatedness/bias1-RN-m03.yml"
 #    "noRelatedness/bias2-m03.yml"
-    "noRelatedness/bias2-RN-m03.yml"
+#    "noRelatedness/bias2-RN-m03.yml"
 #    "noRelatedness/bias3-m03.yml"
 #    "noRelatedness/bias3-RN-m03.yml"
 #    "noRelatedness/bias4-m03.yml"
@@ -126,10 +126,12 @@ declare -a arr=(
 #    "noRelatedness/n2-NRN.yml"
 #    "noRelatedness/n2-RN.yml"
 
+    "noRelatedness/bias2-RN-m03_longer.yml"
     "noRelatedness/bias3-RN_longer.yml"
     "noRelatedness/bias3-RN-m03_longer.yml"
     "noRelatedness/bias4-RN_longer.yml"
     "noRelatedness/bias4-RN-m03_longer.yml"
+
 
 
 

@@ -9,7 +9,7 @@ NO_RELATEDNESS: false     # Apply implementation to remove the effect of related
 LOGISTIC_SURVIVAL: true
 
 MAX_COLONIES: 5000     # max number of groups or colonies
-NUM_GENERATIONS: 150000
+NUM_GENERATIONS: 200000
 MAX_NUM_REPLICATES: 20
 SKIP: 200   # interval between print-outs
 
