@@ -41,9 +41,10 @@ void Simulation::run() {
             statistics->calculateStatistics(population);
 
             //Print last generation
-            if (generation == parameters->getNumGenerations() / 10 ||
-                generation == parameters->getNumGenerations() / 4 ||
-                generation == parameters->getNumGenerations() / 2 || generation == parameters->getNumGenerations()) {
+            if (generation == 10000 ||
+                generation == 25000 ||
+                generation == parameters->getNumGenerations() / 2 ||
+                generation == parameters->getNumGenerations()) {
 
                 statistics->printToFileLastGeneration(this, population);
             }

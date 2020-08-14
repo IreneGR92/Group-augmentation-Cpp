@@ -136,7 +136,7 @@ void Individual::mutate(int generation) // mutate genome of offspring
     double mutationAlpha;
     double mutationAlphaAge;
 
-    if (parameters->isEvolutionHelpAfterDispersal() && generation < parameters->getNumGenerations() / 4) {
+    if (parameters->isEvolutionHelpAfterDispersal() && generation < 25000) {
         mutationAlpha = 0;
         mutationAlphaAge = 0;
     } else {
