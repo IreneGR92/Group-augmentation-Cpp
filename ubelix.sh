@@ -10,7 +10,7 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=90:00:00
+#SBATCH --time=180:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
@@ -29,7 +29,7 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-23 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-5 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
@@ -38,13 +38,13 @@ declare -a arr=(
 #   LOGISTIC SURVIVAL DEFAULT  #
 
 #    "default/bias1.yml"
-    "default/bias1-RN.yml"
+#    "default/bias1-RN.yml"
 #    "default/bias2.yml"
-    "default/bias2-RN.yml"
+#    "default/bias2-RN.yml"
 #    "default/bias3.yml"
-    "default/bias3-RN.yml"
+#    "default/bias3-RN.yml"
 #    "default/bias4.yml"
-    "default/bias4-RN.yml"
+#    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
     "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
@@ -54,13 +54,13 @@ declare -a arr=(
 #    "default/bias4-m01.yml"
     "default/bias4-RN-m01.yml"
 #    "default/bias1-m03.yml"
-    "default/bias1-RN-m03.yml"
+#    "default/bias1-RN-m03.yml"
 #    "default/bias2-m03.yml"
-    "default/bias2-RN-m03.yml"
+#    "default/bias2-RN-m03.yml"
 #    "default/bias3-m03.yml"
-    "default/bias3-RN-m03.yml"
+#    "default/bias3-RN-m03.yml"
 #    "default/bias4-m03.yml"
-    "default/bias4-RN-m03.yml"
+#    "default/bias4-RN-m03.yml"
 #    "default/K2.yml"
 #    "default/K2-RN.yml"
 #    "default/K05.yml"
@@ -83,29 +83,29 @@ declare -a arr=(
 #   NO RELATEDNESS    #
 
 #    "noRelatedness/bias1.yml"
-    "noRelatedness/bias1-RN.yml"
+#    "noRelatedness/bias1-RN.yml"
 #    "noRelatedness/bias2.yml"
     "noRelatedness/bias2-RN.yml"
 #    "noRelatedness/bias3.yml"
     "noRelatedness/bias3-RN.yml"
 #    "noRelatedness/bias4.yml"
-    "noRelatedness/bias4-RN.yml"
+#    "noRelatedness/bias4-RN.yml"
 #    "noRelatedness/bias1-m01.yml"
-    "noRelatedness/bias1-RN-m01.yml"
+#    "noRelatedness/bias1-RN-m01.yml"
 #    "noRelatedness/bias2-m01.yml"
-    "noRelatedness/bias2-RN-m01.yml"
+#    "noRelatedness/bias2-RN-m01.yml"
 #    "noRelatedness/bias3-m01.yml"
-    "noRelatedness/bias3-RN-m01.yml"
+#    "noRelatedness/bias3-RN-m01.yml"
 #    "noRelatedness/bias4-m01.yml"
-    "noRelatedness/bias4-RN-m01.yml"
+#    "noRelatedness/bias4-RN-m01.yml"
 #    "noRelatedness/bias1-m03.yml"
-    "noRelatedness/bias1-RN-m03.yml"
+#    "noRelatedness/bias1-RN-m03.yml"
 #    "noRelatedness/bias2-m03.yml"
-    "noRelatedness/bias2-RN-m03.yml"
+#    "noRelatedness/bias2-RN-m03.yml"
 #    "noRelatedness/bias3-m03.yml"
-    "noRelatedness/bias3-RN-m03.yml"
+#    "noRelatedness/bias3-RN-m03.yml"
 #    "noRelatedness/bias4-m03.yml"
-    "noRelatedness/bias4-RN-m03.yml"
+#    "noRelatedness/bias4-RN-m03.yml"
 #    "noRelatedness/K2.yml"
 #    "noRelatedness/K2-RN.yml"
 #    "noRelatedness/K05.yml"
