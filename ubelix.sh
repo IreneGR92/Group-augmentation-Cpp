@@ -10,12 +10,12 @@
 #SBATCH --job-name="GroupAugmentation"
 
 # Runtime and memory
-#SBATCH --time=120:00:00
+#SBATCH --time=300:00:00
 #SBATCH --mem-per-cpu=2G
 #SBATCH --cpus-per-task=1
 
 # Partition
-#SBATCH --partition=all
+#SBATCH --partition=long
 
 # For parallel jobs
 
