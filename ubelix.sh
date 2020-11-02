@@ -35,6 +35,36 @@
 
 declare -a arr=(
 
+#   NEW RUNS FOR GRAPH  #
+
+"new/bias15-RN-m015.yml"
+"new/bias15-RN-m01.yml"
+"new/bias15-RN-m025.yml"
+"new/bias15-RN-m02.yml"
+"new/bias15-RN-m03.yml"
+"new/bias1-RN-m015.yml"
+"new/bias1-RN-m025.yml"
+"new/bias25-RN-m015.yml"
+"new/bias25-RN-m01.yml"
+"new/bias25-RN-m025.yml"
+"new/bias25-RN-m02.yml"
+"new/bias25-RN-m03.yml"
+"new/bias2-RN-m015.yml"
+"new/bias2-RN-m025.yml"
+"new/bias2-RN-m02-dispersal1.yml"
+"new/bias2-RN-m03-dispersal1.yml"
+"new/bias35-RN-m015.yml"
+"new/bias35-RN-m01.yml"
+"new/bias35-RN-m025.yml"
+"new/bias35-RN-m02.yml"
+"new/bias35-RN-m03.yml"
+"new/bias3-RN-m015.yml"
+"new/bias3-RN-m025.yml"
+"new/bias4-RN-m015.yml"
+"new/bias4-RN-m025.yml"
+
+
+
 #   LOGISTIC SURVIVAL DEFAULT  #
 
 #    "default/bias1.yml"
@@ -46,13 +76,13 @@ declare -a arr=(
 #    "default/bias4.yml"
 #    "default/bias4-RN.yml"
 #    "default/bias1-m01.yml"
-    "default/bias1-RN-m01.yml"
+#    "default/bias1-RN-m01.yml"
 #    "default/bias2-m01.yml"
-    "default/bias2-RN-m01.yml"
+#    "default/bias2-RN-m01.yml"
 #    "default/bias3-m01.yml"
-    "default/bias3-RN-m01.yml"
+#    "default/bias3-RN-m01.yml"
 #    "default/bias4-m01.yml"
-    "default/bias4-RN-m01.yml"
+#    "default/bias4-RN-m01.yml"
 #    "default/bias1-m03.yml"
 #    "default/bias1-RN-m03.yml"
 #    "default/bias2-m03.yml"
@@ -85,9 +115,9 @@ declare -a arr=(
 #    "noRelatedness/bias1.yml"
 #    "noRelatedness/bias1-RN.yml"
 #    "noRelatedness/bias2.yml"
-    "noRelatedness/bias2-RN.yml"
+#    "noRelatedness/bias2-RN.yml"
 #    "noRelatedness/bias3.yml"
-    "noRelatedness/bias3-RN.yml"
+#    "noRelatedness/bias3-RN.yml"
 #    "noRelatedness/bias4.yml"
 #    "noRelatedness/bias4-RN.yml"
 #    "noRelatedness/bias1-m01.yml"
