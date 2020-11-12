@@ -35,33 +35,33 @@
 
 declare -a arr=(
 
-#   NEW RUNS FOR GRAPH  #
+#   HABITAT SATURATION RUNS FOR GRAPH  #
 
-"new/bias15-RN-m015.yml"
-"new/bias15-RN-m01.yml"
-"new/bias15-RN-m025.yml"
-"new/bias15-RN-m02.yml"
-"new/bias15-RN-m03.yml"
-"new/bias1-RN-m015.yml"
-"new/bias1-RN-m025.yml"
-"new/bias25-RN-m015.yml"
-"new/bias25-RN-m01.yml"
-"new/bias25-RN-m025.yml"
-"new/bias25-RN-m02.yml"
-"new/bias25-RN-m03.yml"
-"new/bias2-RN-m015.yml"
-"new/bias2-RN-m025.yml"
-"new/bias2-RN-m02-dispersal1.yml"
-"new/bias2-RN-m03-dispersal1.yml"
-"new/bias35-RN-m015.yml"
-"new/bias35-RN-m01.yml"
-"new/bias35-RN-m025.yml"
-"new/bias35-RN-m02.yml"
-"new/bias35-RN-m03.yml"
-"new/bias3-RN-m015.yml"
-"new/bias3-RN-m025.yml"
-"new/bias4-RN-m015.yml"
-"new/bias4-RN-m025.yml"
+#"habitat_saturation/bias15-RN-m015.yml"
+#"habitat_saturation/bias15-RN-m01.yml"
+#"habitat_saturation/bias15-RN-m025.yml"
+#"habitat_saturation/bias15-RN-m02.yml"
+#"habitat_saturation/bias15-RN-m03.yml"
+#"habitat_saturation/bias1-RN-m015.yml"
+#"habitat_saturation/bias1-RN-m025.yml"
+#"habitat_saturation/bias25-RN-m015.yml"
+#"habitat_saturation/bias25-RN-m01.yml"
+#"habitat_saturation/bias25-RN-m025.yml"
+#"habitat_saturation/bias25-RN-m02.yml"
+#"habitat_saturation/bias25-RN-m03.yml"
+#"habitat_saturation/bias2-RN-m015.yml"
+#"habitat_saturation/bias2-RN-m025.yml"
+#"habitat_saturation/bias2-RN-m02-dispersal1.yml"
+#"habitat_saturation/bias2-RN-m03-dispersal1.yml"
+#"habitat_saturation/bias35-RN-m015.yml"
+#"habitat_saturation/bias35-RN-m01.yml"
+#"habitat_saturation/bias35-RN-m025.yml"
+#"habitat_saturation/bias35-RN-m02.yml"
+#"habitat_saturation/bias35-RN-m03.yml"
+#"habitat_saturation/bias3-RN-m015.yml"
+#"habitat_saturation/bias3-RN-m025.yml"
+#"habitat_saturation/bias4-RN-m015.yml"
+#"habitat_saturation/bias4-RN-m025.yml"
 
 
 
@@ -107,8 +107,10 @@ declare -a arr=(
 #    "default/RN-dispersal.yml"
 #    "default/n2-NRN.yml"
 #    "default/n2-RN.yml"
-
-
+  "default/bias1-m01-Xn0-NRN.yml"
+  "default/bias1-m01-Xn0-RN.yml"
+  "default/bias1-m01-Xn1-NRN.yml"
+  "default/bias1-m01-Xn1-RN.yml"
 
 #   NO RELATEDNESS    #
 
@@ -152,6 +154,10 @@ declare -a arr=(
 #    "noRelatedness/RN-dispersal.yml"
 #    "noRelatedness/n2-NRN.yml"
 #    "noRelatedness/n2-RN.yml"
+  "noRelatedness/bias1-m01-Xn0-NRN.yml"
+  "noRelatedness/bias1-m01-Xn0-RN.yml"
+  "noRelatedness/bias1-m01-Xn1-NRN.yml"
+  "noRelatedness/bias1-m01-Xn1-RN.yml"
 
 
 
