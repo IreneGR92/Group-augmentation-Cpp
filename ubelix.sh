@@ -29,13 +29,50 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-5 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-35 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
 declare -a arr=(
 
 #   HABITAT SATURATION RUNS FOR GRAPH  #
+"mortality_dispersal/m012-n12-RN.yml"
+"mortality_dispersal/m012-n14-RN.yml"
+"mortality_dispersal/m012-n16-RN.yml"
+"mortality_dispersal/m012-n18-RN.yml"
+"mortality_dispersal/m012-n1-RN.yml"
+"mortality_dispersal/m012-n2-RN.yml"
+"mortality_dispersal/m014-n12-RN.yml"
+"mortality_dispersal/m014-n14-RN.yml"
+"mortality_dispersal/m014-n16-RN.yml"
+"mortality_dispersal/m014-n18-RN.yml"
+"mortality_dispersal/m014-n1-RN.yml"
+"mortality_dispersal/m014-n2-RN.yml"
+"mortality_dispersal/m016-n12-RN.yml"
+"mortality_dispersal/m016-n14-RN.yml"
+"mortality_dispersal/m016-n16-RN.yml"
+"mortality_dispersal/m016-n18-RN.yml"
+"mortality_dispersal/m016-n1-RN.yml"
+"mortality_dispersal/m016-n2-RN.yml"
+"mortality_dispersal/m018-n12-RN.yml"
+"mortality_dispersal/m018-n14-RN.yml"
+"mortality_dispersal/m018-n16-RN.yml"
+"mortality_dispersal/m018-n18-RN.yml"
+"mortality_dispersal/m018-n1-RN.yml"
+"mortality_dispersal/m018-n2-RN.yml"
+"mortality_dispersal/m01-n12-RN.yml"
+"mortality_dispersal/m01-n14-RN.yml"
+"mortality_dispersal/m01-n16-RN.yml"
+"mortality_dispersal/m01-n18-RN.yml"
+"mortality_dispersal/m01-n1-RN.yml"
+"mortality_dispersal/m01-n2-RN.yml"
+"mortality_dispersal/m02-n12-RN.yml"
+"mortality_dispersal/m02-n14-RN.yml"
+"mortality_dispersal/m02-n16-RN.yml"
+"mortality_dispersal/m02-n18-RN.yml"
+"mortality_dispersal/m02-n1-RN.yml"
+"mortality_dispersal/m02-n2-RN.yml"
+
 
 #"habitat_saturation/bias15-RN-m015.yml"
 #"habitat_saturation/bias15-RN-m01.yml"
@@ -107,10 +144,10 @@ declare -a arr=(
 #    "default/RN-dispersal.yml"
 #    "default/n2-NRN.yml"
 #    "default/n2-RN.yml"
-  "default/bias1-m01-Xn0-NRN.yml"
-  "default/bias1-m01-Xn0-RN.yml"
-  "default/bias1-m01-Xn1-NRN.yml"
-  "default/bias1-m01-Xn1-RN.yml"
+#  "default/bias1-m01-Xn0-NRN.yml"
+#  "default/bias1-m01-Xn0-RN.yml"
+#  "default/bias1-m01-Xn1-NRN.yml"
+#  "default/bias1-m01-Xn1-RN.yml"
 
 #   NO RELATEDNESS    #
 

@@ -20,7 +20,7 @@ FIXED_GROUP_SIZE: 4		# in the implementation of no group augmentation, virtual g
 
 # Modifiers in survival. X0 + Xsn - Xsh :< 1
 m: 0.1    # mortality due to predation
-n: 1      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
+n: 1.2      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
 X0: 1.5   # base survival without the effect of help or group size
 Xsh: 4    # cost of help in survival
 Xsn: 3    # benefit of group size in survival
