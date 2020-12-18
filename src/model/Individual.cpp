@@ -51,7 +51,7 @@ void Individual::initializeIndividual(FishType type) {
 
 void Individual::calcDispersal() {
     if (!parameters->isReactionNormDispersal()) {
-        this->dispersal = beta; // TODO: Mae logistic formula too so range from 0 to 1 naturally?
+        this->dispersal = 1 / (1 + exp(- beta));
     } else {
         this->dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
