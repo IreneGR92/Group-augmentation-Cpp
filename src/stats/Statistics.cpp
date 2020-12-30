@@ -105,7 +105,7 @@ void Statistics::calculateStatistics(const Population &populationObj) {
 }
 
 double
-Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::calculateRelatedness(const std::vector<Group> &groups) {
 
     //Relatedness
     double correlation;          //relatedness related
@@ -157,7 +157,7 @@ Statistics::calculateRelatedness(const std::vector<Group> &groups) { //TODO: opt
 }
 
 double
-Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) { //TODO: optimise formula, make abstract version
+Statistics::correlationHelpGroupSize(const std::vector<Group> &groups) {
 
     double correlation;
     int counter = 0;

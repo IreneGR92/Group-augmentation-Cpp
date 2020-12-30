@@ -26,11 +26,8 @@ private:
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
     bool LOW_SURVIVAL_BREEDER;
-    bool LOW_SURVIVAL_FLOATER;
     bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
-    bool LOGISTIC_SURVIVAL;
-
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
     int NUM_GENERATIONS;
@@ -42,7 +39,7 @@ private:
     double BIAS_FLOAT_BREEDER; //mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
     int FIXED_GROUP_SIZE;       //in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
-// Modifiers in survival. X0 + Xsn - Xsh =< 1
+// Modifiers in survival.
     double m;
     double n;
     double X0; //base survival without the effect of help or group size
@@ -106,13 +103,9 @@ public:
 
     bool isLowSurvivalBreeder() const;
 
-    bool isLowSurvivalFloater() const;
-
     bool isNoGroupAugmentation() const;
 
     bool isNoRelatedness() const;
-
-    bool isLogisticSurvival() const;
 
     int getMaxColonies() const;
 

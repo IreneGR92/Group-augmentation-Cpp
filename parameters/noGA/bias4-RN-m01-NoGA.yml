@@ -3,10 +3,10 @@ REACTION_NORM_HELP: true    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
-LOW_SURVIVAL_FLOATER: false  #Survival of the floaters decreased?
+
 NO_GROUP_AUGMENTATION: true
 NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
-LOGISTIC_SURVIVAL: true
+
 
 MAX_COLONIES: 5000     # max number of groups or colonies
 NUM_GENERATIONS: 100000

@@ -84,43 +84,26 @@ void Individual::calcHelp() {
 
 void Individual::calculateSurvival(const int& groupSize) {
 
-    if (parameters->isLogisticSurvival()) {
-        if (parameters->isNoGroupAugmentation()) {
-            this->survival = (1 - parameters->getM()) / (1 + exp(-parameters->getX0() -
-                                                                 parameters->getXsn() *
-                                                                 parameters->getFixedGroupSize() +
-                                                                 parameters->getXsh() * this->help));
-
+    if (parameters->isNoGroupAugmentation()) {
+        if (fishType == FLOATER) {
+            this->survival = (1 - parameters->getM() * parameters->getN()) /
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * parameters->getFixedGroupSize() +
+                                      parameters->getXsh() * this->help));
         } else {
-            if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
-                this->survival = (1 - parameters->getM() * parameters->getN()) / (1 + exp(-parameters->getX0() -
-                                                                                          parameters->getXsn() *
-                                                                                          groupSize +
-                                                                                          parameters->getXsh() *
-                                                                                          this->help));
-            } else {
-                this->survival = (1 - parameters->getM()) /
-                                 (1 + std::exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                                               parameters->getXsh() * this->help));
-            }
+            this->survival = (1 - parameters->getM()) /
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * parameters->getFixedGroupSize() +
+                                      parameters->getXsh() * this->help));
         }
+
     } else {
-        if (parameters->isNoGroupAugmentation()) {
-            this->survival =
-                    parameters->getX0() + parameters->getXsn() / (1 + exp(-(parameters->getFixedGroupSize()))) -
-                    parameters->getXsh() / (1 + exp(-this->help));
-
+        if (fishType == FLOATER) {
+            this->survival = (1 - parameters->getM() * parameters->getN()) /
+                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                             parameters->getXsh() * this->help));
         } else {
-            if (parameters->isLowSurvivalFloater() && fishType == FLOATER) {
-                this->survival = parameters->getX0(); //TODO:change?
-            } else {
-                this->survival = parameters->getX0() + parameters->getXsn() / (1 + exp(-(groupSize))) -
-                                 parameters->getXsh() / (1 + exp(-this->help));
-            }
-        }
-        if (this->survival > 0.95) {
-            this->survival = 0.95;
-            //cout << "process camuflaged to selection" << endl;
+            this->survival = (1 - parameters->getM()) /
+                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                             parameters->getXsh() * this->help));
         }
     }
 }
