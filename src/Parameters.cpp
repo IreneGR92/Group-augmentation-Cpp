@@ -86,8 +86,8 @@ void Parameters::print(std::ofstream &outputStream) {
                  << "Number_generations:" << "\t" << this->getNumGenerations() << endl
                  << "Number_replicates:" << "\t" << this->getMaxNumReplicates() << endl
                  << "Bias_float_breeder:" << "\t" << this->getBiasFloatBreeder() << endl
-                 << "m(predation):" << "\t" << this->getM() << endl
-                 << "n(effect_size_mortality_dispersal):" << "\t" << this->getN() << endl
+                 << "m(Overall_mortality):" << "\t" << this->getM() << endl
+                 << "n(Mortality_dispersal):" << "\t" << this->getN() << endl
                  << "X0(intercept):" << "\t" << this->getX0() << endl
                  << "Xh(Cost_help_survival):" << "\t" << this->getXsh() << endl
                  << "Xn(Benefit_group_size_survival):" << "\t" << this->getXsn() << endl

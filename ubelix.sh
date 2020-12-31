@@ -29,15 +29,18 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-2 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-5 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
 declare -a arr=(
 
 #   MUTATION MODIFIED  #
+"noRelatedness_bias1-RN.yml"
 "noRelatedness_bias1.yml"
-"default_bias2-m03.yml"
+"default_bias3-RN-m03.yml"
+"default_bias3-m03.yml"
+"default_bias1-RN.yml"
 "default_bias1.yml"
 
 		)
