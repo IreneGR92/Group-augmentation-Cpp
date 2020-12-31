@@ -36,9 +36,9 @@
 declare -a arr=(
 
 #   MUTATION MODIFIED  #
-"default_bias1-RN.yml"
-"default_bias2-RN-m03.yml"
-"noRelatedness_bias1-RN.yml"
+"noRelatedness_bias1.yml"
+"default_bias2-m03.yml"
+"default_bias1.yml"
 
 		)
 
