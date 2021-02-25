@@ -1,27 +1,27 @@
 #Run parameters
-REACTION_NORM_HELP: false          # Apply reaction norm to age for level of help?
-REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
+REACTION_NORM_HELP: true          # Apply reaction norm to age for level of help?
+REACTION_NORM_DISPERSAL: true     # Apply reaction norm to age for dispersal?
 EVOLUTION_HELP_AFTER_DISPERSAL: false     # Help evolves only after the evolution of dispersal?
 LOW_SURVIVAL_BREEDER: false       # Survival of the breeder equivalent to the floaters?
 NO_GROUP_AUGMENTATION: false      # Remove group augmentation effects by fixing group size in survival?
 NO_RELATEDNESS: false             # Apply implementation to remove the effect of relatedness?
 
-MAX_COLONIES: 500     # max number of groups or colonies
-NUM_GENERATIONS: 200000
+MAX_COLONIES: 1000     # max number of groups or colonies
+NUM_GENERATIONS: 100000
 MAX_NUM_REPLICATES: 1
 SKIP: 1000   # interval between print-outs
 
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group
-BIAS_FLOAT_BREEDER: 3   # mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
+BIAS_FLOAT_BREEDER: 1   # mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers (f in the paper)
 FIXED_GROUP_SIZE: 4	    # in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 # Modifiers in survival.
-m: 0.3    # overall mortality
-n: 1      # multiplier to m for lower mortality of floaters
+m: 0.1    # overall mortality (m0 in the paper)
+n: 2      # multiplier to m for lower mortality of floaters (md in the paper)
 X0: 1.5   # intercept in survival formula
 Xsh: 4    # cost of help in survival
-Xsn: 3    # benefit of group size in survival
+Xsn: 0    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.

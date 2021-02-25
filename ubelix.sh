@@ -36,12 +36,12 @@
 declare -a arr=(
 
 #   MUTATION MODIFIED  #
-"noRelatedness_bias1-RN.yml"
-"noRelatedness_bias1.yml"
-"default_bias3-RN-m03.yml"
-"default_bias3-m03.yml"
-"default_bias1-RN.yml"
-"default_bias1.yml"
+"no-relatedness_Xn0.yml"
+"no-relatedness_Xn1.yml"
+"no-relatedness_Xn3.yml"
+"Xn0.yml"
+"Xn1.yml"
+"Xn3.yml"
 
 		)
 
