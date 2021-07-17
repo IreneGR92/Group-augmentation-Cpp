@@ -9,7 +9,7 @@ Simulation code, written in C++, to support the paper:
 
 - The software was built and tested on Ubuntu Linux -> this guide only covers Ubuntu Linux x86_64 if you are using macOS
   or Windows you may need to adapt some steps.
-- Cmake and make installed
+- Cmake, make and gcc installed
 - If you are not on Linux with x86_64 you'll need to compile yaml-cpp yourself and reference it correctly in CMake.txt
   GitHub --> https://github.com/jbeder/yaml-cpp/tree/yaml-cpp-0.6.2
 
