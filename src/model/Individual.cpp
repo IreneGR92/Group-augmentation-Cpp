@@ -51,7 +51,8 @@ void Individual::initializeIndividual(FishType type) {
 
 void Individual::calcDispersal() {
     if (!parameters->isReactionNormDispersal()) {
-        this->dispersal = 1 / (1 + exp(- beta));
+        this->dispersal = beta;
+        //this->dispersal = 1 / (1 + exp(- beta));
     } else {
         this->dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
