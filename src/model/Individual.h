@@ -37,7 +37,7 @@ public:
 public:
     Individual(Individual &individual, FishType fishType, int &generation);
 
-    explicit Individual(FishType fishType);
+    explicit Individual(FishType fishType, int groupIndex);
 
 
     //Functions inside Individual

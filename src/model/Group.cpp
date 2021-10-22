@@ -8,7 +8,7 @@
 using namespace std;
 
 
-Group::Group() : breeder(BREEDER) {
+Group::Group(int GROUP_ID) : breeder(BREEDER, GROUP_ID), GROUP_ID(GROUP_ID) {
     this->parameters = Parameters::instance();
 
     breederAlive = true;
@@ -17,7 +17,7 @@ Group::Group() : breeder(BREEDER) {
     realFecundity = Parameters::NO_VALUE;
 
     for (int i = 0; i < parameters->getInitNumHelpers(); ++i) {
-        auto individual = Individual(HELPER);
+        auto individual = Individual(HELPER, GROUP_ID);
         helpers.emplace_back(individual);
     }
 
@@ -88,7 +88,7 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
     cumHelp = 0;
 
     //Level of help for helpers
-    for (Individual &helper:helpers) {
+    for (Individual &helper: helpers) {
         assert(helper.getFishType() == HELPER);
         helper.calcHelp();
         cumHelp += helper.getHelp();
@@ -100,7 +100,7 @@ void Group::calculateCumulativeHelp() //Calculate accumulative help of all indiv
 void Group::survivalGroup() {
     this->calculateGroupSize();
     //Calculate survival for the helpers
-    for (Individual &helper:helpers) {
+    for (Individual &helper: helpers) {
         helper.calculateSurvival(groupSize);
     }
 
@@ -240,7 +240,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
 void Group::increaseAge() {
-    for (Individual &helper:helpers) {
+    for (Individual &helper: helpers) {
         helper.increaseAge();
     }
     if (breederAlive) {

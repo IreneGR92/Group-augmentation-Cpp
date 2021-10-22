@@ -22,9 +22,11 @@ private:
 
     IndividualVector helpers;
 
+    const int GROUP_ID;
+
 public:
 
-    explicit Group();
+    explicit Group(int GROUP_ID);
 
     void calculateGroupSize();
 

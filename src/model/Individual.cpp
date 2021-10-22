@@ -21,11 +21,12 @@ Individual::Individual(Individual &individual, FishType fishType, int &generatio
 
     this->initializeIndividual(fishType);
 
+    this->groupIndex = individual.groupIndex;
     this->mutate(generation);
 }
 
 //Constructor for initial creation
-Individual::Individual(FishType fishType) {
+Individual::Individual(FishType fishType, int groupIndex) {
 
     auto param = Parameters::instance();
 
@@ -34,6 +35,7 @@ Individual::Individual(FishType fishType) {
     this->beta = param->getInitBeta();
     this->betaAge = param->getInitBetaAge();
     this->drift = param->driftUniform(*param->getGenerator());
+    this->groupIndex = groupIndex;
     this->initializeIndividual(fishType);
 }
 
@@ -83,7 +85,7 @@ void Individual::calcHelp() {
 
 /*SURVIVAL*/
 
-void Individual::calculateSurvival(const int& groupSize) {
+void Individual::calculateSurvival(const int &groupSize) {
 
     if (parameters->isNoGroupAugmentation()) {
         if (fishType == FLOATER) {
@@ -99,12 +101,12 @@ void Individual::calculateSurvival(const int& groupSize) {
     } else {
         if (fishType == FLOATER) {
             this->survival = (1 - parameters->getM() * parameters->getN()) /
-                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                             parameters->getXsh() * this->help));
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                      parameters->getXsh() * this->help));
         } else {
             this->survival = (1 - parameters->getM()) /
-                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                             parameters->getXsh() * this->help));
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                      parameters->getXsh() * this->help));
         }
     }
 }
