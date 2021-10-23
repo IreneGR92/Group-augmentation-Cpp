@@ -58,7 +58,7 @@ void Population::disperse(int generation) {
 
         // In the non relatedness implementation, helpers just born are reassigned to random groups. Groups receive as many helpers as helpers left the group for reassignment.
         if (parameters->isNoRelatedness() && generation > 0) {
-            noRelatedHelpers = group.reassignNoRelatedness(i);
+            noRelatedHelpers = group.reassignNoRelatedness(groupID);
             for (int i = 0; i < noRelatedHelpers.size(); i++) {
                 noRelatednessGroupsID.push_back(groupID);
             }
@@ -100,11 +100,12 @@ void Population::disperse(int generation) {
 
                 //Compare old GroupID with new GroupID
                 oldGroupID = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
-                if (selectGroupID != oldGroupID || allSameGroup || secondTimeout>50) {
+                if (selectGroupID != oldGroupID || allSameGroup || secondTimeout > 50) {
                     noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                                 selectGroupIndex); //remove the group ID from the vector to not draw it again
                     allNoRelatedHelpers[indexLastIndividual].setGroupIndex(
                             selectGroupID); //change the GroupID to the new groupID
+                    timeout = 0;
                 } else {
                     timeout++;
                     i--;
@@ -119,7 +120,7 @@ void Population::disperse(int generation) {
                     i = 0;
                     timeout = 0;
                     secondTimeout++;
-                    if(secondTimeout>50){std::cout << "timeout" << std::endl;}
+                    if (secondTimeout > 50) { std::cout << "timeout" << std::endl; }
                 }
             }
         }
