@@ -1,6 +1,7 @@
 #include "Population.h"
 #include <vector>
 #include <iostream>
+#include <cassert>
 
 const std::vector<Group> &Population::getGroups() const {
     return groups;
@@ -81,9 +82,14 @@ void Population::disperse(int generation) {
         int selectGroupID;
         int oldGroupID;
         int timeout = 0;
+        int secondTimeout = 0;
+        int indexLastIndividual;
         bool allSameGroup = false;
         std::vector<int> copyNoRelatednessGroupsID;
+        std::vector<Individual> copyAllNoRelatedHelpers;
+        std::vector<Individual> testAllNoRelatedHelpers;
         copyNoRelatednessGroupsID = noRelatednessGroupsID;
+        copyAllNoRelatedHelpers = allNoRelatedHelpers;
 
         std::vector<Transaction> transactionVector;
 
@@ -97,6 +103,53 @@ void Population::disperse(int generation) {
         }*/
 
         while (!noRelatednessGroupsID.empty()) {
+
+            // Select individual
+            for (int i = 1; i < allNoRelatedHelpers.size() + 1; i++) {
+                indexLastIndividual = allNoRelatedHelpers.size() - i;
+
+                // Select new GroupID
+                int selectGroupIndex = 0;
+                if (noRelatednessGroupsID.size() > 1) {
+                    std::uniform_int_distribution<int> uniformIntDistribution(0, noRelatednessGroupsID.size() - 1);
+                    selectGroupIndex = uniformIntDistribution(
+                            *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
+                }
+                selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
+
+                //Compare old GroupID with new GroupID
+                oldGroupID = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
+                if (selectGroupID != oldGroupID || allSameGroup || secondTimeout>50) {
+                    noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
+                                                selectGroupIndex); //remove the group ID from the vector to not draw it again
+                    allNoRelatedHelpers[indexLastIndividual].setGroupIndex(
+                            selectGroupID); //change the GroupID to the new groupID
+                    //transactionVector.emplace_back(selectGroupID, allNoRelatedHelpers[indexLastIndividual]);
+                } else {
+                    timeout++;
+                    i--;
+                }
+
+                if (timeout > 5000) {
+                    noRelatednessGroupsID = copyNoRelatednessGroupsID;
+                    allNoRelatedHelpers.clear();
+                    for (int i = 0; i < copyAllNoRelatedHelpers.size(); i++) {
+                        allNoRelatedHelpers.push_back(copyAllNoRelatedHelpers[i]);
+                    }
+                    i = 0;
+                    timeout = 0;
+                    secondTimeout++;
+                    if(secondTimeout>50){std::cout << "timeout" << std::endl;}
+                }
+            }
+        }
+
+/*        while (!noRelatednessGroupsID.empty()) {
+
+            // Select individual
+            auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
+
+            // Select new GroupID
             int selectGroupIndex = 0;
             if (noRelatednessGroupsID.size() > 1) {
                 std::uniform_int_distribution<int> uniformIntDistribution(0, noRelatednessGroupsID.size() - 1);
@@ -104,38 +157,39 @@ void Population::disperse(int generation) {
                         *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
             }
             selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-            auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
+
+            //Compare old GroupID with new GroupID
             oldGroupID = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
             if (selectGroupID != oldGroupID || allSameGroup) {
+                transactionVector.emplace_back(selectGroupID, allNoRelatedHelpers[indexLastIndividual]);
                 noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                             selectGroupIndex); //remove the group ID from the vector to not draw it again
-
-                transactionVector.emplace_back(selectGroupID, allNoRelatedHelpers[indexLastIndividual]);
+                allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
             } else {
                 timeout++;
             }
+
+            // If timeout is triggered, replace the groupId and helper vector by its original one and try again
             if (timeout > 50) {
                 noRelatednessGroupsID = copyNoRelatednessGroupsID;
+                allNoRelatedHelpers.clear();
+                for (int i = 0; i < copyAllNoRelatedHelpers.size(); i++)
+                    allNoRelatedHelpers.push_back(copyAllNoRelatedHelpers[i]);
                 timeout = 0;
             }
+        }*/
+
+
+
+        while (!allNoRelatedHelpers.empty()) {
+
+            indexLastIndividual = allNoRelatedHelpers.size() - 1;
+            selectGroupID = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
+            groups[selectGroupID].addHelper(
+                    allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
+            allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+
         }
-
-
-//        while (!allNoRelatedHelpers.empty()) {
-//
-//            if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 5000) {
-//
-//                groups[selectGroupID].addHelper(
-//                        allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
-//                allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
-//
-//                if (timeout > 5000) { std::cout << "timeout" << std::endl; }
-//
-//
-//            } else {
-//                timeout++; //if not other group to put the helper than the original one, do it anyways
-//            }
-//        }
     }
 }
 
