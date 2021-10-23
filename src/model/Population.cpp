@@ -43,26 +43,16 @@ void Population::reassignFloaters() {
     }
 }
 
-struct Transaction {
-    Transaction(int newGroupId, Individual &allNoRelatedHelpers) : newGroupID(newGroupId),
-                                                                   allNoRelatedHelpers(allNoRelatedHelpers) {}
-
-    int newGroupID;
-    Individual &allNoRelatedHelpers;
-};
-
 
 void Population::disperse(int generation) {
-
-    int groupID = 0;
 
     std::vector<Individual> noRelatedHelpers;
     IndividualVector allNoRelatedHelpers;
     std::vector<int> noRelatednessGroupsID;
 
 
-    for (int i = 0; i < groups.size(); i++) {
-        Group &group = groups[i];
+    for (int groupID = 0; groupID < groups.size(); groupID++) {
+        Group &group = groups[groupID];
         //Dispersal
         this->floaters.merge(group.disperse());
 
@@ -73,7 +63,6 @@ void Population::disperse(int generation) {
                 noRelatednessGroupsID.push_back(groupID);
             }
             allNoRelatedHelpers.merge(noRelatedHelpers);
-            groupID++;
         }
     }
 
@@ -87,20 +76,12 @@ void Population::disperse(int generation) {
         bool allSameGroup = false;
         std::vector<int> copyNoRelatednessGroupsID;
         std::vector<Individual> copyAllNoRelatedHelpers;
-        std::vector<Individual> testAllNoRelatedHelpers;
         copyNoRelatednessGroupsID = noRelatednessGroupsID;
         copyAllNoRelatedHelpers = allNoRelatedHelpers;
-
-        std::vector<Transaction> transactionVector;
 
         if (std::equal(noRelatednessGroupsID.begin() + 1, noRelatednessGroupsID.end(), noRelatednessGroupsID.begin())) {
             allSameGroup = true;
         }
-
-/*        if (std::adjacent_find(noRelatednessGroupsID.begin(), noRelatednessGroupsID.end(), std::not_equal_to<>()) ==
-            noRelatednessGroupsID.end()) {
-            allSameGroup = true;
-        }*/
 
         while (!noRelatednessGroupsID.empty()) {
 
@@ -124,7 +105,6 @@ void Population::disperse(int generation) {
                                                 selectGroupIndex); //remove the group ID from the vector to not draw it again
                     allNoRelatedHelpers[indexLastIndividual].setGroupIndex(
                             selectGroupID); //change the GroupID to the new groupID
-                    //transactionVector.emplace_back(selectGroupID, allNoRelatedHelpers[indexLastIndividual]);
                 } else {
                     timeout++;
                     i--;
@@ -143,43 +123,6 @@ void Population::disperse(int generation) {
                 }
             }
         }
-
-/*        while (!noRelatednessGroupsID.empty()) {
-
-            // Select individual
-            auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
-
-            // Select new GroupID
-            int selectGroupIndex = 0;
-            if (noRelatednessGroupsID.size() > 1) {
-                std::uniform_int_distribution<int> uniformIntDistribution(0, noRelatednessGroupsID.size() - 1);
-                selectGroupIndex = uniformIntDistribution(
-                        *parameters->getGenerator()); // selects a random index the noRelatednessGroupsID vector
-            }
-            selectGroupID = noRelatednessGroupsID[selectGroupIndex]; // translates the index to the ID of a group from the noRelatednessGroupsID vector
-
-            //Compare old GroupID with new GroupID
-            oldGroupID = allNoRelatedHelpers[indexLastIndividual].getGroupIndex();
-            if (selectGroupID != oldGroupID || allSameGroup) {
-                transactionVector.emplace_back(selectGroupID, allNoRelatedHelpers[indexLastIndividual]);
-                noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
-                                            selectGroupIndex); //remove the group ID from the vector to not draw it again
-                allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
-            } else {
-                timeout++;
-            }
-
-            // If timeout is triggered, replace the groupId and helper vector by its original one and try again
-            if (timeout > 50) {
-                noRelatednessGroupsID = copyNoRelatednessGroupsID;
-                allNoRelatedHelpers.clear();
-                for (int i = 0; i < copyAllNoRelatedHelpers.size(); i++)
-                    allNoRelatedHelpers.push_back(copyAllNoRelatedHelpers[i]);
-                timeout = 0;
-            }
-        }*/
-
-
 
         while (!allNoRelatedHelpers.empty()) {
 
