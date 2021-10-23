@@ -53,6 +53,7 @@ vector<Individual> Group::disperse() {
 
         } else {
             helper.setFishType(HELPER); //individuals that stay or disperse to this group become helpers
+            helper.setGroupIndex(this->GROUP_ID);
             i++;
         }
 
@@ -231,6 +232,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
             }
 
             breeder.setFishType(BREEDER); //modify the class
+            breeder.setGroupIndex(this->GROUP_ID);
             counting = candidates.size();//end loop
         } else
             ++candidateIt, ++counting;

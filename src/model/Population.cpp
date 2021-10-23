@@ -81,7 +81,7 @@ void Population::disperse(int generation) {
         int selectGroupID;
         int oldGroupID;
         int timeout = 0;
-        bool allSameGroup;
+        bool allSameGroup = false;
         std::vector<int> copyNoRelatednessGroupsID;
         copyNoRelatednessGroupsID = noRelatednessGroupsID;
 
@@ -91,10 +91,10 @@ void Population::disperse(int generation) {
             allSameGroup = true;
         }
 
-        if (std::adjacent_find(noRelatednessGroupsID.begin(), noRelatednessGroupsID.end(), std::not_equal_to<>()) ==
+/*        if (std::adjacent_find(noRelatednessGroupsID.begin(), noRelatednessGroupsID.end(), std::not_equal_to<>()) ==
             noRelatednessGroupsID.end()) {
             allSameGroup = true;
-        }
+        }*/
 
         while (!noRelatednessGroupsID.empty()) {
             int selectGroupIndex = 0;
@@ -114,8 +114,9 @@ void Population::disperse(int generation) {
             } else {
                 timeout++;
             }
-            if (timeout > 5000) {
+            if (timeout > 50) {
                 noRelatednessGroupsID = copyNoRelatednessGroupsID;
+                timeout = 0;
             }
         }
 

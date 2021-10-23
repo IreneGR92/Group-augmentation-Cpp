@@ -18,13 +18,13 @@ class Individual {
     double betaAge;
     double drift;
 
-    double dispersal{};
-    double help{};
-    double survival{};
+    double dispersal;
+    double help;
+    double survival;
 
     FishType fishType;                                                // possible classes: breeder, helper, floater
-    int age{};
-    bool inherit{};                                                    //did the new breeder inherit the territory or did it disperse?
+    int age;
+    bool inherit;                                                    //did the new breeder inherit the territory or did it disperse?
 
     void mutate(int generation);
 
