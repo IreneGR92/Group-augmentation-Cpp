@@ -10,7 +10,7 @@ INIT_NUM_HELPERS: 3     # initial number of helpers per group
 MAX_COLONIES: 5000     # number of groups or colonies
 NUM_GENERATIONS: 200000   #number of generations
 MAX_NUM_REPLICATES: 20    #number of replicas
-SKIP: 100   # interval of generations between print-outs
+SKIP: 1000   # interval of generations between print-outs
 
 ##Fix values
 
