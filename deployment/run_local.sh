@@ -34,15 +34,24 @@
 
 declare -a arr=(
 
-"noRelatedness_bias1-RN.yml"
-"noRelatedness_bias2-RN-m03.yml"
-
+"noRelatedness_bias1-RN-m01.yml"
 "noRelatedness_bias1-RN-m015.yml"
+"noRelatedness_bias1-RN-m02.yml"
 "noRelatedness_bias1-RN-m025.yml"
+"noRelatedness_bias1-RN-m03.yml"
+"noRelatedness_bias2-RN-m01.yml"
 "noRelatedness_bias2-RN-m015.yml"
+"noRelatedness_bias2-RN-m02.yml"
 "noRelatedness_bias2-RN-m025.yml"
+"noRelatedness_bias2-RN-m03.yml"
+"noRelatedness_bias3-RN-m01.yml"
+"noRelatedness_bias3-RN-m02.yml"
+"noRelatedness_bias3-RN-m03.yml"
 "noRelatedness_bias3-RN-m015.yml"
 "noRelatedness_bias3-RN-m025.yml"
+"noRelatedness_bias4-RN-m01.yml"
+"noRelatedness_bias4-RN-m02.yml"
+"noRelatedness_bias4-RN-m03.yml"
 "noRelatedness_bias4-RN-m015.yml"
 "noRelatedness_bias4-RN-m025.yml"
 "noRelatedness_bias15-RN-m01.yml"

@@ -9,7 +9,7 @@ NO_RELATEDNESS: true     # Apply implementation to remove the effect of relatedn
 
 
 MAX_COLONIES: 5000     # max number of groups or colonies
-NUM_GENERATIONS: 200000
+NUM_GENERATIONS: 400000
 MAX_NUM_REPLICATES: 10
 SKIP: 1000   # interval between print-outs
 
