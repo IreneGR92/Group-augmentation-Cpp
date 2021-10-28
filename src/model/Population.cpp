@@ -89,9 +89,6 @@ void Population::disperse(int generation) {
                 groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
                 allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
 
-                if (timeout > 5000){ std::cout << "timeout" << std::endl;}
-
-
             } else {
                 timeout++; //if not other group to put the helper than the original one, do it anyways
             }
