@@ -25,6 +25,7 @@ private:
     bool REACTION_NORM_HELP;    //Apply reaction norm to age for dispersal?
     bool REACTION_NORM_DISPERSAL; // Apply reaction norm to age for dispersal?
     bool EVOLUTION_HELP_AFTER_DISPERSAL; // help evolves only after the evolution of dispersal?
+    bool DIRECT_BROOD_CARE_ONLY; // right after an individual becomes breeder, it does not receive help for the first breeding cycle
     bool LOW_SURVIVAL_BREEDER;
     bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
@@ -101,6 +102,8 @@ public:
 
     bool isEvolutionHelpAfterDispersal() const;
 
+    bool isDirectBroodCareOnly() const;
+
     bool isLowSurvivalBreeder() const;
 
     bool isNoGroupAugmentation() const;
@@ -168,6 +171,7 @@ public:
     std::default_random_engine *getGenerator() const;
 
     static Parameters *instance();
+
 };
 
 

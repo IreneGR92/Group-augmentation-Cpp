@@ -20,6 +20,7 @@ Parameters::Parameters(const string &url) {
     this->REACTION_NORM_HELP = config["REACTION_NORM_HELP"].as<bool>();
     this->REACTION_NORM_DISPERSAL = config["REACTION_NORM_DISPERSAL"].as<bool>();
     this->EVOLUTION_HELP_AFTER_DISPERSAL = config["EVOLUTION_HELP_AFTER_DISPERSAL"].as<bool>();
+    this->DIRECT_BROOD_CARE_ONLY = config["DIRECT_BROOD_CARE_ONLY"].as<bool>();
     this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
     this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
@@ -78,6 +79,7 @@ void Parameters::print(std::ofstream &outputStream) {
                  << "Reaction_norm_help?:" << "\t" << this->isReactionNormHelp() << endl
                  << "Reaction_norm_dispersal?:" << "\t" << this->isReactionNormDispersal() << endl
                  << "Evolution_help_after_dispersal?:" << "\t" << this->isEvolutionHelpAfterDispersal() << endl
+                 << "Direct_brood_care_only?:" << "\t" << this->isDirectBroodCareOnly() << endl
                  << "Low_survival_breeder?:" << "\t" << this->isLowSurvivalBreeder() << endl
                  << "No_group_augmentation?:" << "\t" << this->isNoGroupAugmentation() << endl
                  << "No_effect_relatedness?:" << "\t" << this->isNoRelatedness() << endl
@@ -122,6 +124,10 @@ bool Parameters::isReactionNormDispersal() const {
 
 bool Parameters::isEvolutionHelpAfterDispersal() const {
     return EVOLUTION_HELP_AFTER_DISPERSAL;
+}
+
+bool Parameters::isDirectBroodCareOnly() const {
+    return DIRECT_BROOD_CARE_ONLY;
 }
 
 bool Parameters::isLowSurvivalBreeder() const {
