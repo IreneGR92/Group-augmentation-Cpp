@@ -106,8 +106,8 @@ void Group::survivalGroup() {
 
     //Calculate the survival of the breeder
     if (parameters->isLowSurvivalBreeder()) {
-        this->breeder.calculateSurvival(0); //survival for breeder does not include group size benefits
-    } // TODO:Change to 1?
+        this->breeder.calculateSurvival(parameters->getFixedGroupSize()); //survival for breeder does not include group size benefits
+    }
     else {
         this->breeder.calculateSurvival(groupSize);
     }
@@ -204,10 +204,6 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
         currentPosition = position[position.size() - 1];
     }
 
-//    if (floaters.empty() && candidates.size() != helpers.size()) {
-//        std::cout << "Error assigning empty floaters to Breeder" << endl;
-//    }
-
     candidateIt = candidates.begin();
     int counting = 0;
     while (counting < candidates.size()) {
@@ -256,13 +252,14 @@ void Group::increaseAge() {
 
 void Group::reproduce(int generation) { // populate offspring generation
     //Calculate fecundity
-    fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
+    fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp); // TODO: Changed fecundity formula
+    //fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
     poisson_distribution<int> PoissonFecundity(fecundity);
     realFecundity = PoissonFecundity(*parameters->getGenerator()); //integer number
 
     //Reproduction
-    if (breederAlive) {
+    if (breederAlive) { //if (breederAlive & breeder.getAge()>2)
         for (int i = 0; i < realFecundity; i++) //number of offspring dependent on real fecundity
         {
             Individual offspring = Individual(breeder, HELPER, generation);
