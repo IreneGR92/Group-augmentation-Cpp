@@ -88,6 +88,8 @@ void Parameters::print(std::ofstream &outputStream) {
                  << "Number_of_colonies:" << "\t" << this->getMaxColonies() << endl
                  << "Number_generations:" << "\t" << this->getNumGenerations() << endl
                  << "Number_replicates:" << "\t" << this->getMaxNumReplicates() << endl
+                 << "Fixed_group_size:" << "\t" << this->getFixedGroupSize() << endl
+                 << "Min_age_become_breeder:" << "\t" << this->getMinAgeBecomeBreeder() << endl
                  << "Bias_float_breeder:" << "\t" << this->getBiasFloatBreeder() << endl
                  << "m(Overall_mortality):" << "\t" << this->getM() << endl
                  << "n(Mortality_dispersal):" << "\t" << this->getN() << endl
