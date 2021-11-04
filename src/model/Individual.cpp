@@ -83,7 +83,7 @@ void Individual::calcHelp() {
 
 /*SURVIVAL*/
 
-void Individual::calculateSurvival(const int& groupSize) {
+void Individual::calculateSurvival(const int &groupSize) {
 
     if (parameters->isNoGroupAugmentation()) {
         if (fishType == FLOATER) {
@@ -99,12 +99,12 @@ void Individual::calculateSurvival(const int& groupSize) {
     } else {
         if (fishType == FLOATER) {
             this->survival = (1 - parameters->getM() * parameters->getN()) /
-                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                             parameters->getXsh() * this->help));
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                      parameters->getXsh() * this->help));
         } else {
             this->survival = (1 - parameters->getM()) /
-                    (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
-                             parameters->getXsh() * this->help));
+                             (1 + exp(-parameters->getX0() - parameters->getXsn() * groupSize +
+                                      parameters->getXsh() * this->help));
         }
     }
 }
@@ -264,6 +264,14 @@ double Individual::get(Attribute type) const {
 
 int Individual::getGroupIndex() const {
     return groupIndex;
+}
+
+bool Individual::isViableBreeder() {
+    if (age > parameters->getMinAgeBecomeBreeder()-1) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 

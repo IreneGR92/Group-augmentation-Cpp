@@ -112,9 +112,9 @@ declare -a arr=(
 #"noRelatedness_m03-Xn4-Xh2.yml"
 
 #   FIGURE 3  #
-"default_m02-bias1.yml"
+#"default_m02-bias1.yml"
 #"default_m03-bias2.yml"
-"noRelatedness_m02-bias1.yml"
+#"noRelatedness_m02-bias1.yml"
 #"noRelatedness_m03-bias2.yml"
 
 

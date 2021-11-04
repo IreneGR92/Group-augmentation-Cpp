@@ -83,6 +83,8 @@ public:
     double get(Attribute geneType) const;
 
     void setGroupIndex(int groupIndex);
+
+    bool isViableBreeder();
 };
 
 

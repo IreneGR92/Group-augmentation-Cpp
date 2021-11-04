@@ -17,7 +17,8 @@ SKIP: 100   # interval between print-outs
 #Fix values
 INIT_NUM_HELPERS: 3     # initial number of helpers per group
 BIAS_FLOAT_BREEDER: 3  # mean of number of groups a floater can visit to try to become a breeder compared to 1 group for helpers
-FIXED_GROUP_SIZE: 4		# in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
+FIXED_GROUP_SIZE: 1		# in the implementation of "low survival breeder", virtual group size for survival for breeder. In implementation "no group augmentation", virtual survival for breeders and helpers
+MIN_AGE_BECOME_BREEDER: 1 # minimum age for individuals to be able to become breeders, 1 is no restriction		# in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
 # Modifiers in survival. X0 + Xsn - Xsh :< 1
 m: 0.15    # mortality due to predation
