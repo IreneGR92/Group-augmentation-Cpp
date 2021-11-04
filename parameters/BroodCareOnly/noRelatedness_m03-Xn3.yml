@@ -7,7 +7,6 @@ LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 NO_GROUP_AUGMENTATION: false
 NO_RELATEDNESS: true     # Apply implementation to remove the effect of relatedness?
 
-
 MAX_COLONIES: 5000     # max number of groups or colonies
 NUM_GENERATIONS: 200000
 MAX_NUM_REPLICATES: 10
@@ -24,7 +23,7 @@ m: 0.3    # mortality due to predation
 n: 1      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
 X0: 1.5   # base survival without the effect of help or group size
 Xsh: 4    # cost of help in survival
-Xsn: 4    # benefit of group size in survival
+Xsn: 3    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
