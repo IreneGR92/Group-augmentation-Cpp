@@ -1,15 +1,17 @@
 #Run parameters
-REACTION_NORM_HELP: false          # Apply reaction norm to age for level of help?
+REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
-EVOLUTION_HELP_AFTER_DISPERSAL: true     # Help evolves only after the evolution of dispersal?
-DIRECT_BROOD_CARE_ONLY: true      # Breeder does not receive help during the first breeding cycle after becoming new breeder
-LOW_SURVIVAL_BREEDER: false       # Survival of the breeder equivalent to the floaters?
-NO_GROUP_AUGMENTATION: false      # Remove group augmentation effects by fixing group size in survival?
-NO_RELATEDNESS: true             # Apply implementation to remove the effect of relatedness?
+EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
+DIRECT_BROOD_CARE_ONLY: false      # Breeder does not receive help during the first breeding cycle after becoming new breeder
+LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 
-MAX_COLONIES: 1000     # max number of groups or colonies
-NUM_GENERATIONS: 400000
-MAX_NUM_REPLICATES: 10
+NO_GROUP_AUGMENTATION: false
+NO_RELATEDNESS: false     # Apply implementation to remove the effect of relatedness?
+
+
+MAX_COLONIES: 5000     # max number of groups or colonies
+NUM_GENERATIONS: 200000
+MAX_NUM_REPLICATES: 20
 SKIP: 1000   # interval between print-outs
 
 #Fix values
@@ -18,16 +20,16 @@ BIAS_FLOAT_BREEDER: 2  # mean of number of groups a floater can visit to try to 
 FIXED_GROUP_SIZE: 1		# in the implementation of "low survival breeder", virtual group size for survival for breeder. In implementation "no group augmentation", virtual survival for breeders and helpers
 MIN_AGE_BECOME_BREEDER: 1 # minimum age for individuals to be able to become breeders, 1 is no restriction		# in the implementation of no group augmentation, virtual group size for survival for breeder and helpers
 
-# Modifiers in survival.
-m: 0.2    # overall mortality (m0 in the paper)
-n: 1      # multiplier to m for lower mortality of floaters (md in the paper)
-X0: 1.5   # intercept in survival formula
-Xsh: 2    # cost of help in survival
-Xsn: 4    # benefit of group size in survival
+# Modifiers in survival. X0 + Xsn - Xsh :< 1
+m: 0.1    # mortality due to predation
+n: 1      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
+X0: 1.5   # base survival without the effect of help or group size
+Xsh: 0.5    # cost of help in survival
+Xsn: 0    # benefit of group size in survival
 
 #Modifiers in fecundity
-K0: 0.5    # min fecundity, fecundity when no help provided.
-K1: 6    # benefit of cumHelp in the fecundity
+K0: 1    # min fecundity, fecundity when no help provided.
+K1: 3    # benefit of cumHelp in the fecundity
 
 
 #Genetic values
