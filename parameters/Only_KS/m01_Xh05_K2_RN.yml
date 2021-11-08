@@ -29,7 +29,7 @@ Xsn: 0    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 3    # benefit of cumHelp in the fecundity
+K1: 2    # benefit of cumHelp in the fecundity
 
 
 #Genetic values

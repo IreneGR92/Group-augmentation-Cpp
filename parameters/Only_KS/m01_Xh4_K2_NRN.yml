@@ -24,12 +24,12 @@ MIN_AGE_BECOME_BREEDER: 1 # minimum age for individuals to be able to become bre
 m: 0.1    # mortality due to predation
 n: 1      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
 X0: 1.5   # base survival without the effect of help or group size
-Xsh: 0.5    # cost of help in survival
+Xsh: 4    # cost of help in survival
 Xsn: 0    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 3    # benefit of cumHelp in the fecundity
+K1: 2    # benefit of cumHelp in the fecundity
 
 
 #Genetic values
