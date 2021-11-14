@@ -1,7 +1,7 @@
 #Run parameters
 REACTION_NORM_HELP: false    # Apply reaction norm to age for level of help?
 REACTION_NORM_DISPERSAL: false     # Apply reaction norm to age for dispersal?
-EVOLUTION_HELP_AFTER_DISPERSAL: true     # help evolves only after the evolution of dispersal?
+EVOLUTION_HELP_AFTER_DISPERSAL: false     # help evolves only after the evolution of dispersal?
 DIRECT_BROOD_CARE_ONLY: true      # Breeder does not receive help during the first breeding cycle after becoming new breeder
 LOW_SURVIVAL_BREEDER: false #Survival of the breeder equivalent to the floaters?
 NO_GROUP_AUGMENTATION: false
@@ -22,12 +22,12 @@ MIN_AGE_BECOME_BREEDER: 3 # minimum age for individuals to be able to become bre
 m: 0.23    # mortality due to predation
 n: 1.2      # multiplier to m for lower mortality of floaters (only in the new logistic survival formula)
 X0: 1.5   # base survival without the effect of help or group size
-Xsh: 2    # cost of help in survival
+Xsh: 4    # cost of help in survival
 Xsn: 4    # benefit of group size in survival
 
 #Modifiers in fecundity
 K0: 1    # min fecundity, fecundity when no help provided.
-K1: 2    # benefit of cumHelp in the fecundity
+K1: 3    # benefit of cumHelp in the fecundity
 
 
 #Genetic values
