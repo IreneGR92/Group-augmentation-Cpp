@@ -203,7 +203,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
         }
     }
 
-        //    Choose breeder with higher likelihood for the highest age
+/*        //    Choose breeder with higher likelihood for the highest age
         for (candidateIt = candidates.begin(); candidateIt < candidates.end(); ++candidateIt) {
             sumAge += (*candidateIt)->getAge(); //add all the age from the vector candidates
         }
@@ -227,9 +227,6 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                     **candidateIt = floaters[floaters.size() - 1];
                     floaters.pop_back();
                     newBreederFloater++;
-//                if ((*candidate3It)->inherit == 1) {
-//                    std::cout << "error in inheritance" << endl;
-//                }
                 } else {
                     **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
                     helpers.pop_back();
@@ -243,7 +240,36 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                 counting = candidates.size();//end loop
             } else
                 ++candidateIt, ++counting;
+        }*/
+
+        // age no influence on inheritance
+if (!candidates.empty()){
+    vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
+
+    uniform_int_distribution<int> UniformCandidate(0, candidates.size() - 1); //random candidate ID taken in the sample
+    int candidateID = UniformCandidate(*parameters->getGenerator());
+
+    candidateIt = candidates.begin() + candidateID;
+    breeder = **candidateIt; //substitute the previous dead breeder
+    breederAlive = true;
+
+    if ((*candidateIt)->getFishType() == FLOATER) //delete the ind from the vector floaters
+    {
+        **candidateIt = floaters[floaters.size() - 1];
+        floaters.pop_back();
+        newBreederFloater++;
+    } else {
+        **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
+        helpers.pop_back();
+        newBreederHelper++;
+        if ((*candidateIt)->isInherit() == 1) {
+            inheritance++;                    //calculates how many individuals that become breeders are natal to the territory
         }
+    }
+
+    breeder.setFishType(BREEDER); //modify the class
+}
+
     }
 
 
