@@ -29,20 +29,37 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-5 //TODO: Number of runs, remember to change!
+#SBATCH --array=0-23 //TODO: Number of runs, remember to change!
 
 #### Your shell commands below this line ####
 
 declare -a arr=(
 
 #   MUTATION MODIFIED  #
-"no-relatedness_Xn0.yml"
-"no-relatedness_Xn1.yml"
-"no-relatedness_Xn3.yml"
-"Xn0.yml"
-"Xn1.yml"
-"Xn3.yml"
-
+"default_m01-Xn0.yml"
+"default_m01-Xn1.yml"
+"default_m01-Xn3.yml"
+"default_m01-Xn4.yml"
+"default_m02-Xn0.yml"
+"default_m02-Xn1.yml"
+"default_m02-Xn3.yml"
+"default_m02-Xn4.yml"
+"default_m03-Xn0.yml"
+"default_m03-Xn1.yml"
+"default_m03-Xn3.yml"
+"default_m03-Xn4.yml"
+"noRelatedness_m01-Xn0.yml"
+"noRelatedness_m01-Xn1.yml"
+"noRelatedness_m01-Xn3.yml"
+"noRelatedness_m01-Xn4.yml"
+"noRelatedness_m02-Xn0.yml"
+"noRelatedness_m02-Xn1.yml"
+"noRelatedness_m02-Xn3.yml"
+"noRelatedness_m02-Xn4.yml"
+"noRelatedness_m03-Xn0.yml"
+"noRelatedness_m03-Xn1.yml"
+"noRelatedness_m03-Xn3.yml"
+"noRelatedness_m03-Xn4.yml"
 		)
 
 srun ./build/App "parameters/${arr[$SLURM_ARRAY_TASK_ID]}"
