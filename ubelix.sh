@@ -29,25 +29,13 @@
 
 # For array jobs
 # Indicate how many input files you have
-#SBATCH --array=0-23
+#SBATCH --array=0-11
 
 #### Your shell commands below this line ####
 
 declare -a arr=(
 
-#   MUTATION MODIFIED  #
-"default_m01-Xn0.yml"
-"default_m01-Xn1.yml"
-"default_m01-Xn3.yml"
-"default_m01-Xn4.yml"
-"default_m02-Xn0.yml"
-"default_m02-Xn1.yml"
-"default_m02-Xn3.yml"
-"default_m02-Xn4.yml"
-"default_m03-Xn0.yml"
-"default_m03-Xn1.yml"
-"default_m03-Xn3.yml"
-"default_m03-Xn4.yml"
+
 "noRelatedness_m01-Xn0.yml"
 "noRelatedness_m01-Xn1.yml"
 "noRelatedness_m01-Xn3.yml"
