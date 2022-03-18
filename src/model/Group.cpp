@@ -227,7 +227,7 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
                     **candidateIt = floaters[floaters.size() - 1];
                     floaters.pop_back();
                     newBreederFloater++;
-//                if ((*candidate3It)->inherit == 1) {
+//                if ((*candidateIt)->inherit == 1) {
 //                    std::cout << "error in inheritance" << endl;
 //                }
                 } else {

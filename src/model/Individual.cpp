@@ -52,7 +52,6 @@ void Individual::initializeIndividual(FishType type) {
 void Individual::calcDispersal() {
     if (!parameters->isReactionNormDispersal()) {
         this->dispersal = beta;
-        //this->dispersal = 1 / (1 + exp(- beta));
     } else {
         this->dispersal = 1 / (1 + exp(betaAge * age - beta));
     }
@@ -121,6 +120,9 @@ void Individual::mutate(int generation) // mutate genome of offspring
     double mutationAlphaAge;
 
     if (parameters->isEvolutionHelpAfterDispersal() && generation < 25000) {
+        mutationAlpha = 0;
+        mutationAlphaAge = 0;
+    } else if (parameters->isNoRelatedness() && parameters->isNoRelatednessRandomGroup()){
         mutationAlpha = 0;
         mutationAlphaAge = 0;
     } else {

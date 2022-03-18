@@ -67,8 +67,8 @@ void Population::disperse(int generation) {
             groupID++;
         }
     }
-
-    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty()) {
+    // Assign helpers to random group while maintaining the same group size
+    if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty() && !parameters->isNoRelatednessRandomGroup()) {
 
         int selectGroupID;
         int timeout = 0;
@@ -86,7 +86,25 @@ void Population::disperse(int generation) {
             if (selectGroupID != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 5000) {
                 noRelatednessGroupsID.erase(noRelatednessGroupsID.begin() +
                                             selectGroupIndex); //remove the group ID from the vector to not draw it again
-                groups[selectGroupID].addHelper(allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
+                groups[selectGroupID].addHelper(
+                        allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
+                allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
+
+            } else {
+                timeout++; //if not other group to put the helper than the original one, do it anyways
+            }
+        }
+        // Assign helpers to completelly random groups, group size not maintained
+    } else if (parameters->isNoRelatedness() && !allNoRelatedHelpers.empty() && parameters->isNoRelatednessRandomGroup()) {
+        int timeout = 0;
+        while (!allNoRelatedHelpers.empty()) {
+            std::uniform_int_distribution<int> UniformMaxCol(0, parameters->getMaxColonies() - 1);
+            int selectGroupIndex = UniformMaxCol(*parameters->getGenerator()); // selects a random index;
+            auto indexLastIndividual = allNoRelatedHelpers.size() - 1;
+
+            if (selectGroupIndex != allNoRelatedHelpers[indexLastIndividual].getGroupIndex() || timeout > 5000) {
+                groups[selectGroupIndex].addHelper(
+                        allNoRelatedHelpers[indexLastIndividual]); //add the no related helper to the helper vector in a randomly selected group
                 allNoRelatedHelpers.pop_back(); //remove the no related helper from its vector
 
             } else {

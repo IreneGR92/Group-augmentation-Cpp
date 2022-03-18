@@ -29,6 +29,7 @@ private:
     bool LOW_SURVIVAL_BREEDER;
     bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
+    bool NO_RELATEDNESS_RANDOM_GROUP; // When applying no relatedness, helpers shuffled to random group instead of maintaining group size
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
     int NUM_GENERATIONS;
@@ -110,6 +111,8 @@ public:
     bool isNoGroupAugmentation() const;
 
     bool isNoRelatedness() const;
+
+    bool isNoRelatednessRandomGroup() const;
 
     int getMaxColonies() const;
 

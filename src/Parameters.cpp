@@ -24,6 +24,7 @@ Parameters::Parameters(const string &url) {
     this->LOW_SURVIVAL_BREEDER = config["LOW_SURVIVAL_BREEDER"].as<bool>();
     this->NO_GROUP_AUGMENTATION = config["NO_GROUP_AUGMENTATION"].as<bool>();
     this->NO_RELATEDNESS = config["NO_RELATEDNESS"].as<bool>();
+    this->NO_RELATEDNESS_RANDOM_GROUP = config["NO_RELATEDNESS_RANDOM_GROUP"].as<bool>();
     this->MAX_COLONIES = config["MAX_COLONIES"].as<int>();
     this->NUM_GENERATIONS = config["NUM_GENERATIONS"].as<int>();
     this->MAX_NUM_REPLICATES = config["MAX_NUM_REPLICATES"].as<int>();
@@ -84,6 +85,7 @@ void Parameters::print(std::ofstream &outputStream) {
                  << "Low_survival_breeder?:" << "\t" << this->isLowSurvivalBreeder() << endl
                  << "No_group_augmentation?:" << "\t" << this->isNoGroupAugmentation() << endl
                  << "No_effect_relatedness?:" << "\t" << this->isNoRelatedness() << endl
+                 << "Non-related_helpers_random_group?:" << "\t" << this->isNoRelatednessRandomGroup() << endl
                  << "Initial_population:" << "\t" << this->getMaxColonies() * (this->getInitNumHelpers() + 1) << endl
                  << "Number_of_colonies:" << "\t" << this->getMaxColonies() << endl
                  << "Number_generations:" << "\t" << this->getNumGenerations() << endl
@@ -143,6 +145,10 @@ bool Parameters::isNoGroupAugmentation() const {
 
 bool Parameters::isNoRelatedness() const {
     return NO_RELATEDNESS;
+}
+
+bool Parameters::isNoRelatednessRandomGroup() const {
+    return NO_RELATEDNESS_RANDOM_GROUP;
 }
 
 int Parameters::getMaxColonies() const {
