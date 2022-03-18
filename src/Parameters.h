@@ -30,6 +30,7 @@ private:
     bool NO_GROUP_AUGMENTATION;
     bool NO_RELATEDNESS;       //Apply implementation to remove the effect of relatedness?
     bool NO_RELATEDNESS_RANDOM_GROUP; // When applying no relatedness, helpers shuffled to random group instead of maintaining group size
+    bool AGE_NO_INFLUENCE_RELATEDNESS; // Age no influence of who inherits territory, randomly sampled from candidate (helpers + sample floaters)
 
     int MAX_COLONIES;     // max number of groups or colonies --> breeding spots.
     int NUM_GENERATIONS;
@@ -113,6 +114,8 @@ public:
     bool isNoRelatedness() const;
 
     bool isNoRelatednessRandomGroup() const;
+
+    bool isAgeNoInfluenceInheritance() const;
 
     int getMaxColonies() const;
 

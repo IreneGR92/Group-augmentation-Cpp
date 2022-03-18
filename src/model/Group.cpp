@@ -196,13 +196,14 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
     vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
     candidateIt = candidates.begin();
     while (candidateIt != std::end(candidates)) {
-        if ((*candidateIt)->isViableBreeder()){
+        if ((*candidateIt)->isViableBreeder()) {
             ++candidateIt;
-        }else{
+        } else {
             candidateIt = candidates.erase(candidateIt);
         }
     }
-
+    //  Choose new breeder
+    if (!parameters->isAgeNoInfluenceInheritance()) {
         //    Choose breeder with higher likelihood for the highest age
         for (candidateIt = candidates.begin(); candidateIt < candidates.end(); ++candidateIt) {
             sumAge += (*candidateIt)->getAge(); //add all the age from the vector candidates
@@ -244,85 +245,112 @@ void Group::newBreeder(vector<Individual> &floaters, int &newBreederFloater, int
             } else
                 ++candidateIt, ++counting;
         }
+    } else {
+        // age no influence on inheritance
+        if (!candidates.empty()) {
+            vector<Individual *, std::allocator<Individual *>>::iterator candidateIt;
+
+            uniform_int_distribution<int> UniformCandidate(0, candidates.size() - 1); //random candidate ID taken in the sample
+            int candidateID = UniformCandidate(*parameters->getGenerator());
+
+            candidateIt = candidates.begin() + candidateID;
+            breeder = **candidateIt; //substitute the previous dead breeder
+            breederAlive = true;
+
+            if ((*candidateIt)->getFishType() == FLOATER) {//delete the ind from the vector floaters
+                **candidateIt = floaters[floaters.size() - 1];
+                floaters.pop_back();
+                newBreederFloater++;
+            } else {
+                **candidateIt = helpers[helpers.size() - 1]; //delete the ind from the vector helpers
+                helpers.pop_back();
+                newBreederHelper++;
+                if ((*candidateIt)->isInherit() == 1) {
+                    inheritance++;    //calculates how many individuals that become breeders are natal to the territory
+                }
+            }
+
+            breeder.setFishType(BREEDER); //modify the class
+        }
     }
+}
+
 
 
 /* INCREASE AGE OF ALL GROUP INDIVIDUALS*/
-    void Group::increaseAge() {
-        for (Individual &helper: helpers) {
-            helper.increaseAge();
-        }
-        if (breederAlive) {
-            breeder.increaseAge(breederAlive);
-        }
+void Group::increaseAge() {
+    for (Individual &helper: helpers) {
+        helper.increaseAge();
     }
+    if (breederAlive) {
+        breeder.increaseAge(breederAlive);
+    }
+}
 
 
 /* REPRODUCTION */
 
-    void Group::reproduce(int generation) { // populate offspring generation
-        //Calculate fecundity
-        fecundity =
-                parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp); // TODO: Changed fecundity formula
-        //fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
+void Group::reproduce(int generation) { // populate offspring generation
+    //Calculate fecundity
+    fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp);
+    //fecundity = parameters->getK0() + parameters->getK1() * cumHelp / (1 + cumHelp * parameters->getK1());
 
-        poisson_distribution<int> PoissonFecundity(fecundity);
-        realFecundity = PoissonFecundity(*parameters->getGenerator()); //integer number
+    poisson_distribution<int> PoissonFecundity(fecundity);
+    realFecundity = PoissonFecundity(*parameters->getGenerator()); //integer number
 
-        //Reproduction
-        if (breederAlive) {
-            for (int i = 0; i < realFecundity; i++){ //number of offspring dependent on real fecundity
-                Individual offspring = Individual(breeder, HELPER, generation);
+    //Reproduction
+    if (breederAlive) {
+        for (int i = 0; i < realFecundity; i++) { //number of offspring dependent on real fecundity
+            Individual offspring = Individual(breeder, HELPER, generation);
 
-                helpers.emplace_back(
-                        offspring); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
-            }
+            helpers.emplace_back(offspring); //create a new individual as helper in the group. Call construct to assign the mother genetic values to the offspring, construct calls Mutate function.
         }
     }
+}
 
-    const Individual &Group::getBreeder() const {
-        return breeder;
+const Individual &Group::getBreeder() const {
+    return breeder;
+}
+
+int Group::getGroupSize() const {
+    return groupSize;
+}
+
+bool Group::isBreederAlive() const {
+    return breederAlive;
+}
+
+double Group::getCumHelp() const {
+    return cumHelp;
+}
+
+std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
+    std::vector<double> result;
+    if (includeBreeder && isBreederAlive()) {
+        result.push_back(breeder.get(attribute));
     }
-
-    int Group::getGroupSize() const {
-        return groupSize;
+    for (const Individual &helper: helpers) {
+        result.push_back(helper.get(attribute));
     }
+    return result;
+}
 
-    bool Group::isBreederAlive() const {
-        return breederAlive;
-    }
-
-    double Group::getCumHelp() const {
-        return cumHelp;
-    }
-
-    std::vector<double> Group::get(Attribute attribute, bool includeBreeder) const {
-        std::vector<double> result;
-        if (includeBreeder && isBreederAlive()) {
-            result.push_back(breeder.get(attribute));
-        }
-        for (const Individual &helper: helpers) {
-            result.push_back(helper.get(attribute));
-        }
-        return result;
-    }
-
-    std::vector<double> Group::get(Attribute attribute) const {
-        return this->get(attribute, true);
-    }
+std::vector<double> Group::get(Attribute attribute) const {
+    return this->get(attribute, true);
+}
 
 
-    bool Group::hasHelpers() const {
-        return !helpers.empty();
-    }
+bool Group::hasHelpers() const {
+    return !helpers.empty();
+}
 
-    void Group::addHelper(const Individual &helper) {
-        this->helpers.emplace_back(helper);
-    }
+void Group::addHelper(const Individual &helper) {
+    this->helpers.emplace_back(helper);
+}
 
-    const IndividualVector &Group::getHelpers() const {
-        return helpers;
-    }
+const IndividualVector &Group::getHelpers() const {
+    return helpers;
+}
 
 
 
